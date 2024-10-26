@@ -366,6 +366,11 @@ NAMESPACE_SOUP
 		return str;
 	}
 
+	std::string Canvas::toStringDownsampledUtf8(bool explicit_nl, bool reset_on_nl)
+	{
+		return unicode::utf16_to_utf8(toStringDownsampled(explicit_nl, reset_on_nl));
+	}
+
 	std::u16string Canvas::toStringDownsampledDoublewidth(bool explicit_nl, bool reset_on_nl)
 	{
 		ensureHeightIsEven();

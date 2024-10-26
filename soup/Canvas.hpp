@@ -62,6 +62,7 @@ NAMESPACE_SOUP
 		[[nodiscard]] std::string toString(bool explicit_nl) const;
 		[[nodiscard]] std::string toStringDoublewidth(bool explicit_nl) const;
 		[[nodiscard]] std::u16string toStringDownsampled(bool explicit_nl, bool reset_on_nl);
+		[[nodiscard]] std::string toStringDownsampledUtf8(bool explicit_nl, bool reset_on_nl);
 		[[nodiscard]] std::u16string toStringDownsampledDoublewidth(bool explicit_nl, bool reset_on_nl);
 		[[nodiscard]] std::string toStringDownsampledDoublewidthUtf8(bool explicit_nl, bool reset_on_nl);
 	private:
