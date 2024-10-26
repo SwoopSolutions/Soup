@@ -71,8 +71,6 @@ Any other character preceeded by a backslash (`\`) is treated as a byte constrai
 
 ### Lookahead & Lookbehind
 
-Side tangent: std::regex does not support lookbehind, which is the reason soup::Regex was made. Although even in use cases where lookbehind is not needed, the easier API and better performance of soup::Regex are considerable benefits.
-
 These are constraints that don't change the position:
 
 - `a(?=b)` — Checks if the current position matches `a` and the next position matches `b`.
