@@ -185,13 +185,13 @@ NAMESPACE_SOUP
 				const auto rawdesc = string::fromFile(hid.path + "/device/report_descriptor");
 				const auto desc = HidReportDescriptor::parse(rawdesc.data(), rawdesc.size());
 				const auto& report = hid.receiveReport();
-				const auto usage_ids = desc.parseInputReport(report.data(), report.size());
+				const auto parsed_report = desc.parseInputReport(report.data(), report.size());
 				memset(keys, 0, sizeof(keys));
-				for (const auto& usage_id : usage_ids)
+				for (const auto& usage : parsed_report.active_selectors)
 				{
-					if ((usage_id >> 16) == 0x07) // Keyboard
+					if (usage.page == 0x07) // Keyboard
 					{
-						if (const auto sk = hid_scancode_to_soup_key(static_cast<uint8_t>(usage_id)); sk != KEY_NONE)
+						if (const auto sk = hid_scancode_to_soup_key(usage.id); sk != KEY_NONE)
 						{
 							keys[sk] = true;
 						}

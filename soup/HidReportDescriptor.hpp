@@ -7,8 +7,15 @@
 #include <unordered_set>
 #include <vector>
 
+#include "HidUsage.hpp"
+
 NAMESPACE_SOUP
 {
+	struct HidParsedReport
+	{
+		std::unordered_set<HidUsage> active_selectors{};
+	};
+
 	struct HidReportDescriptor
 	{
 		uint16_t usage_page = 0;
@@ -30,6 +37,6 @@ NAMESPACE_SOUP
 
 		[[nodiscard]] static HidReportDescriptor parse(const void* _rawdesc, size_t size);
 
-		[[nodiscard]] std::vector<uint32_t> parseInputReport(const void* report, size_t size) const;
+		[[nodiscard]] HidParsedReport parseInputReport(const void* report, size_t size) const;
 	};
 }

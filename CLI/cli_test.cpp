@@ -910,6 +910,11 @@ spanning over multiple lines */
 
 static void unit_hardware()
 {
+	test("HidUsage", []
+	{
+		HidUsage usage(1, 0);
+		assert(usage.value == (1 << 16));
+	});
 	test("HidReportDescriptor", []
 	{
 		// VMware Virtual USB Mouse
@@ -982,17 +987,17 @@ static void unit_hardware()
 			assert(desc.usage == 0x06); // Keyboard
 			{
 				const uint8_t report_w[] = { 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-				assert(desc.parseInputReport(report_w, sizeof(report_w)).at(0) == ((0x07 << 16) | HID_W));
+				assert(desc.parseInputReport(report_w, sizeof(report_w)).active_selectors.count(HidUsage(0x07, HID_W)));
 			}
 			{
 				const uint8_t report_ctrl[] = { 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-				assert(desc.parseInputReport(report_ctrl, sizeof(report_ctrl)).at(0) == ((0x07 << 16) | HID_CONTROL_LEFT));
+				assert(desc.parseInputReport(report_ctrl, sizeof(report_ctrl)).active_selectors.count(HidUsage(0x07, HID_CONTROL_LEFT)));
 			}
 			{
 				const uint8_t report_ctrl_c[] = { 0x01, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-				const auto usage_ids = desc.parseInputReport(report_ctrl_c, sizeof(report_ctrl_c));
-				assert(usage_ids.at(0) == ((0x07 << 16) | HID_CONTROL_LEFT));
-				assert(usage_ids.at(1) == ((0x07 << 16) | HID_C));
+				const auto parsed_report = desc.parseInputReport(report_ctrl_c, sizeof(report_ctrl_c));
+				assert(parsed_report.active_selectors.count(HidUsage(0x07, HID_CONTROL_LEFT)));
+				assert(parsed_report.active_selectors.count(HidUsage(0x07, HID_C)));
 			}
 		}
 
@@ -1004,17 +1009,17 @@ static void unit_hardware()
 			assert(desc.usage == 0x06); // Keyboard
 			{
 				const uint8_t report_w[] = { 0x00, 0x00, 0x1A, 0x00, 0x00, 0x00, 0x00, 0x00 };
-				assert(desc.parseInputReport(report_w, sizeof(report_w)).at(0) == ((0x07 << 16) | HID_W));
+				assert(desc.parseInputReport(report_w, sizeof(report_w)).active_selectors.count(HidUsage(0x07, HID_W)));
 			}
 			{
 				const uint8_t report_ctrl[] = { 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-				assert(desc.parseInputReport(report_ctrl, sizeof(report_ctrl)).at(0) == ((0x07 << 16) | HID_CONTROL_LEFT));
+				assert(desc.parseInputReport(report_ctrl, sizeof(report_ctrl)).active_selectors.count(HidUsage(0x07, HID_CONTROL_LEFT)));
 			}
 			{
 				const uint8_t report_ctrl_c[] = { 0x01, 0x00, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00 };
-				const auto usage_ids = desc.parseInputReport(report_ctrl_c, sizeof(report_ctrl_c));
-				assert(usage_ids.at(0) == ((0x07 << 16) | HID_CONTROL_LEFT));
-				assert(usage_ids.at(1) == ((0x07 << 16) | HID_C));
+				const auto parsed_report = desc.parseInputReport(report_ctrl_c, sizeof(report_ctrl_c));
+				assert(parsed_report.active_selectors.count(HidUsage(0x07, HID_CONTROL_LEFT)));
+				assert(parsed_report.active_selectors.count(HidUsage(0x07, HID_C)));
 			}
 		}
 	});

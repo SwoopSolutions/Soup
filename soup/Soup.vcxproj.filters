@@ -1647,6 +1647,9 @@
     <ClInclude Include="utility.hpp">
       <Filter>util</Filter>
     </ClInclude>
+    <ClInclude Include="HidUsage.hpp">
+      <Filter>hardware</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bytepatch.cpp">

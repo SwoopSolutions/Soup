@@ -196,9 +196,9 @@ NAMESPACE_SOUP
 		return parsed;
 	}
 
-	std::vector<uint32_t> HidReportDescriptor::parseInputReport(const void* report, size_t size) const
+	HidParsedReport HidReportDescriptor::parseInputReport(const void* report, size_t size) const
 	{
-		std::vector<uint32_t> usage_ids{};
+		HidParsedReport parsed;
 
 		MemoryRefReader mr(report, size);
 		BitReader br(&mr);
@@ -215,7 +215,7 @@ NAMESPACE_SOUP
 						SOUP_UNUSED(br.b(on));
 						if (on)
 						{
-							usage_ids.emplace_back((static_cast<uint32_t>(f.usage_page) << 16) | usage);
+							parsed.active_selectors.emplace(HidUsage(f.usage_page, usage));
 						}
 					}
 					continue;
@@ -231,7 +231,7 @@ NAMESPACE_SOUP
 						SOUP_UNUSED(br.u8(8, usage));
 						if (usage != 0)
 						{
-							usage_ids.emplace_back((static_cast<uint32_t>(f.usage_page) << 16) | usage);
+							parsed.active_selectors.emplace(HidUsage(f.usage_page, usage));
 						}
 					}
 					continue;
@@ -246,6 +246,6 @@ NAMESPACE_SOUP
 			}
 		}
 
-		return usage_ids;
+		return parsed;
 	}
 }
