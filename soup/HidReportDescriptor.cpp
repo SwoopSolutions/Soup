@@ -102,6 +102,7 @@ NAMESPACE_SOUP
 		uint32_t report_size = 0;
 		uint32_t report_count = 0;
 		uint32_t usage_min = 0;
+		uint32_t logical_max = 0;
 
 		for (uint32_t pos = 0; pos < size; )
 		{
@@ -174,6 +175,7 @@ NAMESPACE_SOUP
 					parsed.input_report_fields.emplace_back(ReportField{
 						report_size,
 						report_count,
+						logical_max,
 						is_variable,
 						usage_page,
 						std::move(usage_ids)
@@ -209,6 +211,12 @@ NAMESPACE_SOUP
 					}
 				}
 				break;
+
+			case 0x14: // Logical Minimum
+				break;
+
+			case 0x24: // Logical Maximum
+				logical_max = get_hid_report_bytes(rawdesc, size, data_len, pos);
 				break;
 			}
 
@@ -245,6 +253,21 @@ NAMESPACE_SOUP
 							{
 								parsed.active_selectors.emplace(HidUsage(f.usage_page, *pUsageId));
 							}
+							++pUsageId;
+						}
+					}
+					continue;
+				}
+				else if (f.size == 8 && f.logical_max != 0)
+				{
+					auto pUsageId = f.usage_ids.cbegin();
+					for (uint32_t i = 0; i != f.count; ++i)
+					{
+						uint8_t value = 0;
+						SOUP_UNUSED(br.u8(8, value));
+						if (pUsageId != f.usage_ids.end())
+						{
+							parsed.dynamic_values.emplace(HidUsage(f.usage_page, *pUsageId), static_cast<float>(value) / f.logical_max);
 							++pUsageId;
 						}
 					}

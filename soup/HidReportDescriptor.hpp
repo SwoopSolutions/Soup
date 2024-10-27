@@ -4,6 +4,7 @@
 
 #include <cstdint>
 #include <cstddef>
+#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
@@ -14,6 +15,7 @@ NAMESPACE_SOUP
 	struct HidParsedReport
 	{
 		std::unordered_set<HidUsage> active_selectors{};
+		std::unordered_map<HidUsage, float> dynamic_values{};
 	};
 
 	struct HidReportDescriptor
@@ -29,6 +31,7 @@ NAMESPACE_SOUP
 		{
 			uint32_t size;
 			uint32_t count;
+			uint32_t logical_max;
 			bool is_variable;
 			uint16_t usage_page;
 			std::vector<uint16_t> usage_ids;
