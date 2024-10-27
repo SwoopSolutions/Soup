@@ -325,7 +325,8 @@ NAMESPACE_SOUP
 			return res;
 		}
 
-		[[nodiscard]] static std::string hex2bin(const std::string& hex) SOUP_EXCAL;
+		[[nodiscard]] static std::string hex2bin(const std::string& hex) SOUP_EXCAL { return hex2bin(hex.data(), hex.size()); }
+		[[nodiscard]] static std::string hex2bin(const char* data, size_t size) SOUP_EXCAL;
 
 		enum ToIntFlags : uint8_t
 		{
