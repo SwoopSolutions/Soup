@@ -98,10 +98,10 @@ NAMESPACE_SOUP
 		uint32_t output_report_bit_length = 0;
 		uint32_t feature_report_bit_length = 0;
 
+		std::vector<uint16_t> usage_ids{};
 		uint32_t report_size = 0;
 		uint32_t report_count = 0;
 		uint32_t usage_min = 0;
-		//uint32_t usage_max = 0;
 
 		for (uint32_t pos = 0; pos < size; )
 		{
@@ -127,23 +127,28 @@ NAMESPACE_SOUP
 				break;
 
 			case 0x08: /* Usage 6.2.2.8 (Local) */
-				if (data_len == 4) /* Usages 5.5 / Usage Page 6.2.2.7 */
 				{
-					usage_page = get_hid_report_bytes(rawdesc, size, 2, pos + 2);
-					if (parsed.usage_page == 0)
+					uint16_t usage_id;
+					if (data_len == 4) /* Usages 5.5 / Usage Page 6.2.2.7 */
 					{
-						parsed.usage_page = usage_page;
+						usage_page = get_hid_report_bytes(rawdesc, size, 2, pos + 2);
+						if (parsed.usage_page == 0)
+						{
+							parsed.usage_page = usage_page;
+						}
+						usage_id = get_hid_report_bytes(rawdesc, size, 2, pos);
+					}
+					else
+					{
+						usage_id = get_hid_report_bytes(rawdesc, size, data_len, pos);
 					}
 					if (parsed.usage == 0)
 					{
-						parsed.usage = get_hid_report_bytes(rawdesc, size, 2, pos);
+						parsed.usage = usage_id;
 					}
-				}
-				else
-				{
-					if (parsed.usage == 0)
+					else
 					{
-						parsed.usage = get_hid_report_bytes(rawdesc, size, data_len, pos);
+						usage_ids.emplace_back(usage_id);
 					}
 				}
 				break;
@@ -161,15 +166,29 @@ NAMESPACE_SOUP
 					input_report_bit_length += (report_size * report_count);
 
 					const auto flags = get_hid_report_bytes(rawdesc, size, data_len, pos);
-					parsed.input_report_fields.emplace_back(ReportField{ ((flags >> 1) & 1) != 0, usage_page, static_cast<uint16_t>(usage_min), report_size, report_count });
+					const bool is_variable = ((flags >> 1) & 1) != 0;
+					if (!is_variable)
+					{
+						usage_ids.clear();
+					}
+					parsed.input_report_fields.emplace_back(ReportField{
+						report_size,
+						report_count,
+						is_variable,
+						usage_page,
+						std::move(usage_ids)
+					});
+					usage_ids.clear();
 				}
 				break;
 
 			case 0x90: // Output
+				usage_ids.clear();
 				output_report_bit_length += (report_size * report_count);
 				break;
 
 			case 0xB0: // Feature
+				usage_ids.clear();
 				feature_report_bit_length += (report_size * report_count);
 				break;
 
@@ -182,7 +201,14 @@ NAMESPACE_SOUP
 				break;
 
 			case 0x28: // Usage Maximum
-				//usage_max = get_hid_report_bytes(rawdesc, size, data_len, pos);
+				{
+					uint32_t usage_max = get_hid_report_bytes(rawdesc, size, data_len, pos);
+					for (uint32_t usage = usage_min; usage != (usage_max + 1); ++usage)
+					{
+						usage_ids.emplace_back(usage);
+					}
+				}
+				break;
 				break;
 			}
 
@@ -208,14 +234,18 @@ NAMESPACE_SOUP
 			{
 				if (f.size == 1)
 				{
-					uint16_t usage = f.usage_min;
-					for (uint32_t i = 0; i != f.count; ++i, ++usage) // Note: count may be bigger than needed for usage_min..usage_max range. We just assume those bits will be set to 0 so it shouldn't be an issue.
+					auto pUsageId = f.usage_ids.cbegin();
+					for (uint32_t i = 0; i != f.count; ++i)
 					{
 						bool on = false;
 						SOUP_UNUSED(br.b(on));
-						if (on)
+						if (pUsageId != f.usage_ids.end())
 						{
-							parsed.active_selectors.emplace(HidUsage(f.usage_page, usage));
+							if (on)
+							{
+								parsed.active_selectors.emplace(HidUsage(f.usage_page, *pUsageId));
+							}
+							++pUsageId;
 						}
 					}
 					continue;

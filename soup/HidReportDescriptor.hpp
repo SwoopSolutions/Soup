@@ -27,11 +27,11 @@ NAMESPACE_SOUP
 
 		struct ReportField
 		{
-			bool is_variable;
-			uint16_t usage_page;
-			uint16_t usage_min;
 			uint32_t size;
 			uint32_t count;
+			bool is_variable;
+			uint16_t usage_page;
+			std::vector<uint16_t> usage_ids;
 		};
 		std::vector<ReportField> input_report_fields{};
 
