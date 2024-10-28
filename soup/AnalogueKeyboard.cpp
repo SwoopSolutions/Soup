@@ -147,6 +147,24 @@ NAMESPACE_SOUP
 		return {};
 	}
 
+	static const uint8_t layout_keychron_q1_he[] = { 6, 15,
+		KEY_ESCAPE,    KEY_F1,    KEY_F2,   KEY_F3,   KEY_F4,   KEY_F5,   KEY_F6,    KEY_F7,   KEY_F8,   KEY_F9,    KEY_F10,       KEY_F11,          KEY_F12,           KEY_DEL,        KEY_NONE /* mute */,
+		KEY_BACKQUOTE, KEY_1,     KEY_2,    KEY_3,    KEY_4,    KEY_5,    KEY_6,     KEY_7,    KEY_8,    KEY_9,     KEY_0,         KEY_MINUS,        KEY_EQUALS,        KEY_BACKSPACE,  KEY_PAGE_UP,
+		KEY_TAB,       KEY_Q,     KEY_W,    KEY_E,    KEY_R,    KEY_T,    KEY_Y,     KEY_U,    KEY_I,    KEY_O,     KEY_P,         KEY_BRACKET_LEFT, KEY_BRACKET_RIGHT, KEY_BACKSLASH,  KEY_PAGE_DOWN,
+		KEY_CAPS_LOCK, KEY_A,     KEY_S,    KEY_D,    KEY_F,    KEY_G,    KEY_H,     KEY_J,    KEY_K,    KEY_L,     KEY_SEMICOLON, KEY_QUOTE,        KEY_ENTER,         KEY_HOME,       KEY_NONE,
+		KEY_LSHIFT,    KEY_NONE,  KEY_Z,    KEY_X,    KEY_C,    KEY_V,    KEY_B,     KEY_N,    KEY_M,    KEY_COMMA, KEY_PERIOD,    KEY_NONE,         KEY_SLASH,         KEY_RSHIFT,     KEY_ARROW_UP,
+		KEY_LCTRL,     KEY_LMETA, KEY_LALT, KEY_NONE, KEY_NONE, KEY_NONE, KEY_SPACE, KEY_NONE, KEY_NONE, KEY_RMETA, KEY_FN,        KEY_RCTRL,        KEY_ARROW_LEFT,    KEY_ARROW_DOWN, KEY_ARROW_RIGHT,
+	};
+	static_assert(sizeof(layout_keychron_q1_he) == 2 + 6 * 15);
+
+	[[nodiscard]] static SOUP_PURE uint8_t layout_get_rows(const uint8_t* layout) noexcept { return layout[0]; }
+	[[nodiscard]] static SOUP_PURE uint8_t layout_get_cols(const uint8_t* layout) noexcept { return layout[1]; }
+	//[[nodiscard]] static SOUP_PURE Key layout_get_item(const uint8_t* layout, uint8_t row, uint8_t col) noexcept { return (Key)layout[2 + row * layout_get_cols(layout) + col]; }
+	[[nodiscard]] static SOUP_PURE uint8_t layout_get_size(const uint8_t* layout) noexcept { return layout_get_rows(layout) * layout_get_cols(layout); }
+	[[nodiscard]] static SOUP_PURE Key layout_get_item(const uint8_t* layout, uint8_t index) noexcept { return (Key)layout[2 + index]; }
+	[[nodiscard]] static SOUP_PURE uint8_t layout_index_to_row(const uint8_t* layout, uint8_t index) noexcept { return index / layout_get_cols(layout); }
+	[[nodiscard]] static SOUP_PURE uint8_t layout_index_to_col(const uint8_t* layout, uint8_t index) noexcept { return index % layout_get_cols(layout); }
+
 	std::vector<AnalogueKeyboard> AnalogueKeyboard::getAll(bool include_no_permission)
 	{
 		auto devices = hwHid::getAll();
@@ -209,6 +227,8 @@ NAMESPACE_SOUP
 						{
 							kbd.keychron.state = 0xff;
 						}
+
+						kbd.keychron.layout = layout_keychron_q1_he;
 					}
 				}
 			}
@@ -333,104 +353,6 @@ NAMESPACE_SOUP
 		}
 		return KEY_NONE;
 	}
-
-	struct hwKeyPosition
-	{
-		Key sk;
-		uint8_t row;
-		uint8_t column;
-	};
-
-	struct hwKeyPosition keychron_keys[] = {
-		{ KEY_ESCAPE, 0, 0 },
-		{ KEY_F1, 0, 1 },
-		{ KEY_F2, 0, 2 },
-		{ KEY_F3, 0, 3 },
-		{ KEY_F4, 0, 4 },
-		{ KEY_F5, 0, 5 },
-		{ KEY_F6, 0, 6 },
-		{ KEY_F7, 0, 7 },
-		{ KEY_F8, 0, 8 },
-		{ KEY_F9, 0, 9 },
-		{ KEY_F10, 0, 10 },
-		{ KEY_F11, 0, 11 },
-		{ KEY_F12, 0, 12 },
-		{ KEY_DEL, 0, 13 },
-		// mute key
-
-		{ KEY_BACKQUOTE, 1, 0 },
-		{ KEY_1, 1, 1 },
-		{ KEY_2, 1, 2 },
-		{ KEY_3, 1, 3 },
-		{ KEY_4, 1, 4 },
-		{ KEY_5, 1, 5 },
-		{ KEY_6, 1, 6 },
-		{ KEY_7, 1, 7 },
-		{ KEY_8, 1, 8 },
-		{ KEY_9, 1, 9 },
-		{ KEY_0, 1, 10 },
-		{ KEY_MINUS, 1, 11 },
-		{ KEY_EQUALS, 1, 12 },
-		{ KEY_BACKSPACE, 1, 13 },
-		{ KEY_PAGE_UP, 1, 14 },
-
-		{ KEY_TAB, 2, 0 },
-		{ KEY_Q, 2, 1 },
-		{ KEY_W, 2, 2 },
-		{ KEY_E, 2, 3 },
-		{ KEY_R, 2, 4 },
-		{ KEY_T, 2, 5 },
-		{ KEY_Y, 2, 6 },
-		{ KEY_U, 2, 7 },
-		{ KEY_I, 2, 8 },
-		{ KEY_O, 2, 9 },
-		{ KEY_P, 2, 10 },
-		{ KEY_BRACKET_LEFT, 2, 11 },
-		{ KEY_BRACKET_RIGHT, 2, 12 },
-		{ KEY_BACKSLASH, 2, 13 },
-		{ KEY_PAGE_DOWN, 2, 14 },
-
-		{ KEY_CAPS_LOCK, 3, 0 },
-		{ KEY_A, 3, 1 },
-		{ KEY_S, 3, 2 },
-		{ KEY_D, 3, 3 },
-		{ KEY_F, 3, 4 },
-		{ KEY_G, 3, 5 },
-		{ KEY_H, 3, 6 },
-		{ KEY_J, 3, 7 },
-		{ KEY_K, 3, 8 },
-		{ KEY_L, 3, 9 },
-		{ KEY_SEMICOLON, 3, 10 },
-		{ KEY_QUOTE, 3, 11 },
-		{ KEY_ENTER, 3, 12 },
-		{ KEY_HOME, 3, 13 },
-
-		{ KEY_LSHIFT, 4, 0 },
-		{ KEY_Z, 4, 2 },
-		{ KEY_X, 4, 3 },
-		{ KEY_C, 4, 4 },
-		{ KEY_V, 4, 5 },
-		{ KEY_B, 4, 6 },
-		{ KEY_N, 4, 7 },
-		{ KEY_M, 4, 8 },
-		{ KEY_COMMA, 4, 9 },
-		{ KEY_PERIOD, 4, 10 },
-		{ KEY_SLASH, 4, 12 },
-		{ KEY_RSHIFT, 4, 13 },
-		{ KEY_ARROW_UP, 4, 14 },
-
-		{ KEY_LCTRL, 5, 0 },
-		{ KEY_LMETA, 5, 1 },
-		{ KEY_LALT, 5, 2 },
-		{ KEY_SPACE, 5, 6 },
-		{ KEY_RMETA, 5, 9 },
-		{ KEY_FN, 5, 10 },
-		{ KEY_RCTRL, 5, 11 },
-		{ KEY_ARROW_LEFT, 5, 12 },
-		{ KEY_ARROW_DOWN, 5, 13 },
-		{ KEY_ARROW_RIGHT, 5, 14 },
-	};
-	static_assert(COUNT(keychron_keys) == 81); // has to match AnalogueKeyboard::buffer
 
 	bool AnalogueKeyboard::isPoll() const noexcept
 	{
@@ -609,15 +531,19 @@ NAMESPACE_SOUP
 					combined.append(b1.data() + 2, b1.size() - 2);
 					combined.append(b2.data() + 2, b2.size() - 2);
 					combined.append(b3.data() + 2, b3.size() - 2);
-					for (const auto& key : keychron_keys)
+					for (uint8_t i = 0; i != layout_get_size(keychron.layout); ++i)
 					{
-						const auto travel = combined[key.row * 15 + key.column];
-						if (travel >= 5)
+						const auto sk = layout_get_item(keychron.layout, i);
+						if (sk != KEY_NONE)
 						{
-							keys.emplace_back(ActiveKey{
-								key.sk,
-								std::min(static_cast<float>(travel) / 235.0f, 1.0f)
-							});
+							const auto travel = combined[i];
+							if (travel >= 5)
+							{
+								keys.emplace_back(ActiveKey{
+									sk,
+									std::min(static_cast<float>(travel) / 235.0f, 1.0f)
+								});
+							}
 						}
 					}
 				}
@@ -633,18 +559,18 @@ NAMESPACE_SOUP
 				memset(data, 0, sizeof(data));
 				data[1] = 0xa9; // KC_HE
 				data[2] = 0x30; // AMC_GET_REALTIME_TRAVEL
-				for (uint8_t i = 0; i != COUNT(keychron_keys); ++i)
+				for (uint8_t i = 0; i != layout_get_size(keychron.layout); ++i)
 				{
-					const auto& key = keychron_keys[i];
+					const auto sk = layout_get_item(keychron.layout, i);
 					if (
 #if SOUP_WINDOWS
-						dkbd.keys[key.sk] ||
+						dkbd.keys[sk] ||
 #endif
-						keychron.buffer[i] || keychron.state == (i >> 2)
+						keychron.buffer[sk] || keychron.state == (i >> 2)
 						)
 					{
-						data[3] = key.row;
-						data[4] = key.column;
+						data[3] = layout_index_to_row(keychron.layout, i);
+						data[4] = layout_index_to_col(keychron.layout, i);
 						hid.discardStaleReports();
 						hid.sendReport(data, sizeof(data));
 						const auto& report = hid.receiveReport();
@@ -653,12 +579,12 @@ NAMESPACE_SOUP
 							disconnected = true;
 							break;
 						}
-						keychron.buffer[i] = report.at(3);
+						keychron.buffer[sk] = report.at(3);
 
 #if SOUP_WINDOWS
 						if (!dkbd_okay && report.at(3) >= 235)
 						{
-							if (dkbd.keys[key.sk])
+							if (dkbd.keys[sk])
 							{
 								dkbd_okay = true;
 							}
@@ -669,15 +595,15 @@ NAMESPACE_SOUP
 						}
 #endif
 					}
-					if (keychron.buffer[i] >= 5)
+					if (keychron.buffer[sk] >= 5)
 					{
 						keys.emplace_back(ActiveKey{
-							key.sk,
-							std::min(static_cast<float>(keychron.buffer[i]) / 235.0f, 1.0f)
-							});
+							sk,
+							std::min(static_cast<float>(keychron.buffer[sk]) / 235.0f, 1.0f)
+						});
 					}
 				}
-				if (keychron.state++ == (COUNT(keychron_keys) >> 2))
+				if (keychron.state++ == (layout_get_size(keychron.layout) >> 2))
 				{
 					keychron.state = 0;
 				}
