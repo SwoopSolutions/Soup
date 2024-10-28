@@ -589,6 +589,10 @@ NAMESPACE_SOUP
 				for (uint8_t i = 0; i != layout_get_size(keychron.layout); ++i)
 				{
 					const auto sk = layout_get_item(keychron.layout, i);
+					if (sk == KEY_NONE)
+					{
+						continue;
+					}
 					if (
 #if (SOUP_WINDOWS || SOUP_LINUX) && !SOUP_CROSS_COMPILE
 						dkbd.keys[sk] ||
