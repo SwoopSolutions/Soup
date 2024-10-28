@@ -9,6 +9,9 @@
 #include "Process.hpp"
 #endif
 
+//#include <iostream>
+//#include "string.hpp"
+
 #undef min
 
 NAMESPACE_SOUP
@@ -157,6 +160,16 @@ NAMESPACE_SOUP
 	};
 	static_assert(sizeof(layout_keychron_q1_he) == 2 + 6 * 15);
 
+	static const uint8_t layout_keychron_q5_he[] = { 6, 19,
+		KEY_ESCAPE,    KEY_NONE,  KEY_F1,   KEY_F2,   KEY_F3,   KEY_F4,   KEY_F5,    KEY_F6,   KEY_F7,   KEY_F8,    KEY_F9,        KEY_F10,          KEY_F11,           KEY_F12,        KEY_DEL,         KEY_OEM_1,     KEY_OEM_2,         KEY_OEM_3,           KEY_NONE /* mute */,
+		KEY_BACKQUOTE, KEY_1,     KEY_2,    KEY_3,    KEY_4,    KEY_5,    KEY_6,     KEY_7,    KEY_8,    KEY_9,     KEY_0,         KEY_MINUS,        KEY_EQUALS,        KEY_BACKSPACE,  KEY_PAGE_UP,     KEY_NUM_LOCK,  KEY_NUMPAD_DIVIDE, KEY_NUMPAD_MULTIPLY, KEY_NUMPAD_SUBTRACT,
+		KEY_TAB,       KEY_Q,     KEY_W,    KEY_E,    KEY_R,    KEY_T,    KEY_Y,     KEY_U,    KEY_I,    KEY_O,     KEY_P,         KEY_BRACKET_LEFT, KEY_BRACKET_RIGHT, KEY_BACKSLASH,  KEY_PAGE_DOWN,   KEY_NUMPAD7,   KEY_NUMPAD8,       KEY_NUMPAD9,         KEY_NUMPAD_ADD,
+		KEY_CAPS_LOCK, KEY_A,     KEY_S,    KEY_D,    KEY_F,    KEY_G,    KEY_H,     KEY_J,    KEY_K,    KEY_L,     KEY_SEMICOLON, KEY_QUOTE,        KEY_ENTER,         KEY_HOME,       KEY_NONE,        KEY_NUMPAD4,   KEY_NUMPAD5,       KEY_NUMPAD6,         KEY_NONE,
+		KEY_LSHIFT,    KEY_NONE,  KEY_Z,    KEY_X,    KEY_C,    KEY_V,    KEY_B,     KEY_N,    KEY_M,    KEY_COMMA, KEY_PERIOD,    KEY_NONE,         KEY_SLASH,         KEY_RSHIFT,     KEY_ARROW_UP,    KEY_NUMPAD1,   KEY_NUMPAD2,       KEY_NUMPAD3,         KEY_NUMPAD_ENTER,
+		KEY_LCTRL,     KEY_LMETA, KEY_LALT, KEY_NONE, KEY_NONE, KEY_NONE, KEY_SPACE, KEY_NONE, KEY_NONE, KEY_RMETA, KEY_FN,        KEY_RCTRL,        KEY_ARROW_LEFT,    KEY_ARROW_DOWN, KEY_ARROW_RIGHT, KEY_NONE,      KEY_NUMPAD0,       KEY_NUMPAD_DECIMAL,  KEY_NONE,
+	};
+	static_assert(sizeof(layout_keychron_q5_he) == 2 + 6 * 19);
+
 	[[nodiscard]] static SOUP_PURE uint8_t layout_get_rows(const uint8_t* layout) noexcept { return layout[0]; }
 	[[nodiscard]] static SOUP_PURE uint8_t layout_get_cols(const uint8_t* layout) noexcept { return layout[1]; }
 	//[[nodiscard]] static SOUP_PURE Key layout_get_item(const uint8_t* layout, uint8_t row, uint8_t col) noexcept { return (Key)layout[2 + row * layout_get_cols(layout) + col]; }
@@ -228,7 +241,14 @@ NAMESPACE_SOUP
 							kbd.keychron.state = 0xff;
 						}
 
-						kbd.keychron.layout = layout_keychron_q1_he;
+						if (kbd.hid.product_id == 0x0B50)
+						{
+							kbd.keychron.layout = layout_keychron_q5_he;
+						}
+						else
+						{
+							kbd.keychron.layout = layout_keychron_q1_he;
+						}
 					}
 				}
 			}
@@ -520,6 +540,11 @@ NAMESPACE_SOUP
 				Buffer b1 = hid.receiveReport();
 				Buffer b2 = hid.receiveReport();
 				Buffer b3 = hid.receiveReport();
+				/*std::cout << string::bin2hex(b0.toString(), true) << std::endl;
+				std::cout << string::bin2hex(b1.toString(), true) << std::endl;
+				std::cout << string::bin2hex(b2.toString(), true) << std::endl;
+				std::cout << string::bin2hex(b3.toString(), true) << std::endl;
+				std::cout << std::endl;*/
 				SOUP_IF_UNLIKELY (b0.empty() || b1.empty() || b2.empty() || b3.empty())
 				{
 					disconnected = true;
