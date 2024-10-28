@@ -550,9 +550,11 @@ NAMESPACE_SOUP
 			}
 			else
 			{
-#if SOUP_WINDOWS
+#if (SOUP_WINDOWS || SOUP_LINUX) && !SOUP_CROSS_COMPILE
 				static DigitalKeyboard dkbd;
+#if SOUP_WINDOWS
 				static bool dkbd_okay = false;
+#endif
 				dkbd.update();
 #endif
 				uint8_t data[33];
@@ -563,7 +565,7 @@ NAMESPACE_SOUP
 				{
 					const auto sk = layout_get_item(keychron.layout, i);
 					if (
-#if SOUP_WINDOWS
+#if (SOUP_WINDOWS || SOUP_LINUX) && !SOUP_CROSS_COMPILE
 						dkbd.keys[sk] ||
 #endif
 						keychron.buffer[sk] || keychron.state == (i >> 2)
@@ -581,7 +583,7 @@ NAMESPACE_SOUP
 						}
 						keychron.buffer[sk] = report.at(3);
 
-#if SOUP_WINDOWS
+#if SOUP_WINDOWS && !SOUP_CROSS_COMPILE
 						if (!dkbd_okay && report.at(3) >= 235)
 						{
 							if (dkbd.keys[sk])
