@@ -8,6 +8,27 @@ NAMESPACE_SOUP
 {
 	void visKeyboard::draw(RenderTarget& rt, unsigned int x, unsigned int y, uint8_t scale) const
 	{
+		// Function row
+		drawKey(rt, scale, nullptr, values[KEY_ESCAPE], x + 0 * scale, y + 0 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_F1], x + (20 - 1) * scale, y + 0 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_F2], x + (30 - 1) * scale, y + 0 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_F3], x + (40 - 1) * scale, y + 0 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_F4], x + (50 - 1) * scale, y + 0 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_F5], x + (65 - 1) * scale, y + 0 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_F6], x + (75 - 1) * scale, y + 0 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_F7], x + (85 - 1) * scale, y + 0 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_F8], x + (95 - 1) * scale, y + 0 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_F9], x + (110 - 1) * scale, y + 0 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_F10], x + (120 - 1) * scale, y + 0 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_F11], x + (130 - 1) * scale, y + 0 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_F12], x + (140 - 1) * scale, y + 0 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_PRINT_SCREEN], x + 154 * scale, y + 0 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_PAUSE], x + 164 * scale, y + 0 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_SCROLL_LOCK], x + 174 * scale, y + 0 * scale);
+
+		y += 15 * scale;
+
+		// Main keyboard chunk
 		drawKey(rt, scale, nullptr, values[KEY_BACKQUOTE], x + 0 * scale, y + 0 * scale);
 		drawKey(rt, scale, "1", values[KEY_1], x + (0 + 10) * scale, y + 0 * scale);
 		drawKey(rt, scale, "2", values[KEY_2], x + (0 + 20) * scale, y + 0 * scale);
@@ -80,7 +101,19 @@ NAMESPACE_SOUP
 		}
 		drawKey(rt, scale, nullptr, values[KEY_RCTRL], x + 137 * scale, y + 40 * scale, 12);
 
-		x += 155 * scale;
+		// Navigation keys
+		drawKey(rt, scale, nullptr, values[KEY_INSERT], x + 154 * scale, y + 0 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_HOME], x + 164 * scale, y + 0 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_PAGE_UP], x + 174 * scale, y + 0 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_DEL], x + 154 * scale, y + 10 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_END], x + 164 * scale, y + 10 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_PAGE_DOWN], x + 174 * scale, y + 10 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_ARROW_UP], x + 164 * scale, y + 30 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_ARROW_LEFT], x + 154 * scale, y + 40 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_ARROW_DOWN], x + 164 * scale, y + 40 * scale);
+		drawKey(rt, scale, nullptr, values[KEY_ARROW_RIGHT], x + 174 * scale, y + 40 * scale);
+
+		x += 189 * scale;
 
 		drawKey(rt, scale, nullptr, values[KEY_NUM_LOCK], x + 0 * scale, y + 0 * scale);
 		drawKey(rt, scale, "/", values[KEY_NUMPAD_DIVIDE], x + 10 * scale, y + 0 * scale);

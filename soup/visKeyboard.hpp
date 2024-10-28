@@ -24,8 +24,8 @@ NAMESPACE_SOUP
 			memset(values, 0, sizeof(values));
 		}
 
-		static constexpr auto WIDTH = 195;
-		static constexpr auto HEIGHT = 50;
+		static constexpr auto WIDTH = 229;
+		static constexpr auto HEIGHT = 65;
 
 		void draw(RenderTarget& rt, unsigned int x, unsigned int y, uint8_t scale = 1) const;
 	protected:
