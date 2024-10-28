@@ -439,7 +439,7 @@ NAMESPACE_SOUP
 		}
 #elif SOUP_LINUX
 		SOUP_UNUSED(receiveReport());
-		if (read_buffer.size() == input_report_byte_length)
+		if (!report_ids.empty())
 		{
 			out_report_id = read_buffer.at(0);
 			read_buffer.erase(0, 1);
@@ -469,7 +469,7 @@ NAMESPACE_SOUP
 		read_buffer.resize(bytes_read);
 #elif SOUP_LINUX
 		SOUP_UNUSED(receiveReport());
-		if (read_buffer.size() != input_report_byte_length)
+		if (report_ids.empty())
 		{
 			read_buffer.insert_front(1, 0);
 		}
@@ -489,7 +489,7 @@ NAMESPACE_SOUP
 #elif SOUP_LINUX
 		SOUP_UNUSED(receiveReport());
 		if (input_report_byte_length != 0
-			&& read_buffer.size() == input_report_byte_length
+			&& !report_ids.empty()
 			)
 		{
 			read_buffer.erase(0, 1);

@@ -184,7 +184,7 @@ NAMESPACE_SOUP
 			{
 				const auto rawdesc = string::fromFile(hid.path + "/device/report_descriptor");
 				const auto desc = HidReportDescriptor::parse(rawdesc.data(), rawdesc.size());
-				const auto& report = hid.receiveReport();
+				const auto& report = hid.receiveReportWithoutReportId();
 				const auto parsed_report = desc.parseInputReport(report.data(), report.size());
 				memset(keys, 0, sizeof(keys));
 				for (const auto& usage : parsed_report.active_selectors)
