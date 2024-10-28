@@ -160,6 +160,16 @@ NAMESPACE_SOUP
 	};
 	static_assert(sizeof(layout_keychron_q1_he) == 2 + 6 * 15);
 
+	static const uint8_t layout_keychron_q3_he[] = { 6, 16,
+		KEY_ESCAPE,    KEY_F1,    KEY_F2,   KEY_F3,   KEY_F4,   KEY_F5,   KEY_F6,    KEY_F7,   KEY_F8,   KEY_F9,    KEY_F10,       KEY_F11,          KEY_F12,           KEY_PRINT_SCREEN, KEY_OEM_1,      KEY_OEM_2 /* cycle rgb effect */,
+		KEY_BACKQUOTE, KEY_1,     KEY_2,    KEY_3,    KEY_4,    KEY_5,    KEY_6,     KEY_7,    KEY_8,    KEY_9,     KEY_0,         KEY_MINUS,        KEY_EQUALS,        KEY_BACKSPACE,    KEY_INSERT,     KEY_HOME,
+		KEY_TAB,       KEY_Q,     KEY_W,    KEY_E,    KEY_R,    KEY_T,    KEY_Y,     KEY_U,    KEY_I,    KEY_O,     KEY_P,         KEY_BRACKET_LEFT, KEY_BRACKET_RIGHT, KEY_BACKSLASH,    KEY_DEL,        KEY_END,
+		KEY_CAPS_LOCK, KEY_A,     KEY_S,    KEY_D,    KEY_F,    KEY_G,    KEY_H,     KEY_J,    KEY_K,    KEY_L,     KEY_SEMICOLON, KEY_QUOTE,        KEY_NONE,          KEY_ENTER,        KEY_PAGE_UP,    KEY_PAGE_DOWN,
+		KEY_LSHIFT,    KEY_NONE,  KEY_Z,    KEY_X,    KEY_C,    KEY_V,    KEY_B,     KEY_N,    KEY_M,    KEY_COMMA, KEY_PERIOD,    KEY_NONE,         KEY_SLASH,         KEY_RSHIFT,       KEY_NONE,       KEY_ARROW_UP,
+		KEY_LCTRL,     KEY_LMETA, KEY_LALT, KEY_NONE, KEY_NONE, KEY_NONE, KEY_SPACE, KEY_NONE, KEY_NONE, KEY_RALT,  KEY_RMETA,     KEY_FN,           KEY_RCTRL,         KEY_ARROW_LEFT,   KEY_ARROW_DOWN, KEY_ARROW_RIGHT,
+	};
+	static_assert(sizeof(layout_keychron_q3_he) == 2 + 6 * 16);
+
 	static const uint8_t layout_keychron_q5_he[] = { 6, 19,
 		KEY_ESCAPE,    KEY_NONE,  KEY_F1,   KEY_F2,   KEY_F3,   KEY_F4,   KEY_F5,    KEY_F6,   KEY_F7,   KEY_F8,    KEY_F9,        KEY_F10,          KEY_F11,           KEY_F12,        KEY_DEL,         KEY_OEM_1,     KEY_OEM_2,         KEY_OEM_3,           KEY_NONE /* mute */,
 		KEY_BACKQUOTE, KEY_1,     KEY_2,    KEY_3,    KEY_4,    KEY_5,    KEY_6,     KEY_7,    KEY_8,    KEY_9,     KEY_0,         KEY_MINUS,        KEY_EQUALS,        KEY_BACKSPACE,  KEY_PAGE_UP,     KEY_NUM_LOCK,  KEY_NUMPAD_DIVIDE, KEY_NUMPAD_MULTIPLY, KEY_NUMPAD_SUBTRACT,
@@ -244,6 +254,10 @@ NAMESPACE_SOUP
 						if (kbd.hid.product_id == 0x0B50)
 						{
 							kbd.keychron.layout = layout_keychron_q5_he;
+						}
+						else if (kbd.hid.product_id == 0x0B30)
+						{
+							kbd.keychron.layout = layout_keychron_q3_he;
 						}
 						else
 						{
