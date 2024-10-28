@@ -24,7 +24,9 @@ NAMESPACE_SOUP
 			memset(values, 0, sizeof(values));
 		}
 
-		// 195 x 50 per scale
+		static constexpr auto WIDTH = 195;
+		static constexpr auto HEIGHT = 50;
+
 		void draw(RenderTarget& rt, unsigned int x, unsigned int y, uint8_t scale = 1) const;
 	protected:
 		void drawKey(RenderTarget& rt, uint8_t scale, const char* label, uint8_t value, unsigned int x, unsigned int y, unsigned int width = 10, unsigned int height = 10) const;
