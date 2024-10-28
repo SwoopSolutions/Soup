@@ -137,13 +137,13 @@ NAMESPACE_SOUP
 				{
 					return "Keychron Q5 HE";
 				}
-				if (hid.product_id == 0x0E20 // ANSI
+				/*if (hid.product_id == 0x0E20 // ANSI
 					|| hid.product_id == 0x0E21 // ISO
 					|| hid.product_id == 0x0E22 // JIS
 					)
 				{
 					return "Keychron K2 HE";
-				}
+				}*/
 			}
 		}
 
