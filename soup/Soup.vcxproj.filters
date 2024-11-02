@@ -1650,6 +1650,9 @@
     <ClInclude Include="HidUsage.hpp">
       <Filter>hardware</Filter>
     </ClInclude>
+    <ClInclude Include="ResolveIpAddrTask.hpp">
+      <Filter>net\dns</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bytepatch.cpp">
@@ -2455,6 +2458,9 @@
     </ClCompile>
     <ClCompile Include="HidReportDescriptor.cpp">
       <Filter>hardware</Filter>
+    </ClCompile>
+    <ClCompile Include="ResolveIpAddrTask.cpp">
+      <Filter>net\dns</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
