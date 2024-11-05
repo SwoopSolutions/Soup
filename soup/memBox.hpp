@@ -16,7 +16,7 @@ NAMESPACE_SOUP
 		std::destroy_at<>(reinterpret_cast<T*>(ptr));
 	}
 
-	// memBox has the polymorphism of Capture with the flat memory layout of DelayedCtor.
+	// memBox has the polymorphism of Capture with the flat memory layout of Optional.
 	// Albeit you need to know the size of the biggest object to be stored up-front.
 	template <size_t Bytes>
 	struct memBox

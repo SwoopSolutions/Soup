@@ -8,6 +8,7 @@
 #include "DetachedScheduler.hpp"
 #include "HttpRequestTask.hpp"
 #include "JsonObject.hpp"
+#include "Optional.hpp"
 
 NAMESPACE_SOUP
 {
@@ -17,7 +18,7 @@ NAMESPACE_SOUP
 		struct MaintainTask : public Task
 		{
 			const std::string base;
-			DelayedCtor<HttpRequestTask> hrt;
+			Optional<HttpRequestTask> hrt;
 			SharedPtr<JsonObject> payload;
 			bool deinit_requested = false;
 

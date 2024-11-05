@@ -1115,9 +1115,6 @@
     <ClInclude Include="StateMachineTask.hpp">
       <Filter>task</Filter>
     </ClInclude>
-    <ClInclude Include="DelayedCtor.hpp">
-      <Filter>util</Filter>
-    </ClInclude>
     <ClInclude Include="HttpRequestTask.hpp">
       <Filter>net\web</Filter>
     </ClInclude>

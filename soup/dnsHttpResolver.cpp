@@ -1,7 +1,6 @@
 #include "dnsHttpResolver.hpp"
 
 #include "base64.hpp"
-#include "DelayedCtor.hpp"
 #include "HttpRequest.hpp"
 #include "HttpRequestTask.hpp"
 #include "ObfusString.hpp"
@@ -31,7 +30,7 @@ NAMESPACE_SOUP
 
 	struct dnsHttpLookupTask : public dnsLookupTask
 	{
-		DelayedCtor<HttpRequestTask> http;
+		Optional<HttpRequestTask> http;
 
 		dnsHttpLookupTask(IpAddr&& server, dnsType qtype, const std::string& name)
 		{
@@ -40,7 +39,7 @@ NAMESPACE_SOUP
 			url.append(ObfusString("/dns-query?dns=").str());
 			url.append(base64::urlEncode(dnsRawResolver::getQuery(qtype, name)));
 
-			http.construct(Uri(url));
+			http.emplace(Uri(url));
 		}
 
 		void onTick() final

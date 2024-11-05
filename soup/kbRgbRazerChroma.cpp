@@ -95,14 +95,14 @@ NAMESPACE_SOUP
 
 	void kbRgbRazerChroma::MaintainTask::onTick()
 	{
-		if (!hrt.isConstructed())
+		if (!hrt.has_value())
 		{
 			if (!deinit_requested)
 			{
 				auto payload{ this->payload };
 				if (payload)
 				{
-					hrt.construct(Uri(base + "/keyboard"));
+					hrt.emplace(Uri(base + "/keyboard"));
 					hrt->hr.method = "PUT";
 					hrt->hr.addHeader("Content-Type: application/json");
 					hrt->hr.setPayload(payload->encode());
@@ -110,7 +110,7 @@ NAMESPACE_SOUP
 			}
 			else
 			{
-				hrt.construct(Uri(base));
+				hrt.emplace(Uri(base));
 				hrt->hr.method = "DELETE";
 			}
 		}
@@ -122,7 +122,7 @@ NAMESPACE_SOUP
 			{
 				setWorkDone();
 			}
-			hrt.destroy();
+			hrt.reset();
 		}
 	}
 

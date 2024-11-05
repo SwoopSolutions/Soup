@@ -2,15 +2,15 @@
 
 #include "Task.hpp"
 
-#include "DelayedCtor.hpp"
 #include "HttpRequestTask.hpp"
+#include "Optional.hpp"
 #include "string.hpp"
 
 NAMESPACE_SOUP
 {
 	struct GetFileContentsTask : public PromiseTask<std::string>
 	{
-		DelayedCtor<HttpRequestTask> http;
+		Optional<HttpRequestTask> http;
 
 		GetFileContentsTask(const Uri& uri)
 		{
@@ -21,7 +21,7 @@ NAMESPACE_SOUP
 			}
 			else if (uri.isHttp())
 			{
-				http.construct(uri);
+				http.emplace(uri);
 			}
 			else
 			{

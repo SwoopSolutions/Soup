@@ -855,7 +855,6 @@
     <ClInclude Include="VirtualHandleRaii.hpp" />
     <ClInclude Include="visCurves.hpp" />
     <ClInclude Include="CustomEncoding.hpp" />
-    <ClInclude Include="DelayedCtor.hpp" />
     <ClInclude Include="DetachedScheduler.hpp" />
     <ClInclude Include="Diff.hpp" />
     <ClInclude Include="DiskDbReader.hpp" />
