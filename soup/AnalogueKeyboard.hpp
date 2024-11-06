@@ -23,6 +23,7 @@ NAMESPACE_SOUP
 			} razer;
 			struct
 			{
+				uint8_t am_version;
 				uint8_t state;
 				const uint8_t* layout;
 				uint8_t buffer[NUM_KEYS];

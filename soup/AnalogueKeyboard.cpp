@@ -245,7 +245,7 @@ NAMESPACE_SOUP
 						data[2] = 0x01; // AMC_GET_VERSION
 						kbd.hid.sendReport(data, sizeof(data));
 						const auto& report = kbd.hid.receiveReport();
-						//if (report.at(2) >= 3) // https://github.com/Keychron/qmk_firmware/pull/301
+						kbd.keychron.am_version = report.at(2);
 						if (report.back() == 0x45) // https://github.com/AnalogSense/qmk_firmware/commit/73dc606a8d29e1c32c343563c571c6da092f96dd
 						{
 							kbd.keychron.state = 0xff;
@@ -624,10 +624,10 @@ NAMESPACE_SOUP
 							disconnected = true;
 							break;
 						}
-						keychron.buffer[sk] = report.at(3);
+						keychron.buffer[sk] = report.at(keychron.am_version >= 4 ? 6 : 3);
 
 #if SOUP_WINDOWS && !SOUP_CROSS_COMPILE
-						if (!dkbd_okay && report.at(3) >= 235)
+						if (!dkbd_okay && keychron.buffer[sk] >= 235)
 						{
 							if (dkbd.keys[sk])
 							{
