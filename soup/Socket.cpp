@@ -240,7 +240,7 @@ NAMESPACE_SOUP
 			return false;
 		}
 
-		const auto port_ne = Endianness::toNetwork(native_u16_t(port));
+		const auto port_ne = Endianness::toNetwork(port);
 
 		peer.ip.reset();
 		peer.port = port_ne;
@@ -263,7 +263,7 @@ NAMESPACE_SOUP
 			return false;
 		}
 
-		const auto port_ne = Endianness::toNetwork(native_u16_t(port));
+		const auto port_ne = Endianness::toNetwork(port);
 
 		peer.ip.reset();
 		peer.port = port_ne;
@@ -1120,7 +1120,7 @@ NAMESPACE_SOUP
 		sockaddr_in bindto{};
 		bindto.sin_family = AF_INET;
 		bindto.sin_addr.s_addr = INADDR_ANY;
-		bindto.sin_port = Endianness::toNetwork(native_u16_t(port));
+		bindto.sin_port = Endianness::toNetwork(port);
 		return ::bind(fd, (sockaddr*)&bindto, sizeof(bindto)) != -1;
 	}
 
