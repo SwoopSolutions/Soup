@@ -133,10 +133,7 @@ NAMESPACE_SOUP
 
 	bool Socket::connect(const SocketAddr& addr) noexcept
 	{
-		SOUP_IF_UNLIKELY (!kickOffConnect(addr))
-		{
-			return false;
-		}
+		SOUP_RETHROW_FALSE(kickOffConnect(addr));
 		pollfd pfd;
 		pfd.fd = fd;
 		pfd.events = POLLOUT;

@@ -211,6 +211,8 @@ NAMESPACE_SOUP
 
 template <typename T> SOUP_FORCEINLINE void SOUP_UNUSED(T&&) {}
 
+#define SOUP_RETHROW_FALSE(x) SOUP_IF_UNLIKELY (!(x)) { return false; }
+
 // Enable compiler warning for unannotated fallthroughs
 #if defined(__clang__)
 #pragma clang diagnostic warning "-Wimplicit-fallthrough"

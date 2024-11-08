@@ -738,10 +738,7 @@ NAMESPACE_SOUP
 #endif
 						return false;
 					}
-					SOUP_IF_UNLIKELY (!doCall(type_index, function_index))
-					{
-						return false;
-					}
+					SOUP_RETHROW_FALSE(doCall(type_index, function_index));
 				}
 				break;
 
