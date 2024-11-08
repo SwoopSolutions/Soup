@@ -1353,6 +1353,7 @@
     <ClCompile Include="SelfDeletingThread.cpp" />
     <ClCompile Include="sha384.cpp" />
     <ClCompile Include="sha512.cpp" />
+    <ClCompile Include="SocketAddr.cpp" />
     <ClCompile Include="soup.cpp" />
     <ClCompile Include="spaceship.cpp" />
     <ClCompile Include="Sudoku.cpp" />

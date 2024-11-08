@@ -1615,6 +1615,35 @@ static void test_socket_raii_semantics()
 	s3.fd.setMovedAway(); // don't try to actually close() fd 1337 now lol
 }
 
+static void test_SocketAddr_fromString()
+{
+	{
+		SocketAddr addr;
+		assert(addr.fromString(":80"));
+		assert(addr.toString() == "[::]:80");
+	}
+	{
+		SocketAddr addr;
+		assert(addr.fromString("*:80"));
+		assert(addr.toString() == "[::]:80");
+	}
+	{
+		SocketAddr addr;
+		assert(addr.fromString("1.3.3.7:80"));
+		assert(addr.toString() == "1.3.3.7:80");
+	}
+	{
+		SocketAddr addr;
+		assert(addr.fromString("[::1]:80"));
+		assert(addr.toString() == "[::1]:80");
+	}
+	{
+		SocketAddr addr;
+		assert(addr.fromString("::1:80"));
+		assert(addr.toString() == "[::1]:80");
+	}
+}
+
 static void unit_util_string()
 {
 	test("equalsIgnoreCase", []
@@ -1785,6 +1814,7 @@ void cli_test()
 				test("uri", &test_uri);
 			}
 			test("socket raii semantics", &test_socket_raii_semantics);
+			test("SocketAddr::fromString", &test_SocketAddr_fromString);
 		}
 		unit("util")
 		{
