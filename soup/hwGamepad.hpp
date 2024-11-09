@@ -57,6 +57,8 @@ NAMESPACE_SOUP
 			} switch_pro;
 		};
 
+		hwGamepad() = default;
+
 		hwGamepad(const char* name, hwHid&& hid)
 			: name(name), hid(std::move(hid))
 		{
