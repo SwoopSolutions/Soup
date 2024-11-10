@@ -1559,9 +1559,6 @@
     <ClInclude Include="irVm.hpp">
       <Filter>lang\compiler\ir</Filter>
     </ClInclude>
-    <ClInclude Include="alloc.hpp">
-      <Filter>util</Filter>
-    </ClInclude>
     <ClInclude Include="CpuInfo.hpp">
       <Filter>cpu</Filter>
     </ClInclude>
@@ -1649,6 +1646,9 @@
     </ClInclude>
     <ClInclude Include="ResolveIpAddrTask.hpp">
       <Filter>net\dns</Filter>
+    </ClInclude>
+    <ClInclude Include="alloc.hpp">
+      <Filter>mem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2404,9 +2404,6 @@
     <ClCompile Include="irModule.cpp">
       <Filter>lang\compiler\ir</Filter>
     </ClCompile>
-    <ClCompile Include="alloc.cpp">
-      <Filter>util</Filter>
-    </ClCompile>
     <ClCompile Include="CpuInfo.cpp">
       <Filter>cpu</Filter>
     </ClCompile>
@@ -2461,6 +2458,9 @@
     </ClCompile>
     <ClCompile Include="SocketAddr.cpp">
       <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="alloc.cpp">
+      <Filter>mem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
