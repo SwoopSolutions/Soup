@@ -22,7 +22,7 @@ NAMESPACE_SOUP
 
 		static void deallocateImpl(memAllocator*, void* addr) noexcept
 		{
-			return ::free(addr);
+			return soup::free(addr);
 		}
 	};
 }

@@ -25,7 +25,10 @@ NAMESPACE_SOUP
 
 	WasmScript::~WasmScript() noexcept
 	{
-		free(memory);
+		if (memory != nullptr)
+		{
+			soup::free(memory);
+		}
 	}
 
 	bool WasmScript::load(const std::string& data)
