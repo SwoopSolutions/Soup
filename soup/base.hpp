@@ -121,11 +121,13 @@
 
 // === C++ conditional feature macros
 
-#if __cplusplus == 1997'11L
-	#error Please set the /Zc:__cplusplus compiler flag or manually adjust __cplusplus when using Soup.
+#ifdef _MSVC_LANG
+	#define SOUP_CPP_VERSION _MSVC_LANG
+#else
+	#define SOUP_CPP_VERSION __cplusplus
 #endif
 
-#if __cplusplus < 2020'00L
+#if SOUP_CPP_VERSION < 2020'00L
 	#define SOUP_CPP20 false
 #else
 	#define SOUP_CPP20 true
@@ -147,7 +149,7 @@
 	#define SOUP_IF_UNLIKELY(cond) if (cond)
 #endif
 
-#if __cplusplus < 2023'00L
+#if SOUP_CPP_VERSION < 2023'00L
 	#define SOUP_CPP23 false
 #else
 	#define SOUP_CPP23 true
