@@ -3,6 +3,7 @@
 #include "memAllocator.hpp"
 
 #include <cstdlib> // malloc, realloc, free
+#include <new> // bad_alloc
 
 NAMESPACE_SOUP
 {
