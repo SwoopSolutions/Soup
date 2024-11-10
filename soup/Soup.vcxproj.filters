@@ -2459,9 +2459,6 @@
     <ClCompile Include="SocketAddr.cpp">
       <Filter>net</Filter>
     </ClCompile>
-    <ClCompile Include="alloc.cpp">
-      <Filter>mem</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="os">

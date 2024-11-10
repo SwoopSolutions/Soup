@@ -1213,7 +1213,6 @@
     <ClCompile Include="acme.cpp" />
     <ClCompile Include="adler32.cpp" />
     <ClCompile Include="aes.cpp" />
-    <ClCompile Include="alloc.cpp" />
     <ClCompile Include="AnalogueKeyboard.cpp" />
     <ClCompile Include="Asn1Identifier.cpp" />
     <ClCompile Include="Asn1Sequence.cpp" />

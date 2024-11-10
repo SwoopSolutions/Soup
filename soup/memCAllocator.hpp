@@ -2,27 +2,42 @@
 
 #include "memAllocator.hpp"
 
-#include "alloc.hpp"
+#include <cstdlib> // malloc, realloc, free
 
 NAMESPACE_SOUP
 {
 	class memCAllocator : public memAllocator
 	{
 	public:
-		memCAllocator() noexcept
-			: memAllocator(&allocateImpl, &deallocateImpl)
+		constexpr memCAllocator() noexcept
+			: memAllocator(&allocateImpl, &reallocateImpl, &deallocateImpl)
 		{
 		}
 
 	protected:
-		static void* allocateImpl(memAllocator*, size_t size) SOUP_EXCAL
+		static void* allocateImpl(size_t size, void*) /* SOUP_EXCAL */
 		{
-			return soup::malloc(size);
+			void* ptr = ::malloc(size);
+			SOUP_IF_LIKELY (ptr)
+			{
+				return ptr;
+			}
+			SOUP_THROW(std::bad_alloc{});
 		}
 
-		static void deallocateImpl(memAllocator*, void* addr) noexcept
+		static void* reallocateImpl(void* addr, size_t new_size, void*) /* SOUP_EXCAL */
 		{
-			return soup::free(addr);
+			addr = ::realloc(addr, new_size);
+			SOUP_IF_LIKELY (addr)
+			{
+				return addr;
+			}
+			SOUP_THROW(std::bad_alloc{});
+		}
+
+		static void deallocateImpl(void* addr, void*) noexcept
+		{
+			::free(addr);
 		}
 	};
 }
