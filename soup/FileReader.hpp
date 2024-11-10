@@ -36,34 +36,26 @@ NAMESPACE_SOUP
 
 		bool hasMore() noexcept final
 		{
-#if SOUP_EXCEPTIONS
-			try
-#endif
+			SOUP_TRY
 			{
 				return s.peek() != EOF;
 			}
-#if SOUP_EXCEPTIONS
-			catch (...)
+			SOUP_CATCH_ANY
 			{
 			}
 			return false;
-#endif
 		}
 
 		bool raw(void* data, size_t len) noexcept final
 		{
-#if SOUP_EXCEPTIONS
-			try
-#endif
+			SOUP_TRY
 			{
 				s.read(reinterpret_cast<char*>(data), len);
 			}
-#if SOUP_EXCEPTIONS
-			catch (...)
+			SOUP_CATCH_ANY
 			{
 				return false;
 			}
-#endif
 			return s.rdstate() == 0;
 		}
 

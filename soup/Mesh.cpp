@@ -9,9 +9,7 @@ NAMESPACE_SOUP
 	{
 		Mesh m;
 		// Not ideal because std::stof or std::stoi may throw.
-#if SOUP_EXCEPTIONS
-		try
-#endif
+		SOUP_TRY
 		{
 			auto lines = string::explode<std::string>(obj, '\n');
 			for (const auto& line : lines)
@@ -38,12 +36,10 @@ NAMESPACE_SOUP
 				}
 			}
 		}
-#if SOUP_EXCEPTIONS
-		catch (const std::exception&)
+		SOUP_CATCH (std::exception, _)
 		{
 			m.clear();
 		}
-#endif
 		return m;
 	}
 

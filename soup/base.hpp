@@ -170,6 +170,9 @@
 
 #if (__cpp_exceptions < 1997'11L) && (!defined(_MSC_VER) || defined(__clang__))
 	#define SOUP_EXCEPTIONS false
+	#define SOUP_TRY if (true)
+	#define SOUP_CATCH(T, name) if (const T& name = *(T*)nullptr; false)
+	#define SOUP_CATCH_ANY if (false)
 	#define SOUP_THROW(x) ::soup::throwImpl(x);
 
 	#include <stdexcept>
@@ -180,6 +183,9 @@
 	}
 #else
 	#define SOUP_EXCEPTIONS true
+	#define SOUP_TRY try
+	#define SOUP_CATCH(T, name) catch (const T& name)
+	#define SOUP_CATCH_ANY catch (...)
 	#define SOUP_THROW(x) throw x;
 #endif
 

@@ -341,9 +341,7 @@ NAMESPACE_SOUP
 	{
 		std::string output{};
 		// Ideally, the parser would report errors in a less fatal way...
-#if SOUP_EXCEPTIONS
-		try
-#endif
+		SOUP_TRY
 		{
 			auto ld = getLangDesc();
 			auto ls = ld.tokenise(code);
@@ -358,8 +356,7 @@ NAMESPACE_SOUP
 			StringReader r{ std::move(w.data) };
 			execute(output, r, max_require_depth);
 		}
-#if SOUP_EXCEPTIONS
-		catch (const std::runtime_error& e)
+		SOUP_CATCH (std::runtime_error, e)
 		{
 			if (!output.empty())
 			{
@@ -368,7 +365,6 @@ NAMESPACE_SOUP
 			output.append("ERROR: ");
 			output.append(e.what());
 		}
-#endif
 		return output;
 	}
 
