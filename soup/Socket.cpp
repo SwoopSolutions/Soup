@@ -531,8 +531,24 @@ NAMESPACE_SOUP
 						handshaker->promise.fulfilOffThread([](Capture&& _cap)
 						{
 							auto& cap = _cap.get<CaptureValidateCertchain>();
-							if (!cap.certchain_validator(cap.handshaker->certchain, cap.handshaker->server_name, cap.s.custom_data))
+							bool res;
+#if SOUP_EXCEPTIONS
+							try
+#endif
 							{
+								res = cap.certchain_validator(cap.handshaker->certchain, cap.handshaker->server_name, cap.s.custom_data);
+							}
+#if SOUP_EXCEPTIONS
+							catch (std::bad_alloc&)
+							{
+								// If we're out of memory, we might not even be able to allocate a TLS alert, so just drop it.
+								cap.s.transport_close();
+								return;
+							}
+#endif
+							if (!res)
+							{
+								// Validation failed without running out of memory.
 								cap.s.tls_close(TlsAlertDescription::bad_certificate);
 							}
 						}, CaptureValidateCertchain{
