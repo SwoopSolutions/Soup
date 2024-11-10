@@ -18,12 +18,7 @@ NAMESPACE_SOUP
 		deallocate_impl_t deallocate_impl;
 		void* user_data;
 
-		explicit constexpr memAllocator(allocate_impl_t allocate_impl, reallocate_impl_t reallocate_impl, deallocate_impl_t deallocate_impl) noexcept
-			: allocate_impl(allocate_impl), reallocate_impl(reallocate_impl), deallocate_impl(deallocate_impl)
-		{
-		}
-
-		explicit constexpr memAllocator(allocate_impl_t allocate_impl, reallocate_impl_t reallocate_impl, deallocate_impl_t deallocate_impl, void* user_data) noexcept
+		explicit constexpr memAllocator(allocate_impl_t allocate_impl, reallocate_impl_t reallocate_impl, deallocate_impl_t deallocate_impl, void* user_data = nullptr) noexcept
 			: allocate_impl(allocate_impl), reallocate_impl(reallocate_impl), deallocate_impl(deallocate_impl), user_data(user_data)
 		{
 		}
