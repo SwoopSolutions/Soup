@@ -77,6 +77,28 @@ NAMESPACE_SOUP
 		return true;
 	}
 
+	bool Server::bind(const IpAddr& ip, uint16_t port, ServerService* service) SOUP_EXCAL
+	{
+		Socket sock{};
+#if SOUP_WINDOWS
+		if (!ip.isV4())
+#endif
+		{
+			SOUP_RETHROW_FALSE(sock.bind6(SOCK_STREAM, port, ip));
+			setDataAvailableHandler6(sock);
+		}
+#if SOUP_WINDOWS
+		else
+		{
+			SOUP_RETHROW_FALSE(sock.bind4(SOCK_STREAM, port, ip));
+			setDataAvailableHandler4(sock);
+		}
+#endif
+		sock.holdup_callback.cap = CaptureServerPort{ this, service };
+		addSocket(std::move(sock));
+		return true;
+	}
+
 	bool Server::bindCrypto(uint16_t port, ServerService* service, SharedPtr<CertStore> certstore, tls_server_on_client_hello_t on_client_hello) SOUP_EXCAL
 	{
 		Socket sock6{};
