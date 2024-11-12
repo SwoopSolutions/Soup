@@ -536,8 +536,8 @@ NAMESPACE_SOUP
 							}
 							SOUP_CATCH (std::bad_alloc, _)
 							{
-								// If we're out of memory, we might not even be able to allocate a TLS alert, so just drop it.
-								cap.s.transport_close();
+								cap.s.transport_close(); // If we're out of memory, we might not even be able to allocate a TLS alert, so just drop it.
+								SOUP_UNUSED(_); // keep the compiler happy
 								return;
 							}
 							if (!res)
