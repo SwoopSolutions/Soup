@@ -2462,6 +2462,9 @@
     <ClCompile Include="alloc.cpp">
       <Filter>mem</Filter>
     </ClCompile>
+    <ClCompile Include="memAllocator.cpp">
+      <Filter>mem\allocators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="os">

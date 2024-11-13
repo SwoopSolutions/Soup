@@ -1291,6 +1291,7 @@
     <ClCompile Include="lyoStylesheet.cpp" />
     <ClCompile Include="MaintainWebSocketConnectionTask.cpp" />
     <ClCompile Include="MathExpr.cpp" />
+    <ClCompile Include="memAllocator.cpp" />
     <ClCompile Include="memGuard.cpp" />
     <ClCompile Include="memObject.cpp" />
     <ClCompile Include="memVft.cpp" />
