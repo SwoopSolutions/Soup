@@ -35,13 +35,13 @@ NAMESPACE_SOUP
 		[[nodiscard]] bool isPatched() const noexcept;
 	private:
 		void forget() noexcept;
-		void store() noexcept;
-		void store(uint8_t* area, size_t size) noexcept;
+		void store() SOUP_EXCAL;
+		void store(uint8_t* area, size_t size) SOUP_EXCAL;
 	public:
-		void initPatch(uint8_t* area, const uint8_t* patch, size_t size) noexcept;
-		bool initPatchNOP(uint8_t* area, size_t size) noexcept;
-		void initPatchZero(uint8_t* area, size_t size) noexcept;
-		void initPatchZero() noexcept;
+		void initPatch(uint8_t* area, const uint8_t* patch, size_t size) SOUP_EXCAL;
+		bool initPatchNOP(uint8_t* area, size_t size) SOUP_EXCAL;
+		void initPatchZero(uint8_t* area, size_t size) SOUP_EXCAL;
+		void initPatchZero() SOUP_EXCAL;
 		void restore() noexcept;
 		void dispose() noexcept;
 	};

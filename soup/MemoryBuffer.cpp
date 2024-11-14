@@ -2,8 +2,7 @@
 
 #if SOUP_WINDOWS
 
-#include <cstdlib>
-
+#include "alloc.hpp"
 #include "Module.hpp"
 
 NAMESPACE_SOUP
@@ -13,8 +12,8 @@ NAMESPACE_SOUP
 	{
 	}
 
-	MemoryBuffer::MemoryBuffer(const Module& mod, Pointer start, size_t size)
-		: start(start), data(malloc(size))
+	MemoryBuffer::MemoryBuffer(const Module& mod, Pointer start, size_t size) SOUP_EXCAL
+		: start(start), data(soup::malloc(size))
 	{
 		this->size = mod.externalRead(start, data, size);
 	}
@@ -24,23 +23,23 @@ NAMESPACE_SOUP
 		release();
 	}
 
-	bool MemoryBuffer::updateRegion(const Module& mod, Pointer start, size_t size)
+	bool MemoryBuffer::updateRegion(const Module& mod, Pointer start, size_t size) SOUP_EXCAL
 	{
 		if (this->size != size)
 		{
 			release();
-			data = malloc(size);
+			data = soup::malloc(size);
 		}
 		this->start = start;
 		this->size = mod.externalRead(start, data, size);
 		return this->size != 0;
 	}
 
-	void MemoryBuffer::release()
+	void MemoryBuffer::release() noexcept
 	{
 		if (data != nullptr)
 		{
-			free(data);
+			soup::free(data);
 		}
 	}
 

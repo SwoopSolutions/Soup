@@ -4,6 +4,7 @@
 
 #include <intrin.h>
 
+#include "alloc.hpp"
 #include "bitutil.hpp"
 
 NAMESPACE_SOUP
@@ -41,7 +42,7 @@ NAMESPACE_SOUP
 		{
 			if (heap != nullptr)
 			{
-				free(heap);
+				soup::free(heap);
 			}
 		}
 
@@ -79,7 +80,7 @@ NAMESPACE_SOUP
 				constexpr size_t area_bytes = metadata_bytes_per_area + data_bytes_per_area;
 				const size_t areas = getNumAreas();
 				const size_t new_areas = areas + 1;
-				void* const new_heap = malloc(new_areas * area_bytes);
+				void* const new_heap = soup::malloc(new_areas * area_bytes);
 				memcpy(heapGetMetadata(new_heap), heapGetMetadata(heap), areas * metadata_bytes_per_area); // copy metadata
 				memset(static_cast<uint8_t*>(new_heap) + (areas * metadata_bytes_per_area), 0, metadata_bytes_per_area); // zero out new metadata
 				memcpy(heapGetData(new_heap, new_areas), heapGetData(heap, areas), capacity * sizeof(Entry)); // copy data

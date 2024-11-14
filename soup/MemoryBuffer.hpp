@@ -19,12 +19,12 @@ NAMESPACE_SOUP
 		size_t size;
 
 		MemoryBuffer() noexcept;
-		explicit MemoryBuffer(const Module& mod, Pointer start, size_t size);
+		explicit MemoryBuffer(const Module& mod, Pointer start, size_t size) SOUP_EXCAL;
 		~MemoryBuffer();
 
-		bool updateRegion(const Module& mod, Pointer start, size_t size);
+		bool updateRegion(const Module& mod, Pointer start, size_t size) SOUP_EXCAL;
 	private:
-		void release();
+		void release() noexcept;
 
 	public:
 		[[nodiscard]] bool covers(Pointer p, size_t size = 1) const noexcept;

@@ -4,6 +4,7 @@
 #include <atomic>
 #include <cstring> // memset
 
+#include "alloc.hpp"
 #include "os.hpp"
 
 NAMESPACE_SOUP
@@ -45,7 +46,7 @@ NAMESPACE_SOUP
 #endif
 
 	audPlayback::audPlayback()
-		: heap(malloc(HEAP_SIZE)), thrd(&threadFuncStatic, this)
+		: heap(soup::malloc(HEAP_SIZE)), thrd(&threadFuncStatic, this)
 	{
 		memset(heap, 0, HEAP_SIZE);
 
@@ -79,7 +80,7 @@ NAMESPACE_SOUP
 			snd_pcm_close(hwDevice);
 		}
 #endif
-		free(heap);
+		soup::free(heap);
 	}
 
 #if SOUP_WINDOWS

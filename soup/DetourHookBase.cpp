@@ -3,6 +3,7 @@
 #include <climits> // INT_MIN, INT_MAX
 #include <cstring> // memcpy
 
+#include "alloc.hpp"
 #include "Exception.hpp"
 #include "memGuard.hpp"
 #include "ObfusString.hpp"
@@ -57,7 +58,7 @@ NAMESPACE_SOUP
 			}
 		} while (og_bytes < trampoline_bytes);
 
-		original = malloc(og_bytes + sizeof(longjump_trampoline));
+		original = soup::malloc(og_bytes + sizeof(longjump_trampoline));
 		memGuard::setAllowedAccess(original, og_bytes + sizeof(longjump_trampoline), memGuard::ACC_RWX);
 		memcpy(original, effective_target, og_bytes);
 		writeLongjumpTrampoline((uint8_t*)original + og_bytes, (uint8_t*)effective_target + og_bytes);
@@ -71,7 +72,7 @@ NAMESPACE_SOUP
 	{
 		if (original != nullptr)
 		{
-			free(original);
+			soup::free(original);
 			original = nullptr;
 		}
 	}

@@ -12,6 +12,8 @@
 #include <windows.h>
 #endif
 
+#include "alloc.hpp"
+
 NAMESPACE_SOUP
 {
 	Bytepatch::~Bytepatch() noexcept
@@ -52,13 +54,13 @@ NAMESPACE_SOUP
 		og_area = nullptr;
 	}
 
-	void Bytepatch::store() noexcept
+	void Bytepatch::store() SOUP_EXCAL
 	{
-		og_area = (uint8_t*)malloc(size);
+		og_area = (uint8_t*)soup::malloc(size);
 		memcpy(og_area, area, size);
 	}
 
-	void Bytepatch::store(uint8_t* area, size_t size) noexcept
+	void Bytepatch::store(uint8_t* area, size_t size) SOUP_EXCAL
 	{
 		restore();
 		this->area = area;
@@ -66,7 +68,7 @@ NAMESPACE_SOUP
 		store();
 	}
 
-	void Bytepatch::initPatch(uint8_t* area, const uint8_t* patch, size_t size) noexcept
+	void Bytepatch::initPatch(uint8_t* area, const uint8_t* patch, size_t size) SOUP_EXCAL
 	{
 		store(area, size);
 #if SOUP_WINDOWS
@@ -81,7 +83,7 @@ NAMESPACE_SOUP
 #endif
 	}
 
-	bool Bytepatch::initPatchNOP(uint8_t* area, size_t size) noexcept
+	bool Bytepatch::initPatchNOP(uint8_t* area, size_t size) SOUP_EXCAL
 	{
 		if (size == 1)
 		{
@@ -109,7 +111,7 @@ NAMESPACE_SOUP
 		return true;
 	}
 
-	void Bytepatch::initPatchZero(uint8_t* area, size_t size) noexcept
+	void Bytepatch::initPatchZero(uint8_t* area, size_t size) SOUP_EXCAL
 	{
 		restore();
 		this->area = area;
@@ -117,7 +119,7 @@ NAMESPACE_SOUP
 		initPatchZero();
 	}
 
-	void Bytepatch::initPatchZero() noexcept
+	void Bytepatch::initPatchZero() SOUP_EXCAL
 	{
 		restore();
 		store();
@@ -136,7 +138,7 @@ NAMESPACE_SOUP
 #if SOUP_WINDOWS
 			VirtualProtect(area, size, OldProtect, &OldProtect);
 #endif
-			free(og_area);
+			soup::free(og_area);
 			forget();
 		}
 	}
@@ -145,7 +147,7 @@ NAMESPACE_SOUP
 	{
 		if (isPatched())
 		{
-			free(og_area);
+			soup::free(og_area);
 			forget();
 		}
 	}
