@@ -258,25 +258,6 @@ NAMESPACE_SOUP
 	}
 #endif
 
-#if SOUP_WINDOWS
-	Window Window::getFocused() noexcept
-	{
-		return Window{ GetForegroundWindow() };
-	}
-
-	DWORD Window::getOwnerPid() const noexcept
-	{
-		DWORD pid;
-		GetWindowThreadProcessId(h, &pid);
-		return pid;
-	}
-
-	DWORD Window::getOwnerTid() const noexcept
-	{
-		return GetWindowThreadProcessId(h, nullptr);
-	}
-#endif
-
 	Window::Config& Window::getConfig()
 	{
 		return window_configs.at(h);

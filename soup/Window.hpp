@@ -117,4 +117,23 @@ NAMESPACE_SOUP
 		void close() noexcept;
 #endif
 	};
+
+#if SOUP_WINDOWS
+	inline Window Window::getFocused() noexcept
+	{
+		return Window{ GetForegroundWindow() };
+	}
+
+	inline DWORD Window::getOwnerPid() const noexcept
+	{
+		DWORD pid;
+		GetWindowThreadProcessId(h, &pid);
+		return pid;
+	}
+
+	inline DWORD Window::getOwnerTid() const noexcept
+	{
+		return GetWindowThreadProcessId(h, nullptr);
+	}
+#endif
 }
