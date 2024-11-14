@@ -5,6 +5,8 @@
 // - https://github.com/libusb/hidapi/blob/master/linux/hid.c
 
 #if SOUP_WINDOWS
+#include <algorithm> // sort
+
 #include <cfgmgr32.h>
 #include <hidsdi.h>
 
@@ -21,7 +23,6 @@
 #include <linux/hidraw.h>
 #include <sys/ioctl.h>
 
-#include "HidReportDescriptor.hpp"
 #include "SharedLibrary.hpp"
 #include "signal.hpp"
 #include "string.hpp"
@@ -613,4 +614,175 @@ NAMESPACE_SOUP
 		}
 	}
 #endif
+
+#if SOUP_WINDOWS
+	// Stolen from https://chromium.googlesource.com/chromium/src/+/73fdaaf605bb60caf34d5f30bb84a417688aa528/services/device/hid/hid_preparsed_data.cc
+#pragma pack(push, 1)
+	struct PreparsedDataHeader
+	{
+		// Unknown constant value. _HIDP_PREPARSED_DATA identifier?
+		uint64_t magic;
+		// Top-level collection usage information.
+		uint16_t usage;
+		uint16_t usage_page;
+		uint16_t unknown[3];
+		// Number of report items for input reports.
+		uint16_t input_item_count;
+		uint16_t unknown2;
+		// Maximum input report size, in bytes. Includes the report ID byte. Zero if
+		// there are no input reports.
+		uint16_t input_report_byte_length;
+		uint16_t unknown3;
+		// Number of report items for output reports.
+		uint16_t output_item_count;
+		uint16_t unknown4;
+		// Maximum output report size, in bytes. Includes the report ID byte. Zero if
+		// there are no output reports.
+		uint16_t output_report_byte_length;
+		uint16_t unknown5;
+		// Number of report items for feature reports.
+		uint16_t feature_item_count;
+		// Total number of report items (input, output, and feature).
+		uint16_t item_count;
+		// Maximum feature report size, in bytes. Includes the report ID byte. Zero if
+		// there are no feature reports.
+		uint16_t feature_report_byte_length;
+		// Total size of all report items, in bytes.
+		uint16_t size_bytes;
+		uint16_t unknown6;
+	};
+	static_assert(sizeof(PreparsedDataHeader) == 44);
+
+	struct PreparsedDataItem
+	{
+		// Usage page for |usage_minimum| and |usage_maximum|.
+		uint16_t usage_page;
+		// Report ID for the report containing this item.
+		uint8_t report_id;
+		// Bit offset from |byte_index|.
+		uint8_t bit_index;
+		// Bit width of a single field defined by this item.
+		uint16_t bit_size;
+		// The number of fields defined by this item.
+		uint16_t report_count;
+		// Byte offset from the start of the report containing this item, including
+		// the report ID byte.
+		uint16_t byte_index;
+		// The total number of bits for all fields defined by this item.
+		uint16_t bit_count;
+		// The bit field for the corresponding main item in the HID report. This bit
+		// field is defined in the Device Class Definition for HID v1.11 section
+		// 6.2.2.5.
+		// https://www.usb.org/document-library/device-class-definition-hid-111
+		uint32_t bit_field;
+		uint32_t unknown;
+		// Usage information for the collection containing this item.
+		uint16_t link_usage_page;
+		uint16_t link_usage;
+		uint32_t unknown2[9];
+		// The usage range for this item.
+		uint16_t usage_minimum;
+		uint16_t usage_maximum;
+		// The string descriptor index range associated with this item. If the item
+		// has no string descriptors, |string_minimum| and |string_maximum| are set to
+		// zero.
+		uint16_t string_minimum;
+		uint16_t string_maximum;
+		// The designator index range associated with this item. If the item has no
+		// designators, |designator_minimum| and |designator_maximum| are set to zero.
+		uint16_t designator_minimum;
+		uint16_t designator_maximum;
+		// The data index range associated with this item.
+		uint16_t data_index_minimum;
+		uint16_t data_index_maximum;
+		uint32_t unknown3;
+		// The range of fields defined by this item in logical units.
+		int32_t logical_minimum;
+		int32_t logical_maximum;
+		// The range of fields defined by this item in units defined by |unit| and
+		// |unit_exponent|. If this item does not use physical units,
+		// |physical_minimum| and |physical_maximum| are set to zero.
+		int32_t physical_minimum;
+		int32_t physical_maximum;
+		// The unit definition for this item. The format for this definition is
+		// described in the Device Class Definition for HID v1.11 section 6.2.2.7.
+		// https://www.usb.org/document-library/device-class-definition-hid-111
+		uint32_t unit;
+		uint32_t unit_exponent;
+	};
+	static_assert(sizeof(PreparsedDataItem) == 104);
+
+	struct PreparsedData
+	{
+		PreparsedDataHeader header;
+		PreparsedDataItem items[];
+	};
+#pragma pack(pop)
+#endif
+
+	HidReportDescriptor hwHid::getReportDescriptor() const
+	{
+#if SOUP_WINDOWS
+		HidReportDescriptor result;
+		result.usage_page = this->usage_page;
+		result.usage = this->usage;
+		result.input_report_byte_length = this->input_report_byte_length;
+		result.output_report_byte_length = this->output_report_byte_length;
+		result.feature_report_byte_length = this->feature_report_byte_length;
+		/*for (unsigned int i = 0; i != 0x100; ++i)
+		{
+			if (hasReportId(i))
+			{
+				result.report_ids.emplace(i);
+			}
+		}*/
+		if (PHIDP_PREPARSED_DATA _pp_data; HidD_GetPreparsedData(this->handle, &_pp_data))
+		{
+			const auto pp_data = reinterpret_cast<PreparsedData*>(_pp_data);
+
+			// The report items are currently unordered, so I'm assuming/hoping the preparsed data was allocated just for us and/or it's fine for us to reorder its items.
+			std::sort(&pp_data->items[0], &pp_data->items[pp_data->header.input_item_count], [](const PreparsedDataItem& a, const PreparsedDataItem& b)
+			{
+				if (a.byte_index < b.byte_index)
+				{
+					return true;
+				}
+				if (a.byte_index > b.byte_index)
+				{
+					return false;
+				}
+
+				return a.bit_index < b.bit_index;
+			});
+
+			for (uint32_t i = 0; i != pp_data->header.input_item_count; ++i)
+			{
+				result.report_ids.emplace(pp_data->items[i].report_id);
+
+				std::vector<uint16_t> usage_ids{};
+				for (uint32_t usage = pp_data->items[i].usage_minimum; usage != (pp_data->items[i].usage_maximum + 1); ++usage)
+				{
+					usage_ids.emplace_back(usage);
+				}
+				result.input_report_fields.emplace_back(HidReportDescriptor::ReportField{
+					pp_data->items[i].bit_size,
+					pp_data->items[i].report_count,
+					static_cast<uint32_t>(pp_data->items[i].logical_maximum),
+					((pp_data->items[i].bit_field >> 1) & 1) != 0,
+					pp_data->items[i].usage_page,
+					std::move(usage_ids)
+				});
+			}
+
+			HidD_FreePreparsedData(_pp_data);
+		}
+
+		return result;
+#elif SOUP_LINUX
+		const auto rawdesc = string::fromFile(this->path + "/device/report_descriptor");
+		return HidReportDescriptor::parse(rawdesc.data(), rawdesc.size());
+#else
+		return {};
+#endif
+	}
 }

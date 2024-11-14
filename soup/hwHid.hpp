@@ -11,6 +11,7 @@
 
 #include "Buffer.hpp"
 #include "HandleRaii.hpp"
+#include "HidReportDescriptor.hpp"
 
 NAMESPACE_SOUP
 {
@@ -113,5 +114,8 @@ NAMESPACE_SOUP
 #if SOUP_WINDOWS
 		void kickOffRead() noexcept;
 #endif
+
+	public:
+		[[nodiscard]] HidReportDescriptor getReportDescriptor() const;
 	};
 }
