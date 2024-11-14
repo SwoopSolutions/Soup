@@ -75,11 +75,14 @@ NAMESPACE_SOUP
 		DWORD OldProtect;
 		VirtualProtect(area, size, PAGE_EXECUTE_READWRITE, &OldProtect);
 #else
-		memGuard::setAllowedAccess(area, size, memGuard::ACC_RWX);
+		int old_allowed_access;
+		memGuard::setAllowedAccess(area, size, memGuard::ACC_RWX, &old_allowed_access);
 #endif
 		memcpy(area, patch, size);
 #if SOUP_WINDOWS
 		VirtualProtect(area, size, OldProtect, &OldProtect);
+#else
+		memGuard::setAllowedAccess(area, size, old_allowed_access);
 #endif
 	}
 
@@ -133,10 +136,15 @@ NAMESPACE_SOUP
 #if SOUP_WINDOWS
 			DWORD OldProtect;
 			VirtualProtect(area, size, PAGE_EXECUTE_READWRITE, &OldProtect);
+#else
+			int old_allowed_access;
+			memGuard::setAllowedAccess(area, size, memGuard::ACC_RWX, &old_allowed_access);
 #endif
 			memcpy(area, og_area, size);
 #if SOUP_WINDOWS
 			VirtualProtect(area, size, OldProtect, &OldProtect);
+#else
+			memGuard::setAllowedAccess(area, size, old_allowed_access);
 #endif
 			soup::free(og_area);
 			forget();
