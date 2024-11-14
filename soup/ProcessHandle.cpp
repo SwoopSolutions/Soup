@@ -12,8 +12,8 @@
 
 NAMESPACE_SOUP
 {
-    std::vector<Range> ProcessHandle::getAllocations() const
-    {
+	std::vector<Range> ProcessHandle::getAllocations() const
+	{
 		std::vector<Range> res{};
 #if SOUP_WINDOWS
 		MEMORY_BASIC_INFORMATION mbi{};
@@ -51,5 +51,5 @@ NAMESPACE_SOUP
 		}
 #endif
 		return res;
-    }
+	}
 }
