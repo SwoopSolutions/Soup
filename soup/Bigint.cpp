@@ -1727,9 +1727,9 @@ NAMESPACE_SOUP
 
 		const Bigint two = (chunk_t)2u;
 		Bigint y = (*this / two);
-		Bigint x_over_y;
+		Bigint x_over_y, remainder;
 
-		while (x_over_y = (*this / y), y > x_over_y)
+		while (this->divide(y, x_over_y, remainder), y > x_over_y)
 		{
 			y = (x_over_y + y) / two;
 		}
