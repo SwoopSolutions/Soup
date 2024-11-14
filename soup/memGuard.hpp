@@ -27,7 +27,7 @@ NAMESPACE_SOUP
 
 		[[nodiscard]] static void* alloc(size_t len, int allowed_access);
 		static void free(void* addr, size_t len);
-		static void setAllowedAccess(void* addr, size_t len, int allowed_access);
+		static void setAllowedAccess(void* addr, size_t len, int allowed_access, int* old_allowed_access = nullptr);
 		static int getAllowedAccess(void* addr);
 	};
 }

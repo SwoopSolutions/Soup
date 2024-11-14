@@ -65,12 +65,20 @@ NAMESPACE_SOUP
 #endif
 	}
 
-	void memGuard::setAllowedAccess(void* addr, size_t len, int allowed_access)
+	void memGuard::setAllowedAccess(void* addr, size_t len, int allowed_access, int* old_allowed_access)
 	{
 #if SOUP_WINDOWS
 		DWORD oldprotect;
 		VirtualProtect(addr, len, allowedAccessToProtect(allowed_access), &oldprotect);
+		if (old_allowed_access)
+		{
+			*old_allowed_access = protectToAllowedAccess(oldprotect);
+		}
 #else
+		if (old_allowed_access)
+		{
+			*old_allowed_access = getAllowedAccess(addr);
+		}
 		mprotect(addr, len, allowed_access);
 #endif
 	}
