@@ -6,6 +6,9 @@
 	#include <sys/mman.h>
 #endif
 
+#include "Process.hpp"
+#include "ProcessHandle.hpp"
+
 NAMESPACE_SOUP
 {
 #if SOUP_WINDOWS
@@ -70,5 +73,17 @@ NAMESPACE_SOUP
 #else
 		mprotect(addr, len, allowed_access);
 #endif
+	}
+
+	int memGuard::getAllowedAccess(void* addr)
+	{
+		for (const auto& a : Process::current()->open()->getAllocations())
+		{
+			if (a.range.contains(addr))
+			{
+				return a.allowed_access;
+			}
+		}
+		return 0;
 	}
 }
