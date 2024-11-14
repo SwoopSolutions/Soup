@@ -1355,9 +1355,6 @@
     <ClInclude Include="fnv.hpp">
       <Filter>data\hash</Filter>
     </ClInclude>
-    <ClInclude Include="DetourHook.hpp">
-      <Filter>util</Filter>
-    </ClInclude>
     <ClInclude Include="netIntelLocationData4OnDisk.hpp">
       <Filter>net\intel</Filter>
     </ClInclude>
@@ -1649,6 +1646,15 @@
     </ClInclude>
     <ClInclude Include="alloc.hpp">
       <Filter>mem</Filter>
+    </ClInclude>
+    <ClInclude Include="CompactDetourHook.hpp">
+      <Filter>util\hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="DetourHook.hpp">
+      <Filter>util\hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="DetourHookBase.hpp">
+      <Filter>util\hooks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2272,9 +2278,6 @@
     <ClCompile Include="lyoStylesheet.cpp">
       <Filter>vis\layout</Filter>
     </ClCompile>
-    <ClCompile Include="DetourHook.cpp">
-      <Filter>util</Filter>
-    </ClCompile>
     <ClCompile Include="netIntelOnDisk.cpp">
       <Filter>net\intel</Filter>
     </ClCompile>
@@ -2464,6 +2467,15 @@
     </ClCompile>
     <ClCompile Include="memAllocator.cpp">
       <Filter>mem\allocators</Filter>
+    </ClCompile>
+    <ClCompile Include="DetourHook.cpp">
+      <Filter>util\hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="CompactDetourHook.cpp">
+      <Filter>util\hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="DetourHookBase.cpp">
+      <Filter>util\hooks</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2721,6 +2733,9 @@
     </Filter>
     <Filter Include="mem\allocators">
       <UniqueIdentifier>{8d0fb062-3f88-4509-8569-f89f3fb97186}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="util\hooks">
+      <UniqueIdentifier>{a7f4aeee-77a2-4381-a5cb-7d9492511b79}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

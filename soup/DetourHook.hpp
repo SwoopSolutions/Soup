@@ -1,26 +1,16 @@
 #pragma once
 
-#include <cstdint>
-
-#include "base.hpp"
+#include "DetourHookBase.hpp"
 
 NAMESPACE_SOUP
 {
-	struct DetourHook
+	struct DetourHook : public DetourHookBase
 	{
-		void* detour = nullptr;
-		void* target = nullptr;
-		void* original = nullptr;
-
-		[[nodiscard]] void* getEffectiveTarget() const;
-
 		[[nodiscard]] bool isCreated() const noexcept { return original != nullptr; }
-		void create();
-		void destroy();
+		void create() { return createOriginal(sizeof(longjump_trampoline)); }
+		void destroy() noexcept { return destroyOriginal(); }
 
 		void enable();
 		void disable();
-
-		static void writeLongjumpTrampoline(void* addr, void* target);
 	};
 }

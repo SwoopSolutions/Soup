@@ -702,6 +702,7 @@
     <ClInclude Include="CidrSubnet6Interface.hpp" />
     <ClInclude Include="CidrSubnetInterface.hpp" />
     <ClInclude Include="CidrSupernet.hpp" />
+    <ClInclude Include="CompactDetourHook.hpp" />
     <ClInclude Include="compiletime.hpp" />
     <ClInclude Include="country_names.hpp" />
     <ClInclude Include="CpuInfo.hpp" />
@@ -709,6 +710,7 @@
     <ClInclude Include="csv.hpp" />
     <ClInclude Include="cursed.hpp" />
     <ClInclude Include="DetourHook.hpp" />
+    <ClInclude Include="DetourHookBase.hpp" />
     <ClInclude Include="dhcp.hpp" />
     <ClInclude Include="DhcpMessage.hpp" />
     <ClInclude Include="DigitalKeyboard.hpp" />
@@ -1225,7 +1227,9 @@
     <ClCompile Include="BitReader.cpp" />
     <ClCompile Include="bitutil.cpp" />
     <ClCompile Include="BitWriter.cpp" />
+    <ClCompile Include="CompactDetourHook.cpp" />
     <ClCompile Include="crc32c.cpp" />
+    <ClCompile Include="DetourHookBase.cpp" />
     <ClCompile Include="exceptions.cpp" />
     <ClCompile Include="gmBox.cpp" />
     <ClCompile Include="gmAxisAlignedBox.cpp" />
