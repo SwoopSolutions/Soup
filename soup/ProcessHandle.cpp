@@ -1,5 +1,6 @@
 #include "ProcessHandle.hpp"
 
+#include "memGuard.hpp"
 #include "Range.hpp"
 
 #if SOUP_WINDOWS
@@ -12,9 +13,9 @@
 
 NAMESPACE_SOUP
 {
-	std::vector<Range> ProcessHandle::getAllocations() const
+	std::vector<ProcessHandle::AllocationInfo> ProcessHandle::getAllocations() const
 	{
-		std::vector<Range> res{};
+		std::vector<ProcessHandle::AllocationInfo> res{};
 #if SOUP_WINDOWS
 		MEMORY_BASIC_INFORMATION mbi{};
 
@@ -23,7 +24,7 @@ NAMESPACE_SOUP
 		{
 			if (mbi.State == MEM_COMMIT)
 			{
-				res.emplace_back(mbi.BaseAddress, mbi.RegionSize);
+				res.emplace_back(AllocationInfo{ Range{ mbi.BaseAddress, mbi.RegionSize }, memGuard::protectToAllowedAccess(mbi.Protect) });
 			}
 
 			addr = (PBYTE)mbi.BaseAddress + mbi.RegionSize;
@@ -34,20 +35,32 @@ NAMESPACE_SOUP
 		for (std::string line; fr.getLine(line); )
 		{
 			auto m = r.match(line);
-			if (m.findGroupByName("prots")->begin[0] != 'r')
-			{
-				continue;
-			}
-			if (auto mappedfile = m.findGroupByName("mappedfile"))
+			/*if (auto mappedfile = m.findGroupByName("mappedfile"))
 			{
 				if (mappedfile->length() != 0)
 				{
 					continue;
 				}
-			}
+			}*/
 			auto start = string::hexToInt<uintptr_t>(m.findGroupByName("start")->toString()).value();
 			auto end = string::hexToInt<uintptr_t>(m.findGroupByName("end")->toString()).value();
-			res.emplace_back(start, end - start);
+			int allowed_access = 0;
+			{
+				const auto prots = m.findGroupByName("prots")->begin;
+				if (prots[0] == 'r')
+				{
+					allowed_access |= memGuard::ACC_READ;
+				}
+				if (prots[1] == 'w')
+				{
+					allowed_access |= memGuard::ACC_WRITE;
+				}
+				if (prots[2] == 'x')
+				{
+					allowed_access |= memGuard::ACC_EXEC;
+				}
+			}
+			res.emplace_back(AllocationInfo{ Range{ start, end - start }, allowed_access });
 		}
 #endif
 		return res;

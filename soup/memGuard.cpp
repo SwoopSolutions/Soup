@@ -9,18 +9,18 @@
 NAMESPACE_SOUP
 {
 #if SOUP_WINDOWS
-	[[nodiscard]] static DWORD allowedAccessToProtect(int allowed_access)
+	DWORD memGuard::allowedAccessToProtect(int allowed_access)
 	{
 		DWORD protect = 0x01; // PAGE_NOACCESS
-		if (allowed_access & memGuard::ACC_WRITE)
+		if (allowed_access & ACC_WRITE)
 		{
 			protect = 0x04; // PAGE_READWRITE
 		}
-		else if (allowed_access & memGuard::ACC_READ)
+		else if (allowed_access & ACC_READ)
 		{
 			protect = 0x02; // PAGE_READONLY
 		}
-		if (allowed_access & memGuard::ACC_EXEC)
+		if (allowed_access & ACC_EXEC)
 		{
 			protect <<= 4;
 			// PAGE_NOACCESS (0x01) -> PAGE_EXECUTE (0x10)
@@ -28,6 +28,19 @@ NAMESPACE_SOUP
 			// PAGE_READWRITE (0x04) -> PAGE_EXECUTE_READWRITE (0x40)
 		}
 		return protect;
+	}
+
+	int memGuard::protectToAllowedAccess(DWORD protect)
+	{
+		switch (protect & ~PAGE_GUARD)
+		{
+		case PAGE_READONLY: return ACC_READ;
+		case PAGE_READWRITE: case PAGE_WRITECOPY: return ACC_READ | ACC_WRITE;
+		case PAGE_EXECUTE: return ACC_EXEC;
+		case PAGE_EXECUTE_READ: return ACC_EXEC | ACC_READ;
+		case PAGE_EXECUTE_READWRITE: case PAGE_EXECUTE_WRITECOPY: return ACC_EXEC | ACC_READ | ACC_WRITE;
+		}
+		return 0;
 	}
 #endif
 

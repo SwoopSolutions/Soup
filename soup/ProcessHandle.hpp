@@ -2,14 +2,15 @@
 
 #include "base.hpp"
 
+#include <vector>
+
 #if SOUP_WINDOWS
 #include "Module.hpp"
 #else
 #include "type.hpp"
 #endif
 
-#include "fwd.hpp"
-#include <vector>
+#include "Range.hpp"
 
 NAMESPACE_SOUP
 {
@@ -31,6 +32,11 @@ NAMESPACE_SOUP
 		}
 #endif
 
-		[[nodiscard]] std::vector<Range> getAllocations() const;
+		struct AllocationInfo
+		{
+			Range range;
+			int allowed_access; // memGuard::AllowedAccessFlags
+		};
+		[[nodiscard]] std::vector<AllocationInfo> getAllocations() const;
 	};
 }
