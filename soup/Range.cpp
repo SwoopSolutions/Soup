@@ -16,11 +16,6 @@
 
 NAMESPACE_SOUP
 {
-	Range::Range(Pointer base, size_t size) noexcept
-		: base(base), size(size)
-	{
-	}
-
 	Pointer Range::end() const noexcept
 	{
 		return base.add(size);

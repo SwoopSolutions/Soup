@@ -16,7 +16,11 @@ NAMESPACE_SOUP
 		size_t size;
 
 		Range() noexcept = default;
-		Range(Pointer base, size_t size) noexcept;
+
+		Range(Pointer base, size_t size) noexcept
+			: base(base), size(size)
+		{
+		}
 
 		[[nodiscard]] Pointer end() const noexcept;
 
