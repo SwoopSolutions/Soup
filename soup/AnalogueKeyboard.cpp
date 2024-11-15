@@ -1,5 +1,7 @@
 #include "AnalogueKeyboard.hpp"
 
+#include <cstring> // memset
+
 #include "DigitalKeyboard.hpp"
 #include "HidScancode.hpp"
 #include "macros.hpp" // COUNT
@@ -146,6 +148,14 @@ NAMESPACE_SOUP
 				}*/
 			}
 		}
+		// NuPhy
+		else if (hid.vendor_id == 0x19f5)
+		{
+			if (hid.usage_page == 1 && hid.usage == 0)
+			{
+				return hid.getProductName();
+			}
+		}
 
 		return {};
 	}
@@ -187,6 +197,12 @@ NAMESPACE_SOUP
 	[[nodiscard]] static SOUP_PURE Key layout_get_item(const uint8_t* layout, uint8_t index) noexcept { return (Key)layout[2 + index]; }
 	[[nodiscard]] static SOUP_PURE uint8_t layout_index_to_row(const uint8_t* layout, uint8_t index) noexcept { return index / layout_get_cols(layout); }
 	[[nodiscard]] static SOUP_PURE uint8_t layout_index_to_col(const uint8_t* layout, uint8_t index) noexcept { return index % layout_get_cols(layout); }
+
+	AnalogueKeyboard::AnalogueKeyboard(std::string&& name, hwHid&& hid, bool has_ctx_key)
+		: name(std::move(name)), hid(std::move(hid)), has_ctx_key(has_ctx_key)
+	{
+		memset(nuphy.buffer, 0, sizeof(nuphy.buffer)); // also sets razer.consecutive_empty_reports and keychron.state to 0
+	}
 
 	std::vector<AnalogueKeyboard> AnalogueKeyboard::getAll(bool include_no_permission)
 	{
@@ -728,7 +744,7 @@ NAMESPACE_SOUP
 					}
 				}
 			}
-			else // Razer
+			else if (hid.vendor_id == 0x1532) // Razer
 			{
 				razer.consecutive_empty_reports = 0;
 
@@ -748,7 +764,7 @@ NAMESPACE_SOUP
 						)
 					{
 						const auto sk = razer_scancode_to_soup_key(scancode);
-						SOUP_IF_LIKELY(sk != KEY_NONE)
+						SOUP_IF_LIKELY (sk != KEY_NONE)
 						{
 							keys.emplace_back(ActiveKey{
 								sk,
@@ -768,13 +784,63 @@ NAMESPACE_SOUP
 						)
 					{
 						const auto sk = razer_scancode_to_soup_key(scancode);
-						SOUP_IF_LIKELY(sk != KEY_NONE)
+						SOUP_IF_LIKELY (sk != KEY_NONE)
 						{
 							keys.emplace_back(ActiveKey{
 								sk,
 								static_cast<float>(value) / 255.0f
 							});
 						}
+					}
+				}
+			}
+			else // NuPhy
+			{
+				uint8_t type; r.u8(type);
+				if (type == 0xA0)
+				{
+					r.skip(1); // unknown, seems to be 0x10 in most cases
+					uint16_t scancode; r.u16_be(scancode);
+					r.skip(2); // fvalue * 800 (u16_be)
+					r.skip(1); // unknown, seems to always be 0x00
+					uint8_t value; r.u8(value); // fvalue * 200
+
+					Key sk;
+					SOUP_IF_UNLIKELY ((scancode >> 8) != 0)
+					{
+						switch (scancode)
+						{
+						default: sk = KEY_NONE; break;
+						case 0x100: sk = KEY_LCTRL; break;
+						case 0x200: sk = KEY_LSHIFT; break;
+						case 0x400: sk = KEY_LALT; break;
+						case 0x800: sk = KEY_LMETA; break;
+						case 0x1000: sk = KEY_RCTRL; break;
+						case 0x2000: sk = KEY_RSHIFT; break;
+						case 0x4000: sk = KEY_RALT; break;
+						case 0x8000: sk = KEY_RMETA; break; // not observed, but highly likely
+						case 0xff05: sk = KEY_FN; break;
+						}
+					}
+					else
+					{
+						sk = hid_scancode_to_soup_key(static_cast<uint8_t>(scancode));
+					}
+
+					SOUP_IF_LIKELY (sk != KEY_NONE)
+					{
+						nuphy.buffer[sk] = value;
+					}
+				}
+
+				for (uint8_t i = 0; i != NUM_KEYS; ++i)
+				{
+					if (nuphy.buffer[i] != 0)
+					{
+						keys.emplace_back(ActiveKey{
+							static_cast<Key>(i),
+							static_cast<float>(nuphy.buffer[i]) / 200.0f
+						});
 					}
 				}
 			}

@@ -28,15 +28,14 @@ NAMESPACE_SOUP
 				const uint8_t* layout;
 				uint8_t buffer[NUM_KEYS];
 			} keychron;
+			struct
+			{
+				uint8_t buffer[NUM_KEYS];
+			} nuphy;
 		};
 
 		AnalogueKeyboard() = default;
-
-		AnalogueKeyboard(std::string&& name, hwHid&& hid, bool has_ctx_key)
-			: name(std::move(name)), hid(std::move(hid)), has_ctx_key(has_ctx_key)
-		{
-			razer.consecutive_empty_reports = 0; // also sets keychron.state to 0
-		}
+		AnalogueKeyboard(std::string&& name, hwHid&& hid, bool has_ctx_key);
 
 		[[nodiscard]] static std::vector<AnalogueKeyboard> getAll(bool include_no_permission = false);
 
