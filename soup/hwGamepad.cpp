@@ -220,7 +220,7 @@ NAMESPACE_SOUP
 		const Buffer& report_data = hid.receiveReport();
 		SOUP_IF_UNLIKELY (report_data.empty())
 		{
-			if (hid.vendor_id == 0x54c && isDs4StillAlive(hid))
+			if (hid.vendor_id == 0x54c && hid.isBluetooth() && isDs4StillAlive(hid))
 			{
 				return receiveStatus();
 			}
