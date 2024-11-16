@@ -27,9 +27,9 @@ NAMESPACE_SOUP
 		uint16_t input_report_byte_length; // including report id
 		uint16_t output_report_byte_length; // including report id
 		uint16_t feature_report_byte_length; // including report id
+		bool is_bluetooth;
 
 #if SOUP_WINDOWS
-		bool is_bluetooth;
 		uint8_t pending_read = 0;
 		bool disconnected = false;
 		DWORD bytes_read{};
@@ -88,7 +88,7 @@ NAMESPACE_SOUP
 #endif
 		}
 
-		[[nodiscard]] bool isBluetooth() const noexcept;
+		[[nodiscard]] bool isBluetooth() const noexcept { return is_bluetooth; }
 		[[nodiscard]] bool hasReportId(uint8_t report_id) const noexcept;
 
 		[[nodiscard]] bool hasReport() noexcept;

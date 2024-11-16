@@ -58,7 +58,7 @@ using udev_device_get_sysattr_value_t = const char*(*)(udev_device*, const char*
 NAMESPACE_SOUP
 {
 #if SOUP_LINUX
-	[[nodiscard]] static bool parse_uevent_info(std::string uevent, unsigned short& vendor_id, unsigned short& product_id, std::string& product_name_utf8, std::string& serial_number_utf8)
+	[[nodiscard]] static bool parse_uevent_info(std::string uevent, uint8_t& bus_type, uint16_t& vendor_id, uint16_t& product_id, std::string& product_name_utf8, std::string& serial_number_utf8)
 	{
 		char* saveptr = NULL;
 		char* line;
@@ -86,8 +86,7 @@ NAMESPACE_SOUP
 					 *        type vendor   product
 					 * HID_ID=0003:000005AC:00008242
 					 **/
-					unsigned bus_type;
-					int ret = sscanf(value, "%x:%hx:%hx", &bus_type, &vendor_id, &product_id);
+					int ret = sscanf(value, "%hhx:%hx:%hx", &bus_type, &vendor_id, &product_id);
 					if (ret == 3) {
 						found_id = true;
 					}
@@ -252,8 +251,11 @@ NAMESPACE_SOUP
 				hwHid hid{};
 				hid.path = path;
 
-				if (parse_uevent_info(string::fromFile(hid.path + "/device/uevent"), hid.vendor_id, hid.product_id, hid.product_name, hid.serial_number))
+				uint8_t bus_type;
+				if (parse_uevent_info(string::fromFile(hid.path + "/device/uevent"), bus_type, hid.vendor_id, hid.product_id, hid.product_name, hid.serial_number))
 				{
+					hid.is_bluetooth = (bus_type == 0x05); // https://elixir.bootlin.com/linux/v6.10.8/source/include/uapi/linux/input.h#L258
+
 					const auto rawdesc = string::fromFile(hid.path + "/device/report_descriptor");
 					const auto report_desc = HidReportDescriptor::parse(rawdesc.data(), rawdesc.size());
 
@@ -342,15 +344,6 @@ NAMESPACE_SOUP
 			&& product_id == b.product_id
 			&& getSerialNumber() == b.getSerialNumber()
 			;
-	}
-
-	bool hwHid::isBluetooth() const noexcept
-	{
-#if SOUP_WINDOWS
-		return is_bluetooth;
-#else
-		return false;
-#endif
 	}
 
 	bool hwHid::hasReportId(uint8_t report_id) const noexcept
