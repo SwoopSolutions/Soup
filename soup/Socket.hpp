@@ -192,6 +192,7 @@ NAMESPACE_SOUP
 	protected:
 		[[nodiscard]] std::string transport_recvCommon(int max_bytes) SOUP_EXCAL;
 	public:
+		void transport_recv(transport_recv_callback_t callback, Capture&& cap = {}); // 'excal' as long as callback is
 		void transport_recv(int max_bytes, transport_recv_callback_t callback, Capture&& cap = {}); // 'excal' as long as callback is
 		void transport_recvExact(int bytes, transport_recv_callback_t callback, Capture&& cap = {}, std::string&& pre = {}); // 'excal' as long as callback is
 

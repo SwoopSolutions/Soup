@@ -1202,7 +1202,7 @@ NAMESPACE_SOUP
 		}
 		else
 		{
-			transport_recv(0x1000, callback, std::move(cap));
+			transport_recv(callback, std::move(cap));
 		}
 	}
 
@@ -1663,6 +1663,11 @@ NAMESPACE_SOUP
 		}
 #endif
 		return {};
+	}
+
+	void Socket::transport_recv(transport_recv_callback_t callback, Capture&& cap)
+	{
+		return transport_recv(0x1000, callback, std::move(cap));
 	}
 
 	struct CaptureSocketTransportRecv
