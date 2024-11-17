@@ -18,8 +18,9 @@ NAMESPACE_SOUP
 	};
 
 	ServerWebService::ServerWebService(handle_request_t handle_request)
-		: ServerService([](Socket& s, ServerService& srv, Server&)
+		: ServerService([](Socket& s, ServerService& srv, Server&) SOUP_EXCAL
 		{
+			s.disallowRecursion(); // needed for 'excal' guarantee
 			static_cast<ServerWebService&>(srv).httpRecv(s);
 		}), handle_request(handle_request)
 	{
