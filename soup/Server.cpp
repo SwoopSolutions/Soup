@@ -15,7 +15,7 @@ NAMESPACE_SOUP
 		Server* server;
 		ServerService* service;
 
-		void processAccept(Socket&& sock) const SOUP_EXCAL
+		void processAccept(Socket&& sock) const
 		{
 			if (sock.hasConnection())
 			{
@@ -34,7 +34,7 @@ NAMESPACE_SOUP
 		SharedPtr<CertStore> certstore;
 		tls_server_on_client_hello_t on_client_hello;
 
-		void processAccept(Socket&& sock) const SOUP_EXCAL
+		void processAccept(Socket&& sock) const
 		{
 			if (sock.hasConnection())
 			{
@@ -43,7 +43,7 @@ NAMESPACE_SOUP
 				{
 					service->on_connection_established(*s, *service, *server);
 				}
-				s->enableCryptoServer(certstore, [](Socket& s, Capture&& _cap) SOUP_EXCAL
+				s->enableCryptoServer(certstore, [](Socket& s, Capture&& _cap)
 				{
 					CaptureServerPortCrypto& cap = *_cap.get<CaptureServerPortCrypto*>();
 					cap.service->on_tunnel_established(s, *cap.service, *cap.server);

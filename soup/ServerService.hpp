@@ -6,7 +6,7 @@ NAMESPACE_SOUP
 {
 	struct ServerService
 	{
-		using callback_t = void(*)(Socket& client, ServerService&, Server&) SOUP_EXCAL;
+		using callback_t = void(*)(Socket& client, ServerService&, Server&);
 
 		// on_connection_established is called when the TCP connection is established
 		callback_t on_connection_established = nullptr;
