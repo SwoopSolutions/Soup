@@ -78,7 +78,7 @@
 #if defined(_MSC_VER) && !defined(__clang__)
 	#define SOUP_FORCEINLINE __forceinline
 	#define SOUP_NOINLINE __declspec(noinline)
-	#define SOUP_PURE
+	#define SOUP_PURE __declspec(noalias)
 	#define SOUP_UNIQADDR __restrict
 #else
 	#define SOUP_FORCEINLINE __attribute__((always_inline)) inline
