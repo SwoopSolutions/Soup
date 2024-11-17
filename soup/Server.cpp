@@ -19,6 +19,8 @@ NAMESPACE_SOUP
 		{
 			if (sock.hasConnection())
 			{
+				sock.disallowRecursion(); // prevent exceptions being thrown on behalf of the server's listening socket
+
 				auto s = server->addSocket(std::move(sock));
 				if (service->on_connection_established)
 				{
@@ -38,6 +40,8 @@ NAMESPACE_SOUP
 		{
 			if (sock.hasConnection())
 			{
+				sock.disallowRecursion(); // prevent exceptions being thrown on behalf of the server's listening socket
+
 				auto s = server->addSocket(std::move(sock));
 				if (service->on_connection_established)
 				{

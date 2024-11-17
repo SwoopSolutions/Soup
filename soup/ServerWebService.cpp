@@ -20,10 +20,6 @@ NAMESPACE_SOUP
 	ServerWebService::ServerWebService(handle_request_t handle_request)
 		: ServerService([](Socket& s, ServerService& srv, Server&)
 		{
-			// If non-TLS + data is already available + handle_request throws, this would cause an exception in the bound port,
-			// causing it to be removed from the scheduler, causing the port to be unavailable.
-			s.disallowRecursion();
-
 			static_cast<ServerWebService&>(srv).httpRecv(s);
 		}), handle_request(handle_request)
 	{
