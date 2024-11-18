@@ -350,6 +350,7 @@ int main(int argc, const char** argv)
 				std::cout << "\t\t- Path: " << hid.path << "\n";
 				std::cout << "\t\t- Usage Page: " << hid.usage_page << "\n";
 				std::cout << "\t\t- Usage: " << hid.usage << "\n";
+				std::cout << "\t\t- Bus: " << (hid.isBluetooth() ? "BT" : "USB") << "\n";
 				std::cout << std::dec;
 				std::cout << "\t\t- Input Report Byte Length: " << hid.input_report_byte_length << "\n";
 				std::cout << "\t\t- Output Report Byte Length: " << hid.output_report_byte_length << "\n";
