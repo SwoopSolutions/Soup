@@ -22,7 +22,7 @@ NAMESPACE_SOUP
 	{
 #if SOUP_X86
 	#if defined(__GNUC__) || defined(__clang__)
-		__attribute__((target("pclmul")))
+		__attribute__((target("sse4.1,pclmul")))
 	#endif
 		uint32_t crc32_pclmul(const uint8_t* p, size_t size, uint32_t crc) noexcept
 		{

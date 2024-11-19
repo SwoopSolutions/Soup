@@ -19,7 +19,7 @@ NAMESPACE_SOUP
 
 #if SOUP_X86
 	#if defined(__GNUC__) || defined(__clang__)
-		__attribute__((target("sha,ssse3")))
+		__attribute__((target("sha,sse4.1")))
 	#endif
 		void sha1_transform(uint32_t state[5], const uint8_t data[64]) noexcept
 		{
