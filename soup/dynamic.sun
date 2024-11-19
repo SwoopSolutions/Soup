@@ -1,6 +1,3 @@
 +*.cpp
 dynamic
 arg -DSOUP_STANDALONE
-
-require ../Intrin
-arg -DSOUP_USE_INTRIN

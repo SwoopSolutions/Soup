@@ -1,4 +1,6 @@
-#include "../soup/base.hpp"
+// THIS FILE IS FOR INTERNAL USE ONLY. DO NOT INCLUDE THIS IN YOUR OWN CODE.
+
+#include "base.hpp"
 
 #include <cstdint>
 
@@ -200,6 +202,9 @@ NAMESPACE_SOUP
 			state[4] = _mm_extract_epi32(E0, 3);
 		}
 #elif SOUP_ARM
+	#if defined(__GNUC__) || defined(__clang__)
+		__attribute__((target("sha2")))
+	#endif
 		void sha1_transform(uint32_t state[5], const uint8_t data[64]) noexcept
 		{
 			uint32x4_t ABCD, ABCD_SAVED;

@@ -1656,6 +1656,18 @@
     <ClInclude Include="DetourHookBase.hpp">
       <Filter>util\hooks</Filter>
     </ClInclude>
+    <ClInclude Include="aes_intrin.hpp">
+      <Filter>crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="crc32_intrin.hpp">
+      <Filter>data\hash</Filter>
+    </ClInclude>
+    <ClInclude Include="sha1_intrin.hpp">
+      <Filter>data\hash</Filter>
+    </ClInclude>
+    <ClInclude Include="sha256_intrin.hpp">
+      <Filter>data\hash</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bytepatch.cpp">

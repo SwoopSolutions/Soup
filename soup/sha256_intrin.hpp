@@ -1,11 +1,13 @@
-#include "../soup/base.hpp"
+// THIS FILE IS FOR INTERNAL USE ONLY. DO NOT INCLUDE THIS IN YOUR OWN CODE.
+
+#include "base.hpp"
 
 #include <cstdint>
 
 #if SOUP_X86
-#include <immintrin.h>
+	#include <immintrin.h>
 #elif SOUP_ARM
-#include <arm_neon.h>
+	#include <arm_neon.h>
 #endif
 
 NAMESPACE_SOUP
@@ -225,6 +227,9 @@ NAMESPACE_SOUP
 			0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
 		};
 
+	#if defined(__GNUC__) || defined(__clang__)
+		__attribute__((target("sha2")))
+	#endif
 		void sha256_transform(uint32_t state[8], const uint8_t data[64]) noexcept
 		{
 			uint32x4_t STATE0, STATE1, ABEF_SAVE, CDGH_SAVE;

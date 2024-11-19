@@ -1,4 +1,6 @@
-#include "../soup/base.hpp"
+// THIS FILE IS FOR INTERNAL USE ONLY. DO NOT INCLUDE THIS IN YOUR OWN CODE.
+
+#include "base.hpp"
 
 #include <cstdint>
 
@@ -327,6 +329,9 @@ NAMESPACE_SOUP
 			*reinterpret_cast<__m128i*>(out) = data;
 		}
 #elif SOUP_ARM
+	#if defined(__GNUC__) || defined(__clang__)
+		__attribute__((target("aes")))
+	#endif
 		void aes_encrypt_block_128(const uint8_t in[16], uint8_t out[16], const uint8_t roundKeys[176]) noexcept
 		{
 			auto data = vld1q_u8(in);
@@ -344,6 +349,9 @@ NAMESPACE_SOUP
 			vst1q_u8(out, data);
 		}
 
+	#if defined(__GNUC__) || defined(__clang__)
+		__attribute__((target("aes")))
+	#endif
 		void aes_encrypt_block_192(const uint8_t in[16], uint8_t out[16], const uint8_t roundKeys[208]) noexcept
 		{
 			auto data = vld1q_u8(in);
@@ -363,6 +371,9 @@ NAMESPACE_SOUP
 			vst1q_u8(out, data);
 		}
 
+	#if defined(__GNUC__) || defined(__clang__)
+		__attribute__((target("aes")))
+	#endif
 		void aes_encrypt_block_256(const uint8_t in[16], uint8_t out[16], const uint8_t roundKeys[240]) noexcept
 		{
 			auto data = vld1q_u8(in);
@@ -384,6 +395,9 @@ NAMESPACE_SOUP
 			vst1q_u8(out, data);
 		}
 
+	#if defined(__GNUC__) || defined(__clang__)
+		__attribute__((target("aes")))
+	#endif
 		void aes_prepare_decryption_128(uint8_t w[176]) noexcept
 		{
 			vst1q_u8(&w[1 * 16], vaesimcq_u8(vld1q_u8(&w[1 * 16])));
@@ -397,6 +411,9 @@ NAMESPACE_SOUP
 			vst1q_u8(&w[9 * 16], vaesimcq_u8(vld1q_u8(&w[9 * 16])));
 		}
 
+	#if defined(__GNUC__) || defined(__clang__)
+		__attribute__((target("aes")))
+	#endif
 		void aes_prepare_decryption_192(uint8_t w[208]) noexcept
 		{
 			vst1q_u8(&w[1 * 16], vaesimcq_u8(vld1q_u8(&w[1 * 16])));
@@ -412,6 +429,9 @@ NAMESPACE_SOUP
 			vst1q_u8(&w[11 * 16], vaesimcq_u8(vld1q_u8(&w[11 * 16])));
 		}
 
+	#if defined(__GNUC__) || defined(__clang__)
+		__attribute__((target("aes")))
+	#endif
 		void aes_prepare_decryption_256(uint8_t w[240]) noexcept
 		{
 			vst1q_u8(&w[1 * 16], vaesimcq_u8(vld1q_u8(&w[1 * 16])));
@@ -429,6 +449,9 @@ NAMESPACE_SOUP
 			vst1q_u8(&w[13 * 16], vaesimcq_u8(vld1q_u8(&w[13 * 16])));
 		}
 
+	#if defined(__GNUC__) || defined(__clang__)
+		__attribute__((target("aes")))
+	#endif
 		void aes_decrypt_block_128(const uint8_t in[16], uint8_t out[16], const uint8_t roundKeys[176]) noexcept
 		{
 			auto data = vld1q_u8(in);
@@ -446,6 +469,9 @@ NAMESPACE_SOUP
 			vst1q_u8(out, data);
 		}
 
+	#if defined(__GNUC__) || defined(__clang__)
+		__attribute__((target("aes")))
+	#endif
 		void aes_decrypt_block_192(const uint8_t in[16], uint8_t out[16], const uint8_t roundKeys[208]) noexcept
 		{
 			auto data = vld1q_u8(in);
@@ -465,6 +491,9 @@ NAMESPACE_SOUP
 			vst1q_u8(out, data);
 		}
 
+	#if defined(__GNUC__) || defined(__clang__)
+		__attribute__((target("aes")))
+	#endif
 		void aes_decrypt_block_256(const uint8_t in[16], uint8_t out[16], const uint8_t roundKeys[240]) noexcept
 		{
 			auto data = vld1q_u8(in);
