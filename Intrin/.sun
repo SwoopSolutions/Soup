@@ -3,15 +3,6 @@ static
 
 arg -O3
 
-arg -maes
-arg -mavx
-arg -mavx2
-arg -mpclmul
-arg -mrdrnd
-arg -mrdseed
-arg -msha
-arg -msse4.1
-
 arg -DSOUP_USE_INTRIN
 
 if not windows

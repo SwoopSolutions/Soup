@@ -19,6 +19,9 @@ NAMESPACE_SOUP
 	namespace intrin
 	{
 #if SOUP_X86
+	#if defined(__GNUC__) || defined(__clang__)
+		__attribute__((target("pclmul")))
+	#endif
 		uint32_t crc32_pclmul(const uint8_t* p, size_t size, uint32_t crc) noexcept
 		{
 			// Original source: https://github.com/richgel999/fpng/blob/main/src/fpng.cpp

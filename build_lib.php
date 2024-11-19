@@ -34,10 +34,6 @@ if(is_dir(__DIR__."/Intrin"))
 	{
 		$clang .= " -march=armv8+crypto+crc";
 	}
-	else
-	{
-		$clang .= " -maes -mavx -mavx2 -mpclmul -mrdrnd -mrdseed -msha -msse4.1";
-	}
 	foreach(scandir(__DIR__."/Intrin") as $file)
 	{
 		if(substr($file, -4) == ".cpp")

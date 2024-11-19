@@ -16,6 +16,9 @@ NAMESPACE_SOUP
 		// Original licence: Dedicated to the public domain.
 
 #if SOUP_X86
+	#if defined(__GNUC__) || defined(__clang__)
+		__attribute__((target("sha,ssse3")))
+	#endif
 		void sha1_transform(uint32_t state[5], const uint8_t data[64]) noexcept
 		{
 			__m128i ABCD, ABCD_SAVE, E0, E0_SAVE, E1;

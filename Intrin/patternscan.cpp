@@ -9,6 +9,9 @@
 
 NAMESPACE_SOUP
 {
+	#if defined(__GNUC__) || defined(__clang__)
+		__attribute__((target("avx2")))
+	#endif
 	size_t Range::scanWithMultipleResultsAvx2(const Pattern& sig, Pointer buf[], size_t buflen) const noexcept
 	{
 		const auto data = sig.bytes.data();
