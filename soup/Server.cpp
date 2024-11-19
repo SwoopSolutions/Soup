@@ -172,7 +172,7 @@ NAMESPACE_SOUP
 		return true;
 	}
 
-	bool Server::bindOptCrypto(uint16_t port, ServerService* service, SharedPtr<CertStore> certstore, tls_server_on_client_hello_t on_client_hello) throw()
+	bool Server::bindOptCrypto(uint16_t port, ServerService* service, SharedPtr<CertStore> certstore, tls_server_on_client_hello_t on_client_hello) SOUP_EXCAL
 	{
 		Socket sock6{};
 		if (!sock6.bind6(port))
