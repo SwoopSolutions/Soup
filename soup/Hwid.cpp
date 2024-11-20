@@ -26,7 +26,7 @@ NAMESPACE_SOUP
 			hwid.cpu_hash = joaat::hashRange((const char*)&ci.model, 1, hwid.cpu_hash);
 			hwid.cpu_hash = joaat::hashRange((const char*)&ci.family, 1, hwid.cpu_hash);
 			hwid.cpu_hash = joaat::hashRange((const char*)&ci.extended_features_0_ebx, 4, hwid.cpu_hash);
-			hwid.cpu_hash = joaat::hashRange((const char*)&ci.extended_features_1_ecx, 4, hwid.cpu_hash);
+			hwid.cpu_hash = joaat::hashRange((const char*)&ci.extended_flags_1_ecx, 4, hwid.cpu_hash);
 		}
 
 		{
