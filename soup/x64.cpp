@@ -45,7 +45,7 @@ NAMESPACE_SOUP
 		}
 	}
 
-	std::string x64Operand::toString() const
+	std::string x64Operand::toString(bool is_xmm) const
 	{
 		if (reg == IMM)
 		{
@@ -89,7 +89,12 @@ NAMESPACE_SOUP
 		}
 
 		std::string name{};
-		if (reg < R8)
+		if (is_xmm && deref_size == 0)
+		{
+			name = "xmm";
+			name.append(std::to_string((int)reg));
+		}
+		else if (reg < R8)
 		{
 			name = reg_names[reg];
 			if (access_type == ACCESS_8_H)
@@ -368,15 +373,15 @@ NAMESPACE_SOUP
 		if (operation->getOprEncoding(0) != ZO)
 		{
 			res.push_back(' ');
-			res.append(operands[0].toString());
+			res.append(operands[0].toString(operation->is_xmm));
 			if (operation->getOprEncoding(1) != ZO)
 			{
 				res.append(", ");
-				res.append(operands[1].toString());
+				res.append(operands[1].toString(operation->is_xmm));
 				if (operation->getOprEncoding(2) != ZO)
 				{
 					res.append(", ");
-					res.append(operands[2].toString());
+					res.append(operands[2].toString(operation->is_xmm));
 				}
 			}
 		}

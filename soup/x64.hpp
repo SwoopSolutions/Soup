@@ -30,6 +30,14 @@ NAMESPACE_SOUP
 		IMM,
 		DIS,
 		OFF,
+
+		XMM0 = 0,
+		XMM1,
+		XMM2,
+		XMM3,
+		XMM4,
+		XMM6,
+		XMM7,
 	};
 
 	enum x64RegisterAccessType : uint8_t
@@ -94,7 +102,7 @@ NAMESPACE_SOUP
 		void decode(bool rex, uint8_t size, uint8_t reg, bool x) noexcept;
 		void fromString(const char* str);
 
-		[[nodiscard]] std::string toString() const;
+		[[nodiscard]] std::string toString(bool is_xmm = false) const;
 	};
 #pragma pack(pop)
 
@@ -126,25 +134,11 @@ NAMESPACE_SOUP
 		const char* const name;
 		const uint32_t opcode;
 		const x64OperandEncoding operand_encoding;
-		const uint8_t operand_size;
-		const uint8_t distinguish;
+		const uint8_t operand_size = 0;
+		const uint8_t distinguish = 8;
+		const bool is_xmm = false;
 
 		static constexpr uint8_t MAX_OPERANDS = 3;
-
-		x64Operation(const char* name, uint32_t opcode, x64OperandEncoding operand_encoding)
-			: x64Operation(name, opcode, operand_encoding, 0, 8)
-		{
-		}
-
-		x64Operation(const char* name, uint32_t opcode, x64OperandEncoding operand_encoding, uint8_t operand_size)
-			: x64Operation(name, opcode, operand_encoding, operand_size, 8)
-		{
-		}
-
-		x64Operation(const char* name, uint32_t opcode, x64OperandEncoding operand_encoding, uint8_t operand_size, uint8_t distinguish)
-			: name(name), opcode(opcode), operand_encoding(operand_encoding), operand_size(operand_size), distinguish(distinguish)
-		{
-		}
 
 		[[nodiscard]] uint32_t getUniqueId() const noexcept
 		{
@@ -277,9 +271,12 @@ NAMESPACE_SOUP
 		{ "movsx", 0x0F'BF, RM, 32 }, // TODO: Disassembly should show "word ptr"
 		{ "inc", 0xFF, M, 0 },
 
-		// TODO: Account for different register types, e.g. currently toString will show "ebx" instad of "xmm3"
-		{ "movss", 0xF3'0F'10, RM },
-		{ "movss", 0xF3'0F'11, MR },
+		// XMM ops
+		{ "movss", 0xF3'0F'10, RM, 0, 8, true },
+		{ "movss", 0xF3'0F'11, MR, 0, 8, true },
+		{ "movaps", 0x0F'28, RM, 0, 8, true },
+		{ "movaps", 0x0F'29, MR, 0, 8, true },
+		{ "xorps", 0x0F'57, RM, 0, 8, true },
 	};
 
 	struct x64Instruction
