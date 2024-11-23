@@ -15,8 +15,8 @@ NAMESPACE_SOUP
 
 		SOUP_PACKET_IO(s)
 		{
-			return s.u32(client_capabilities)
-				&& s.u32(max_packet)
+			return s.u32le(client_capabilities)
+				&& s.u32le(max_packet)
 				&& s.u8(charset)
 				&& s.skip(23)
 				&& s.str_nt(username)

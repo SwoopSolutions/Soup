@@ -224,20 +224,17 @@ NAMESPACE_SOUP
 			return u8(*(uint8_t*)&v);
 		}
 
-		bool i16(int16_t& v) noexcept
-		{
-			return u16(*(uint16_t*)&v);
-		}
+		bool i16(int16_t& v) noexcept { return u16(*(uint16_t*)&v); }
+		bool i16le(int16_t& v) noexcept { return u16le(*(uint16_t*)&v); }
+		bool i16be(int16_t& v) noexcept { return u16be(*(uint16_t*)&v); }
 
-		bool i32(int32_t& v) noexcept
-		{
-			return u32(*(uint32_t*)&v);
-		}
+		bool i32(int32_t& v) noexcept { return u32(*(uint32_t*)&v); }
+		bool i32le(int32_t& v) noexcept { return u32le(*(uint32_t*)&v); }
+		bool i32be(int32_t& v) noexcept { return u32be(*(uint32_t*)&v); }
 
-		bool i64(int64_t& v) noexcept
-		{
-			return u64(*(uint64_t*)&v);
-		}
+		bool i64(int64_t& v) noexcept { return u64(*(uint64_t*)&v); }
+		bool i64le(int64_t& v) noexcept { return u64le(*(uint64_t*)&v); }
+		bool i64be(int64_t& v) noexcept { return u64be(*(uint64_t*)&v); }
 
 		bool u24(uint32_t& v) noexcept
 		{

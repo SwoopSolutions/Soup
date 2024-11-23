@@ -365,12 +365,12 @@ NAMESPACE_SOUP
 			if (arg.isInt())
 			{
 				auto val = arg.getInt();
-				w.i64(val);
+				w.i64le(val);
 			}
 			else if (arg.isUInt())
 			{
 				auto val = arg.getUInt();
-				w.u64(val);
+				w.u64le(val);
 			}
 			else
 			{
@@ -439,13 +439,13 @@ NAMESPACE_SOUP
 								if (cap.result.at(i).first.flags & 32)
 								{
 									uint64_t val;
-									r.u64(val);
+									r.u64be(val);
 									cap.result.at(i).second = val;
 								}
 								else
 								{
 									int64_t val;
-									r.i64(val);
+									r.i64be(val);
 									cap.result.at(i).second = val;
 								}
 							}
@@ -524,7 +524,7 @@ NAMESPACE_SOUP
 		uint8_t header = 0x19;
 		w.u8(header);
 
-		w.u32(stmt_id);
+		w.u32be(stmt_id);
 
 		mysqlSend(std::move(w.data));
 	}

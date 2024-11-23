@@ -10,9 +10,9 @@ NAMESPACE_SOUP
 
 		SOUP_PACKET_IO(s)
 		{
-			return s.u32(stmt_id)
+			return s.u32le(stmt_id)
 				&& s.u8(flags)
-				&& s.u32(iterations)
+				&& s.u32le(iterations)
 				;
 		}
 	};
