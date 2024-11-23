@@ -12,7 +12,6 @@ NAMESPACE_SOUP
 		using ioBase::ioBase;
 
 		[[nodiscard]] virtual bool hasMore() noexcept = 0;
-		[[nodiscard]] virtual size_t getPosition() = 0;
 		virtual void seek(size_t pos) = 0;
 		void seekBegin() { seek(0); }
 		virtual void seekEnd() = 0;

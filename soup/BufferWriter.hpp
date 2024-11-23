@@ -35,5 +35,10 @@ NAMESPACE_SOUP
 			}
 			return true;
 		}
+
+		[[nodiscard]] size_t getPosition() final
+		{
+			return buf.size();
+		}
 	};
 }

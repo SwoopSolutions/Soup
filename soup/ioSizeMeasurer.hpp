@@ -21,5 +21,10 @@ NAMESPACE_SOUP
 			this->size += size;
 			return true;
 		}
+
+		[[nodiscard]] size_t getPosition() final
+		{
+			return size;
+		}
 	};
 }
