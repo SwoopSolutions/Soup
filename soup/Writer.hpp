@@ -228,8 +228,8 @@ NAMESPACE_SOUP
 			return ret;
 		}
 
-		// std::vector<uint16_t> with u16 byte length prefix.
-		bool vec_u16_bl_u16(std::vector<uint16_t>& v) noexcept
+		// vector of u16be with u16be byte length prefix.
+		bool vec_u16be_bl_u16be(std::vector<uint16_t>& v) noexcept
 		{
 			size_t bl = (v.size() * sizeof(uint16_t));
 			SOUP_IF_UNLIKELY (bl > 0xFFFF)
@@ -238,10 +238,10 @@ NAMESPACE_SOUP
 			}
 			bool ret = true;
 			auto bl_u16 = (uint16_t)bl;
-			ret &= ioBase::u16(bl_u16);
+			ret &= ioBase::u16be(bl_u16);
 			for (auto& entry : v)
 			{
-				ret &= ioBase::u16(entry);
+				ret &= ioBase::u16be(entry);
 			}
 			return ret;
 		}
@@ -259,8 +259,8 @@ NAMESPACE_SOUP
 			return ret;
 		}
 
-		// vector of str_lp<u24_t> with u24 byte length prefix.
-		bool vec_str_lp_u24_bl_u24(std::vector<std::string>& v) noexcept
+		// vector of str_lp<u24be_t> with u24be byte length prefix.
+		bool vec_str_lp_u24be_bl_u24be(std::vector<std::string>& v) noexcept
 		{
 			size_t bl = (v.size() * 3);
 			for (const auto& entry : v)
@@ -273,10 +273,10 @@ NAMESPACE_SOUP
 			}
 			bool ret = true;
 			auto bl_u32 = (uint32_t)bl;
-			ret &= ioBase::u24(bl_u32);
+			ret &= ioBase::u24be(bl_u32);
 			for (auto& entry : v)
 			{
-				ret &= str_lp<u24_t>(entry);
+				ret &= str_lp<u24be_t>(entry);
 			}
 			return ret;
 		}

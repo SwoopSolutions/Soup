@@ -256,17 +256,17 @@ NAMESPACE_SOUP
 			return true;
 		}
 
-		// std::vector<uint16_t> with u16 byte length prefix.
-		bool vec_u16_bl_u16(std::vector<uint16_t>& v) SOUP_EXCAL
+		// vector of u16be with u16be byte length prefix.
+		bool vec_u16be_bl_u16be(std::vector<uint16_t>& v) SOUP_EXCAL
 		{
 			uint16_t len;
-			SOUP_RETHROW_FALSE(ioBase::u16(len));
+			SOUP_RETHROW_FALSE(ioBase::u16be(len));
 			v.clear();
 			v.reserve(len / 2);
 			for (; len >= sizeof(uint16_t); len -= sizeof(uint16_t))
 			{
 				uint16_t entry;
-				SOUP_IF_UNLIKELY (!ioBase::u16(entry))
+				SOUP_IF_UNLIKELY (!ioBase::u16be(entry))
 				{
 					return false;
 				}
@@ -294,17 +294,17 @@ NAMESPACE_SOUP
 			return true;
 		}
 
-		// vector of str_lp<u24_t> with u24 byte length prefix.
-		bool vec_str_lp_u24_bl_u24(std::vector<std::string>& v) SOUP_EXCAL
+		// vector of str_lp<u24be_t> with u24be byte length prefix.
+		bool vec_str_lp_u24be_bl_u24be(std::vector<std::string>& v) SOUP_EXCAL
 		{
 			uint32_t len;
-			SOUP_RETHROW_FALSE(ioBase::u24(len));
+			SOUP_RETHROW_FALSE(ioBase::u24be(len));
 			v.clear();
 			v.reserve(len / 3);
 			while (len >= 3)
 			{
 				std::string entry;
-				SOUP_IF_UNLIKELY (!str_lp<u24_t>(entry))
+				SOUP_IF_UNLIKELY (!str_lp<u24be_t>(entry))
 				{
 					return false;
 				}
