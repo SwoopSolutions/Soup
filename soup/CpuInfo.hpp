@@ -42,7 +42,7 @@ NAMESPACE_SOUP
 		uint32_t extended_features_max_ecx = 0;
 		uint32_t extended_features_0_ebx = 0;
 
-		// EAX=1, ECX=1
+		// EAX=7, ECX=1
 		uint32_t extended_features_1_eax = 0;
 
 		// EAX=16h
