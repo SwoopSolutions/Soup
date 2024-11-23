@@ -1,8 +1,8 @@
 #pragma once
 
-#include <ostream>
 #include <vector>
 
+#include "fwd.hpp"
 #include "ZipIndexedFile.hpp"
 
 NAMESPACE_SOUP
@@ -10,9 +10,9 @@ NAMESPACE_SOUP
 	class ZipWriter
 	{
 	public:
-		std::ostream& os;
+		Writer& os;
 
-		ZipWriter(std::ostream& os)
+		ZipWriter(Writer& os)
 			: os(os)
 		{
 		}

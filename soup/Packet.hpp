@@ -59,13 +59,13 @@ NAMESPACE_SOUP
 			return read(r);
 		}
 
-		bool read(std::istream& is, Endian endian = ENDIAN_BIG)
+		[[deprecated]] bool read(std::istream& is, Endian endian = ENDIAN_BIG)
 		{
 			IstreamReader r(is, endian);
 			return read(r);
 		}
 
-		bool readLE(std::istream& is)
+		[[deprecated]] bool readLE(std::istream& is)
 		{
 			return read(is, ENDIAN_LITTLE);
 		}
@@ -95,13 +95,13 @@ NAMESPACE_SOUP
 			return toBinaryString(ENDIAN_LITTLE);
 		}
 
-		bool write(std::ostream& os, Endian endian = ENDIAN_BIG)
+		[[deprecated]] bool write(std::ostream& os, Endian endian = ENDIAN_BIG)
 		{
 			OstreamWriter w(os, endian);
 			return write(w);
 		}
 
-		bool writeLE(std::ostream& os)
+		[[deprecated]] bool writeLE(std::ostream& os)
 		{
 			return write(os, ENDIAN_LITTLE);
 		}

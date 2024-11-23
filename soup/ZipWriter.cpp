@@ -1,6 +1,7 @@
 #include "ZipWriter.hpp"
 
 #include "crc32.hpp"
+#include "Writer.hpp"
 #include "ZipCentralDirectoryFile.hpp"
 #include "ZipEndOfCentralDirectory.hpp"
 #include "ZipLocalFileHeader.hpp"
@@ -14,7 +15,7 @@ NAMESPACE_SOUP
 		zif.uncompressed_data_crc32 = crc32::hash(contents_uncompressed);
 		zif.compressed_size = static_cast<uint32_t>(contents_compressed.size());
 		zif.uncompressed_size = static_cast<uint32_t>(contents_uncompressed.size());
-		zif.offset = static_cast<uint32_t>(os.tellp());
+		zif.offset = static_cast<uint32_t>(os.getPosition());
 		zif.name = std::move(name);
 
 		ZipLocalFileHeader lfh{};
@@ -23,10 +24,10 @@ NAMESPACE_SOUP
 		lfh.common.compressed_size = zif.compressed_size;
 		lfh.common.uncompressed_size = zif.uncompressed_size;
 		lfh.name = zif.name;
-		os.write("\x50\x4b\x03\x04", 4);
-		lfh.writeLE(os);
+		os.raw(const_cast<char*>("\x50\x4b\x03\x04"), 4);
+		lfh.write(os);
 
-		os.write(contents_compressed.data(), contents_compressed.size());
+		os.raw(const_cast<char*>(contents_compressed.data()), contents_compressed.size());
 
 		return zif;
 	}
@@ -58,12 +59,10 @@ NAMESPACE_SOUP
 
 	void ZipWriter::finalise(const std::vector<ZipIndexedFile>& files) const
 	{
-		os.seekp(0, std::ios::end);
-
 		ZipEndOfCentralDirectory eocd{};
 		eocd.central_directories_on_this_disk = 1;
 		eocd.central_directories_in_total = 1;
-		eocd.central_directory_offset = static_cast<uint32_t>(os.tellp());
+		eocd.central_directory_offset = static_cast<uint32_t>(os.getPosition());
 
 		for (const auto& file : files)
 		{
@@ -75,12 +74,12 @@ NAMESPACE_SOUP
 			cdf.name = file.name;
 			cdf.disk_offset = file.offset;
 			//cdf.external_attributes = 2;
-			os.write("\x50\x4b\x01\x02", 4);
-			cdf.writeLE(os);
+			os.raw(const_cast<char*>("\x50\x4b\x01\x02"), 4);
+			cdf.write(os);
 		}
 
-		eocd.central_directory_size = ((uint32_t)os.tellp() - eocd.central_directory_offset);
-		os.write("\x50\x4b\x05\x06", 4);
-		eocd.writeLE(os);
+		eocd.central_directory_size = ((uint32_t)os.getPosition() - eocd.central_directory_offset);
+		os.raw(const_cast<char*>("\x50\x4b\x05\x06"), 4);
+		eocd.write(os);
 	}
 }
