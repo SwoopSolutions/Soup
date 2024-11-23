@@ -93,7 +93,7 @@ NAMESPACE_SOUP
 		template <typename T>
 		bool ser(T& v) noexcept;
 
-		bool u16(uint16_t& v) noexcept
+		[[deprecated]] bool u16(uint16_t& v) noexcept
 		{
 			return u16(v, native_endianness);
 		}
@@ -135,7 +135,7 @@ NAMESPACE_SOUP
 		}
 
 	public:
-		bool u32(uint32_t& v) noexcept
+		[[deprecated]] bool u32(uint32_t& v) noexcept
 		{
 			return u32(v, native_endianness);
 		}
@@ -177,7 +177,7 @@ NAMESPACE_SOUP
 		}
 
 	public:
-		bool u64(uint64_t& v) noexcept
+		[[deprecated]] bool u64(uint64_t& v) noexcept
 		{
 			return u64(v, native_endianness);
 		}

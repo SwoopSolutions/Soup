@@ -50,7 +50,7 @@ NAMESPACE_SOUP
 			RiffChunk chunk;
 			r.str(4, chunk.name);
 			chunk.is_list = (chunk.name == "RIFF" || chunk.name == "LIST");
-			r.u32(chunk.data_size);
+			r.u32le(chunk.data_size);
 			if (chunk.is_list)
 			{
 				chunk.data_size -= 4;

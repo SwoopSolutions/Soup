@@ -17,19 +17,19 @@ NAMESPACE_SOUP
 
 		SOUP_PACKET_IO(s)
 		{
-			return s.u32(lower)
-				&& s.u32(upper)
+			return s.u32le(lower)
+				&& s.u32le(upper)
 				&& s.str(2, country_code)
-				&& s.u32(state_offset)
-				&& s.u32(city_offset)
+				&& s.u32le(state_offset)
+				&& s.u32le(city_offset)
 				;
 		}
 
 		[[nodiscard]] static soup::strong_ordering cmp(Reader& r, const uint32_t& hint)
 		{
 			netIntelLocationData4OnDisk data;
-			r.u32(data.lower);
-			r.u32(data.upper);
+			r.u32le(data.lower);
+			r.u32le(data.upper);
 			if (data.lower <= hint && hint <= data.upper)
 			{
 				return soup::strong_ordering::equal;

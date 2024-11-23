@@ -17,12 +17,12 @@ NAMESPACE_SOUP
 
 		SOUP_PACKET_IO(s)
 		{
-			return s.u16(format_tag)
-				&& s.u16(channels)
-				&& s.u32(sample_rate)
-				&& s.u32(avg_bytes_per_sec)
-				&& s.u16(bytes_per_block)
-				&& s.u16(bits_per_sample)
+			return s.u16le(format_tag)
+				&& s.u16le(channels)
+				&& s.u32le(sample_rate)
+				&& s.u32le(avg_bytes_per_sec)
+				&& s.u16le(bytes_per_block)
+				&& s.u16le(bits_per_sample)
 				;
 		}
 

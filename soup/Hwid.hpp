@@ -17,8 +17,8 @@ NAMESPACE_SOUP
 
 		SOUP_PACKET_IO(s)
 		{
-			return s.u32(cpu_hash)
-				&& s.u24(gpu_hash)
+			return s.u32be(cpu_hash)
+				&& s.u24be(gpu_hash)
 				&& s.u8(ram_mag)
 				;
 		}

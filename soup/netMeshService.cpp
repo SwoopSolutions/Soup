@@ -61,7 +61,7 @@ NAMESPACE_SOUP
 					{
 						if (msg_type == MESH_MSG_LINK)
 						{
-							if (uint64_t passnum; sr.u64(passnum))
+							if (uint64_t passnum; sr.u64le(passnum))
 							{
 								if (passnum == static_cast<netMeshService&>(srv).link_passnum)
 								{
@@ -94,7 +94,7 @@ NAMESPACE_SOUP
 							if (!con_info.challenge.empty())
 							{
 								uint32_t n_hash;
-								if (sr.u32(n_hash))
+								if (sr.u32le(n_hash))
 								{
 									auto sig = Bigint::fromBinary(msg.data.data() + 5, msg.data.size() - 5);
 									if (auto peer = netMesh::getMyConfig().findPeer(n_hash, s.peer.ip.getV4NativeEndian()))
@@ -132,7 +132,7 @@ NAMESPACE_SOUP
 							if (con_info.authenticated_as != 0)
 							{
 								uint32_t seq;
-								if (sr.u32(seq)
+								if (sr.u32le(seq)
 									&& con_info.recv_seq++ == seq
 									)
 								{
@@ -201,7 +201,7 @@ NAMESPACE_SOUP
 		auto& con_info = s.custom_data.getStructFromMapConst(netMeshConnectionInfo);
 		StringWriter sw;
 		sw.u8(msg_type);
-		sw.u32(con_info.send_seq);
+		sw.u32le(con_info.send_seq);
 		con_info.send(s, sw.data + data);
 		++con_info.send_seq;
 	}

@@ -76,7 +76,7 @@ NAMESPACE_SOUP
 				{
 					return;
 				}
-				if (uint16_t buf = static_cast<uint16_t>(payload.size()); !w.u16(buf))
+				if (uint16_t buf = static_cast<uint16_t>(payload.size()); !w.u16be(buf))
 				{
 					return;
 				}
@@ -87,7 +87,7 @@ NAMESPACE_SOUP
 				{
 					return;
 				}
-				if (uint64_t buf = payload.size(); !w.u64(buf))
+				if (uint64_t buf = payload.size(); !w.u64be(buf))
 				{
 					return;
 				}
