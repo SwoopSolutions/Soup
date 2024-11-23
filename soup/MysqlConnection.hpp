@@ -50,7 +50,7 @@ NAMESPACE_SOUP
 		template <typename T>
 		void mysqlSend(T& packet)
 		{
-			return mysqlSend(packet.toBinaryStringLE());
+			return mysqlSend(packet.toBinaryString());
 		}
 
 		void mysqlSend(std::string data);

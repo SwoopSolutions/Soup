@@ -11,12 +11,17 @@ NAMESPACE_SOUP
 	public:
 		Buffer buf{};
 
-		BufferWriter(Endian endian = ENDIAN_LITTLE)
+		BufferWriter()
+			: Writer(ENDIAN_LITTLE)
+		{
+		}
+
+		[[deprecated]] BufferWriter(Endian endian)
 			: Writer(endian)
 		{
 		}
 
-		BufferWriter(bool little_endian)
+		[[deprecated]] BufferWriter(bool little_endian)
 			: Writer(little_endian)
 		{
 		}

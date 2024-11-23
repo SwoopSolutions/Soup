@@ -1296,7 +1296,7 @@ NAMESPACE_SOUP
 		record.length = static_cast<uint16_t>(body.size());
 
 		Buffer header(5);
-		BufferRefWriter bw(header, ENDIAN_BIG);
+		BufferRefWriter bw(header);
 		record.write(bw);
 
 		body.prepend(header.data(), header.size());

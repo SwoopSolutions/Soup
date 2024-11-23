@@ -35,25 +35,37 @@ NAMESPACE_SOUP
 		using u56 = u64;
 
 	public:
-		bool fromBinary(std::string&& bin, Endian endian = ENDIAN_BIG) noexcept
+		bool fromBinary(std::string&& bin) noexcept
+		{
+			StringReader r(std::move(bin), ENDIAN_BIG);
+			return read(r);
+		}
+
+		[[deprecated]] bool fromBinary(std::string&& bin, Endian endian) noexcept
 		{
 			StringReader r(std::move(bin), endian);
 			return read(r);
 		}
 
-		bool fromBinary(const std::string& bin, Endian endian = ENDIAN_BIG) noexcept
+		bool fromBinary(const std::string& bin) noexcept
+		{
+			MemoryRefReader r(bin, ENDIAN_BIG);
+			return read(r);
+		}
+
+		[[deprecated]] bool fromBinary(const std::string& bin, Endian endian) noexcept
 		{
 			MemoryRefReader r(bin, endian);
 			return read(r);
 		}
 
-		bool fromBinaryLE(std::string&& bin) noexcept
+		[[deprecated]] bool fromBinaryLE(std::string&& bin) noexcept
 		{
 			StringReader r(std::move(bin), ENDIAN_LITTLE);
 			return read(r);
 		}
 
-		bool fromBinaryLE(const std::string& bin) noexcept
+		[[deprecated]] bool fromBinaryLE(const std::string& bin) noexcept
 		{
 			MemoryRefReader r(bin, ENDIAN_LITTLE);
 			return read(r);
@@ -76,21 +88,35 @@ NAMESPACE_SOUP
 			return static_cast<T*>(this)->template io<Reader>(r);
 		}
 
-		[[nodiscard]] Buffer toBinary(Endian endian = ENDIAN_BIG) SOUP_EXCAL
+		[[nodiscard]] Buffer toBinary() SOUP_EXCAL
+		{
+			BufferWriter w(ENDIAN_BIG);
+			write(w);
+			SOUP_MOVE_RETURN(w.buf);
+		}
+
+		[[deprecated]] Buffer toBinary(Endian endian) SOUP_EXCAL
 		{
 			BufferWriter w(endian);
 			write(w);
 			SOUP_MOVE_RETURN(w.buf);
 		}
 
-		[[nodiscard]] std::string toBinaryString(Endian endian = ENDIAN_BIG) SOUP_EXCAL
+		[[nodiscard]] std::string toBinaryString() SOUP_EXCAL
+		{
+			StringWriter w(ENDIAN_BIG);
+			write(w);
+			SOUP_MOVE_RETURN(w.data);
+		}
+
+		[[deprecated]] std::string toBinaryString(Endian endian) SOUP_EXCAL
 		{
 			StringWriter w(endian);
 			write(w);
 			SOUP_MOVE_RETURN(w.data);
 		}
 
-		[[nodiscard]] std::string toBinaryStringLE()
+		[[deprecated]] std::string toBinaryStringLE()
 		{
 			return toBinaryString(ENDIAN_LITTLE);
 		}

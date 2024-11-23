@@ -60,7 +60,7 @@ NAMESPACE_SOUP
 			}
 
 			MysqlHandshake hs;
-			hs.fromBinaryLE(data);
+			hs.fromBinary(data);
 			std::string salt = hs.salt_pt_1;
 			salt.append(hs.salt_pt_2);
 			//std::cout << "Version: " << hs.human_readable_version << std::endl;
@@ -90,7 +90,7 @@ NAMESPACE_SOUP
 				else if (status == 0xFE)
 				{
 					MysqlAuthSwitchRequest req{};
-					req.fromBinaryLE(data);
+					req.fromBinary(data);
 
 					//std::cout << "Salt: " << req.plugin_data << std::endl;
 					con.mysqlSend(mysql_native_auth(cap.password, req.plugin_data));
@@ -212,7 +212,7 @@ NAMESPACE_SOUP
 			mysqlRecv([](MysqlConnection& con, std::string&& data, Capture&& cap)
 			{
 				MysqlColumnDefinition col;
-				col.fromBinaryLE(std::move(data));
+				col.fromBinary(std::move(data));
 
 				cap.get<CaptureQueryRecvResponse>().result.emplace_back(std::move(col), std::string());
 
@@ -287,7 +287,7 @@ NAMESPACE_SOUP
 			}
 			data.erase(0, 1);
 			MysqlStmtPrepareOk ok;
-			ok.fromBinaryLE(std::move(data));
+			ok.fromBinary(std::move(data));
 			con.stmtPrepareRecvResponse(CaptureStmtPrepareRecvResponse{
 				std::move(cap),
 				ok.stmt_id,
@@ -503,7 +503,7 @@ NAMESPACE_SOUP
 			mysqlRecv([](MysqlConnection& con, std::string&& data, Capture&& cap)
 			{
 				MysqlColumnDefinition col;
-				col.fromBinaryLE(std::move(data));
+				col.fromBinary(std::move(data));
 
 				cap.get<CaptureStmtExecuteRecvResponse>().result.emplace_back(std::move(col), Mixed());
 
@@ -534,7 +534,7 @@ NAMESPACE_SOUP
 		if (recv_buf.size() >= 4)
 		{
 			MysqlFrame frame;
-			frame.fromBinaryLE(recv_buf.substr(0, 4));
+			frame.fromBinary(recv_buf.substr(0, 4));
 
 			if (recv_buf.size() >= frame.length + 4)
 			{
@@ -567,7 +567,7 @@ NAMESPACE_SOUP
 		MysqlFrame frame{};
 		frame.length = static_cast<decltype(frame.length)>(data.size());
 		frame.seq_id = next_send_seq_id++;
-		data.insert(0, frame.toBinaryStringLE());
+		data.insert(0, frame.toBinaryString());
 		send(data);
 	}
 }
