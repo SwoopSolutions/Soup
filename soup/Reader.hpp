@@ -181,36 +181,6 @@ NAMESPACE_SOUP
 			return mysql_lenenc(len) && str((size_t)len, v);
 		}
 
-		// Length-prefixed string, using u8 for the length prefix.
-		[[deprecated]] bool str_lp_u8(std::string& v, const uint8_t max_len = 0xFF) SOUP_EXCAL
-		{
-			return str_lp<u8_t>(v, max_len);
-		}
-
-		// Length-prefixed string, using u16 for the length prefix.
-		[[deprecated]] bool str_lp_u16(std::string& v, const uint16_t max_len = 0xFFFF) SOUP_EXCAL
-		{
-			return str_lp<u16_t>(v, max_len);
-		}
-
-		// Length-prefixed string, using u24 for the length prefix.
-		[[deprecated]] bool str_lp_u24(std::string& v, const uint32_t max_len = 0xFFFFFF) SOUP_EXCAL
-		{
-			return str_lp<u24_t>(v, max_len);
-		}
-
-		// Length-prefixed string, using u32 for the length prefix.
-		[[deprecated]] bool str_lp_u32(std::string& v, const uint32_t max_len = 0xFFFFFFFF) SOUP_EXCAL
-		{
-			return str_lp<u32_t>(v, max_len);
-		}
-
-		// Length-prefixed string, using u64 for the length prefix.
-		[[deprecated]] bool str_lp_u64(std::string& v) SOUP_EXCAL
-		{
-			return str_lp<u64_t>(v);
-		}
-
 		// String with known length.
 		bool str(size_t len, std::string& v) SOUP_EXCAL
 		{

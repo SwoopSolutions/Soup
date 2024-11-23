@@ -149,36 +149,6 @@ NAMESPACE_SOUP
 			return ret;
 		}
 
-		// Length-prefixed string, using u8 for the length prefix.
-		[[deprecated]] bool str_lp_u8(const std::string& v, const uint8_t max_len = 0xFF) noexcept
-		{
-			return str_lp<u8_t>(v, max_len);
-		}
-
-		// Length-prefixed string, using u16 for the length prefix.
-		[[deprecated]] bool str_lp_u16(const std::string& v, const uint16_t max_len = 0xFFFF) noexcept
-		{
-			return str_lp<u16_t>(v, max_len);
-		}
-
-		// Length-prefixed string, using u24 for the length prefix.
-		[[deprecated]] bool str_lp_u24(const std::string& v, const uint32_t max_len = 0xFFFFFF) noexcept
-		{
-			return str_lp<u24_t>(v, max_len);
-		}
-
-		// Length-prefixed string, using u32 for the length prefix.
-		[[deprecated]] bool str_lp_u32(const std::string& v, const uint32_t max_len = 0xFFFFFFFF) noexcept
-		{
-			return str_lp<u32_t>(v, max_len);
-		}
-
-		// Length-prefixed string, using u64 for the length prefix.
-		[[deprecated]] bool str_lp_u64(const std::string& v) noexcept
-		{
-			return str_lp<u64_t>(v);
-		}
-
 		// String with known length.
 		bool str(size_t len, const std::string& v) noexcept
 		{
