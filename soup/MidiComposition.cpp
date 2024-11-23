@@ -17,25 +17,25 @@ NAMESPACE_SOUP
 	MidiComposition::MidiComposition(Reader& r)
 	{
 		uint32_t chunk_name;
-		r.u32_be(chunk_name);
+		r.u32be(chunk_name);
 		SOUP_ASSERT(chunk_name == 'MThd', "Bad MIDI data");
 		uint32_t length;
-		r.u32_be(length);
+		r.u32be(length);
 		SOUP_ASSERT(length >= 6, "Bad MIDI data");
 		uint16_t format, ntrks, division;
-		r.u16_be(format);
-		r.u16_be(ntrks);
-		r.u16_be(division);
+		r.u16be(format);
+		r.u16be(ntrks);
+		r.u16be(division);
 		r.skip(length - 6);
 		const float ticks_per_quarter_note = static_cast<float>(division);
 
 		std::vector<MidiTrack> tracks{};
 		while (r.hasMore())
 		{
-			r.u32_be(chunk_name);
+			r.u32be(chunk_name);
 			SOUP_ASSERT(chunk_name == 'MTrk', "Bad MIDI data");
 			MidiTrack& track = tracks.emplace_back();
-			r.str_lp<u32_be_t>(track.sr.data);
+			r.str_lp<u32be_t>(track.sr.data);
 		}
 		SOUP_ASSERT(tracks.size() == ntrks, "Bad MIDI data");
 
@@ -69,7 +69,7 @@ NAMESPACE_SOUP
 					{
 						r.skip(1);
 						uint32_t microseconds_per_beat;
-						r.u24_be(microseconds_per_beat);
+						r.u24be(microseconds_per_beat);
 						float seconds_per_beat = static_cast<float>(microseconds_per_beat) / 1'000'000.0f;
 						bpm = (60.0f / seconds_per_beat);
 						//std::cout << "UPDATED BPM: " << bpm << " (" << microseconds_per_beat << " microseconds per beat)\n";

@@ -40,12 +40,12 @@ NAMESPACE_SOUP
 	bool WasmScript::load(Reader& r)
 	{
 		uint32_t u;
-		r.u32_le(u);
+		r.u32le(u);
 		if (u != 1836278016) // magic - '\0asm' in little-endian
 		{
 			return false;
 		}
-		r.u32_le(u);
+		r.u32le(u);
 		if (u != 1) // version
 		{
 			return false;

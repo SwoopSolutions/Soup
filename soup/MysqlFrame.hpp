@@ -11,7 +11,7 @@ NAMESPACE_SOUP
 
 		SOUP_PACKET_IO(s)
 		{
-			return s.u24_le(length)
+			return s.u24le(length)
 				&& s.u8(seq_id)
 				;
 		}

@@ -19,13 +19,13 @@ NAMESPACE_SOUP
 	SOUP_INT_STRUCT(u48_t, u64_t);
 	SOUP_INT_STRUCT(u56_t, u64_t);
 
-	SOUP_INT_STRUCT(u16_be_t, u16_t);
-	SOUP_INT_STRUCT(u24_be_t, u32_t);
-	SOUP_INT_STRUCT(u32_be_t, u32_t);
+	SOUP_INT_STRUCT(u16be_t, u16_t);
+	SOUP_INT_STRUCT(u24be_t, u32_t);
+	SOUP_INT_STRUCT(u32be_t, u32_t);
 
-	SOUP_INT_STRUCT(u16_le_t, u16_t);
-	SOUP_INT_STRUCT(u24_le_t, u32_t);
-	SOUP_INT_STRUCT(u32_le_t, u32_t);
+	SOUP_INT_STRUCT(u16le_t, u16_t);
+	SOUP_INT_STRUCT(u24le_t, u32_t);
+	SOUP_INT_STRUCT(u32le_t, u32_t);
 
 	class ioVirtualBase
 	{
@@ -98,12 +98,15 @@ NAMESPACE_SOUP
 			return u16(v, native_endianness);
 		}
 
-		bool u16_be(uint16_t& v) noexcept
+		[[deprecated("Renamed to u16be")]] bool u16_be(uint16_t& v) noexcept { return u16be(v); }
+		[[deprecated("Renamed to u16le")]] bool u16_le(uint16_t& v) noexcept { return u16le(v); }
+
+		bool u16be(uint16_t& v) noexcept
 		{
 			return u16(v, ENDIAN_NATIVE == ENDIAN_BIG);
 		}
 
-		bool u16_le(uint16_t& v) noexcept
+		bool u16le(uint16_t& v) noexcept
 		{
 			return u16(v, ENDIAN_NATIVE == ENDIAN_LITTLE);
 		}
@@ -137,12 +140,15 @@ NAMESPACE_SOUP
 			return u32(v, native_endianness);
 		}
 
-		bool u32_be(uint32_t& v) noexcept
+		[[deprecated("Renamed to u32be")]] bool u32_be(uint32_t& v) noexcept { return u32be(v); }
+		[[deprecated("Renamed to u32le")]] bool u32_le(uint32_t& v) noexcept { return u32le(v); }
+
+		bool u32be(uint32_t& v) noexcept
 		{
 			return u32(v, ENDIAN_NATIVE == ENDIAN_BIG);
 		}
 
-		bool u32_le(uint32_t& v) noexcept
+		bool u32le(uint32_t& v) noexcept
 		{
 			return u32(v, ENDIAN_NATIVE == ENDIAN_LITTLE);
 		}
@@ -176,12 +182,15 @@ NAMESPACE_SOUP
 			return u64(v, native_endianness);
 		}
 
-		bool u64_be(uint64_t& v) noexcept
+		[[deprecated("Renamed to u64be")]] bool u64_be(uint64_t& v) noexcept { return u64be(v); }
+		[[deprecated("Renamed to u64le")]] bool u64_le(uint64_t& v) noexcept { return u64le(v); }
+
+		bool u64be(uint64_t& v) noexcept
 		{
 			return u64(v, ENDIAN_NATIVE == ENDIAN_BIG);
 		}
 
-		bool u64_le(uint64_t& v) noexcept
+		bool u64le(uint64_t& v) noexcept
 		{
 			return u64(v, ENDIAN_NATIVE == ENDIAN_LITTLE);
 		}
@@ -235,12 +244,15 @@ NAMESPACE_SOUP
 			return u24(v, native_endianness);
 		}
 
-		bool u24_be(uint32_t& v) noexcept
+		[[deprecated("Renamed to u24be")]] bool u24_be(uint32_t& v) noexcept { return u24be(v); }
+		[[deprecated("Renamed to u24le")]] bool u24_le(uint32_t& v) noexcept { return u24le(v); }
+
+		bool u24be(uint32_t& v) noexcept
 		{
 			return u24(v, ENDIAN_NATIVE == ENDIAN_BIG);
 		}
 
-		bool u24_le(uint32_t& v) noexcept
+		bool u24le(uint32_t& v) noexcept
 		{
 			return u24(v, ENDIAN_NATIVE == ENDIAN_LITTLE);
 		}
@@ -368,11 +380,11 @@ NAMESPACE_SOUP
 	IOBASE_SER_METHOD_IMPL(u56)
 	IOBASE_SER_METHOD_IMPL(u64)
 
-	IOBASE_SER_METHOD_IMPL(u16_be)
-	IOBASE_SER_METHOD_IMPL(u24_be)
-	IOBASE_SER_METHOD_IMPL(u32_be)
+	IOBASE_SER_METHOD_IMPL(u16be)
+	IOBASE_SER_METHOD_IMPL(u24be)
+	IOBASE_SER_METHOD_IMPL(u32be)
 
-	IOBASE_SER_METHOD_IMPL(u16_le)
-	IOBASE_SER_METHOD_IMPL(u24_le)
-	IOBASE_SER_METHOD_IMPL(u32_le)
+	IOBASE_SER_METHOD_IMPL(u16le)
+	IOBASE_SER_METHOD_IMPL(u24le)
+	IOBASE_SER_METHOD_IMPL(u32le)
 }

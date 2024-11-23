@@ -44,7 +44,7 @@ NAMESPACE_SOUP
 		{
 			header_size += (16 / 8);
 			uint16_t buf;
-			SOUP_IF_UNLIKELY (!r.u16_be(buf))
+			SOUP_IF_UNLIKELY (!r.u16be(buf))
 			{
 				return BAD;
 			}
@@ -53,7 +53,7 @@ NAMESPACE_SOUP
 		else if (payload_len == 127)
 		{
 			header_size += (64 / 8);
-			SOUP_IF_UNLIKELY (!r.u64_be(payload_len))
+			SOUP_IF_UNLIKELY (!r.u64be(payload_len))
 			{
 				return BAD;
 			}

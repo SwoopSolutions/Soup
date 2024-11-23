@@ -113,7 +113,7 @@ NAMESPACE_SOUP
 				if (first == 0xFC)
 				{
 					uint16_t val;
-					if (u16_le(val))
+					if (u16le(val))
 					{
 						v = val;
 						return true;
@@ -122,7 +122,7 @@ NAMESPACE_SOUP
 				if (first == 0xFD)
 				{
 					uint32_t val;
-					if (u24_le(val))
+					if (u24le(val))
 					{
 						v = val;
 						return true;
@@ -131,7 +131,7 @@ NAMESPACE_SOUP
 				if (first == 0xFE)
 				{
 					uint64_t val;
-					if (u64_le(val))
+					if (u64le(val))
 					{
 						v = val;
 						return true;

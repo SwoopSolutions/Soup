@@ -101,8 +101,8 @@ NAMESPACE_SOUP
 		StringWriter w;
 
 		uint8_t b; uint32_t u;
-		u = 1836278016; w.u32_le(u);
-		u = 1; w.u32_le(u);
+		u = 1836278016; w.u32le(u);
+		u = 1; w.u32le(u);
 
 		// Type section
 		{

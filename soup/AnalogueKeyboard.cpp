@@ -694,7 +694,7 @@ NAMESPACE_SOUP
 				uint16_t scancode;
 				uint8_t value;
 				while (r.hasMore()
-					&& r.u16_be(scancode)
+					&& r.u16be(scancode)
 					&& scancode != 0
 					&& r.u8(value)
 					)
@@ -800,7 +800,7 @@ NAMESPACE_SOUP
 				if (type == 0xA0)
 				{
 					r.skip(1); // unknown, seems to be 0x10 in most cases
-					uint16_t scancode; r.u16_be(scancode);
+					uint16_t scancode; r.u16be(scancode);
 					r.skip(2); // fvalue * 800 (u16_be)
 					r.skip(1); // unknown, seems to always be 0x00
 					uint8_t value; r.u8(value); // fvalue * 200

@@ -16,13 +16,13 @@ NAMESPACE_SOUP
 
 		StringWriter sw;
 		uint32_t i = 0x0001 << 16; // Binding Request, Length 0
-		sw.u32_be(i);
+		sw.u32be(i);
 		i = 0x2112A442;
-		sw.u32_be(i);
+		sw.u32be(i);
 		i = 0;
-		sw.u32_be(i);
-		sw.u32_be(i);
-		sw.u32_be(i);
+		sw.u32be(i);
+		sw.u32be(i);
+		sw.u32be(i);
 
 		Scheduler sched;
 		Socket& sock = *sched.addSocket();
@@ -33,24 +33,24 @@ NAMESPACE_SOUP
 				StringReader sr(std::move(data));
 				sr.skip(20);
 				uint32_t i;
-				while (sr.u32_be(i))
+				while (sr.u32be(i))
 				{
 					if ((i >> 16) == 0x20) // XOR-MAPPED-ADDRESS
 					{
-						sr.u32_be(i);
+						sr.u32be(i);
 						if ((i >> 16) == 1) // IPv4
 						{
-							sr.u32_be(i);
+							sr.u32be(i);
 							i ^= 0x2112A442;
 							*cap.get<IpAddr*>() = IpAddr((native_u32_t)i);
 						}
 						else
 						{
 							uint32_t a, b, c, d;
-							sr.u32_be(a);
-							sr.u32_be(b);
-							sr.u32_be(c);
-							sr.u32_be(d);
+							sr.u32be(a);
+							sr.u32be(b);
+							sr.u32be(c);
+							sr.u32be(d);
 							a ^= 0x2112A442;
 							// remaining ints are XORed with transaction id, but we use all zeroes, so we're good.
 							*cap.get<IpAddr*>() = IpAddr(a, b, c, d);
@@ -74,7 +74,7 @@ NAMESPACE_SOUP
 		// Compute data to HMAC
 		StringWriter sw;
 		sw.data = data.substr(0, 2); // keep type
-		uint16_t s = static_cast<uint16_t>((data.size() - 20) + 24); sw.u16_be(s); // message length excludes header but includes MESSAGE-INTEGRITY
+		uint16_t s = static_cast<uint16_t>((data.size() - 20) + 24); sw.u16be(s); // message length excludes header but includes MESSAGE-INTEGRITY
 		sw.data.append(data.substr(4));
 
 		// Compute checksum
@@ -83,7 +83,7 @@ NAMESPACE_SOUP
 		// Add MESSAGE-INTEGRITY to data
 		sw.data = std::move(data);
 		uint32_t i = (0x0008 << 16) | 20; // MESSAGE-INTEGRITY, length 20
-		sw.u32_be(i);
+		sw.u32be(i);
 		sw.str(20, chksum);
 		data = std::move(sw.data);
 	}
@@ -95,8 +95,8 @@ NAMESPACE_SOUP
 
 		uint32_t chksum = crc32::hash(sw.data) ^ 0x5354554e;
 		uint32_t i = (0x8028 << 16) | 4; // FINGERPRINT, length 4
-		sw.u32_be(i);
-		sw.u32_be(chksum);
+		sw.u32be(i);
+		sw.u32be(chksum);
 
 		data = std::move(sw.data);
 	}
