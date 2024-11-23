@@ -12,7 +12,10 @@ NAMESPACE_SOUP
 	{
 		Reader& is;
 
-		ZipReader(Reader& is);
+		ZipReader(Reader& is) noexcept
+			: is(is)
+		{
+		}
 
 		[[nodiscard]] size_t seekCentralDirectory() const; // returns 0 on failure
 

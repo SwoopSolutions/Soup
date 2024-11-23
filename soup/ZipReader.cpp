@@ -9,15 +9,6 @@
 
 NAMESPACE_SOUP
 {
-	ZipReader::ZipReader(Reader& is)
-		: is(is)
-	{
-		if (!is.isLittleEndian())
-		{
-			SOUP_THROW(Exception("ZipReader expected underlying stream to be little endian"));
-		}
-	}
-
 	size_t ZipReader::seekCentralDirectory() const
 	{
 		std::vector<ZipIndexedFile> ret{};

@@ -43,12 +43,12 @@ NAMESPACE_SOUP
 		}
 
 	public:
-		[[nodiscard]] bool isBigEndian() const noexcept
+		[[deprecated]] bool isBigEndian() const noexcept
 		{
 			return (ENDIAN_BIG == ENDIAN_NATIVE) == native_endianness;
 		}
 
-		[[nodiscard]] bool isLittleEndian() const noexcept
+		[[deprecated]] bool isLittleEndian() const noexcept
 		{
 			return (ENDIAN_LITTLE == ENDIAN_NATIVE) == native_endianness;
 		}
