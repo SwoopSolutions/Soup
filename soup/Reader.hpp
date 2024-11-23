@@ -207,25 +207,6 @@ NAMESPACE_SOUP
 			return true;
 		}
 
-		// std::vector<uint16_t> with u16 size prefix.
-		bool vec_u16_u16(std::vector<uint16_t>& v) SOUP_EXCAL
-		{
-			uint16_t len;
-			SOUP_RETHROW_FALSE(ioBase::u16(len));
-			v.clear();
-			v.reserve(len / 2);
-			while (len--)
-			{
-				uint16_t entry;
-				SOUP_IF_UNLIKELY (!ioBase::u16(entry))
-				{
-					return false;
-				}
-				v.emplace_back(std::move(entry));
-			}
-			return true;
-		}
-
 		// vector of u16be with u16be byte length prefix.
 		bool vec_u16be_bl_u16be(std::vector<uint16_t>& v) SOUP_EXCAL
 		{

@@ -181,23 +181,6 @@ NAMESPACE_SOUP
 			return ret;
 		}
 
-		// std::vector<uint16_t> with u16 size prefix.
-		bool vec_u16_u16(std::vector<uint16_t>& v) noexcept
-		{
-			SOUP_IF_UNLIKELY (v.size() > 0xFFFF)
-			{
-				return false;
-			}
-			bool ret = true;
-			auto len = (uint16_t)v.size();
-			ret &= ioBase::u16(len);
-			for (auto& entry : v)
-			{
-				ret &= ioBase::u16(entry);
-			}
-			return ret;
-		}
-
 		// vector of u16be with u16be byte length prefix.
 		bool vec_u16be_bl_u16be(std::vector<uint16_t>& v) noexcept
 		{
