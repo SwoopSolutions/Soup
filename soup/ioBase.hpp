@@ -96,7 +96,7 @@ NAMESPACE_SOUP
 
 		[[deprecated]] bool u16(uint16_t& v) noexcept
 		{
-			return u16(v, native_endianness);
+			return native_endianness ? u16<true>(v) : u16<false>(v);
 		}
 
 		[[deprecated("Renamed to u16be")]] bool u16_be(uint16_t& v) noexcept { return u16be(v); }
@@ -104,18 +104,19 @@ NAMESPACE_SOUP
 
 		bool u16be(uint16_t& v) noexcept
 		{
-			return u16(v, ENDIAN_NATIVE == ENDIAN_BIG);
+			return u16<ENDIAN_NATIVE == ENDIAN_BIG>(v);
 		}
 
 		bool u16le(uint16_t& v) noexcept
 		{
-			return u16(v, ENDIAN_NATIVE == ENDIAN_LITTLE);
+			return u16<ENDIAN_NATIVE == ENDIAN_LITTLE>(v);
 		}
 
 	protected:
-		bool u16(uint16_t& v, bool native_endianness) noexcept
+		template <bool native_endianness>
+		bool u16(uint16_t& v) noexcept
 		{
-			if (native_endianness)
+			if constexpr (native_endianness)
 			{
 				return raw(&v, sizeof(v));
 			}
@@ -138,7 +139,7 @@ NAMESPACE_SOUP
 	public:
 		[[deprecated]] bool u32(uint32_t& v) noexcept
 		{
-			return u32(v, native_endianness);
+			return native_endianness ? u32<true>(v) : u32<false>(v);
 		}
 
 		[[deprecated("Renamed to u32be")]] bool u32_be(uint32_t& v) noexcept { return u32be(v); }
@@ -146,18 +147,19 @@ NAMESPACE_SOUP
 
 		bool u32be(uint32_t& v) noexcept
 		{
-			return u32(v, ENDIAN_NATIVE == ENDIAN_BIG);
+			return u32<ENDIAN_NATIVE == ENDIAN_BIG>(v);
 		}
 
 		bool u32le(uint32_t& v) noexcept
 		{
-			return u32(v, ENDIAN_NATIVE == ENDIAN_LITTLE);
+			return u32<ENDIAN_NATIVE == ENDIAN_LITTLE>(v);
 		}
 
 	protected:
-		bool u32(uint32_t& v, bool native_endianness) noexcept
+		template <bool native_endianness>
+		bool u32(uint32_t& v) noexcept
 		{
-			if (native_endianness)
+			if constexpr (native_endianness)
 			{
 				return raw(&v, sizeof(v));
 			}
@@ -180,7 +182,7 @@ NAMESPACE_SOUP
 	public:
 		[[deprecated]] bool u64(uint64_t& v) noexcept
 		{
-			return u64(v, native_endianness);
+			return native_endianness ? u64<true>(v) : u64<false>(v);
 		}
 
 		[[deprecated("Renamed to u64be")]] bool u64_be(uint64_t& v) noexcept { return u64be(v); }
@@ -188,18 +190,19 @@ NAMESPACE_SOUP
 
 		bool u64be(uint64_t& v) noexcept
 		{
-			return u64(v, ENDIAN_NATIVE == ENDIAN_BIG);
+			return u64<ENDIAN_NATIVE == ENDIAN_BIG>(v);
 		}
 
 		bool u64le(uint64_t& v) noexcept
 		{
-			return u64(v, ENDIAN_NATIVE == ENDIAN_LITTLE);
+			return u64<ENDIAN_NATIVE == ENDIAN_LITTLE>(v);
 		}
 
 	protected:
-		bool u64(uint64_t& v, bool native_endianness) noexcept
+		template <bool native_endianness>
+		bool u64(uint64_t& v) noexcept
 		{
-			if (native_endianness)
+			if constexpr (native_endianness)
 			{
 				return raw(&v, sizeof(v));
 			}
@@ -239,7 +242,7 @@ NAMESPACE_SOUP
 
 		bool u24(uint32_t& v) noexcept
 		{
-			return u24(v, native_endianness);
+			return native_endianness ? u24<true>(v) : u24<false>(v);
 		}
 
 		[[deprecated("Renamed to u24be")]] bool u24_be(uint32_t& v) noexcept { return u24be(v); }
@@ -247,22 +250,23 @@ NAMESPACE_SOUP
 
 		bool u24be(uint32_t& v) noexcept
 		{
-			return u24(v, ENDIAN_NATIVE == ENDIAN_BIG);
+			return u24<ENDIAN_NATIVE == ENDIAN_BIG>(v);
 		}
 
 		bool u24le(uint32_t& v) noexcept
 		{
-			return u24(v, ENDIAN_NATIVE == ENDIAN_LITTLE);
+			return u24<ENDIAN_NATIVE == ENDIAN_LITTLE>(v);
 		}
 
 	protected:
-		bool u24(uint32_t& v, bool native_endianness) noexcept
+		template <bool native_endianness>
+		bool u24(uint32_t& v) noexcept
 		{
-			if (isRead())
+			if constexpr (is_read)
 			{
 				v = 0;
 			}
-			if (native_endianness)
+			if constexpr (native_endianness)
 			{
 				return u8(((uint8_t*)&v)[0])
 					&& u8(((uint8_t*)&v)[1])
