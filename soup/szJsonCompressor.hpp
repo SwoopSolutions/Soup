@@ -41,7 +41,7 @@ NAMESPACE_SOUP
 
 		[[nodiscard]] std::string decompress(BitReader& br) const final
 		{
-			auto jt = json::binaryDecodeForDedicatedVariable(br.getStream());
+			auto jt = json::binaryDecode(br.getStream());
 			return jt->encodePretty();
 		}
 	};
