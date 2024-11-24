@@ -281,7 +281,7 @@ NAMESPACE_SOUP
 		}
 
 	public:
-		bool u40(uint64_t& v) noexcept
+		[[deprecated]] bool u40(uint64_t& v) noexcept
 		{
 			if (isRead())
 			{
@@ -305,7 +305,7 @@ NAMESPACE_SOUP
 			}
 		}
 
-		bool u48(uint64_t& v) noexcept
+		[[deprecated]] bool u48(uint64_t& v) noexcept
 		{
 			if (isRead())
 			{
@@ -331,7 +331,7 @@ NAMESPACE_SOUP
 			}
 		}
 
-		bool u56(uint64_t& v) noexcept
+		[[deprecated]] bool u56(uint64_t& v) noexcept
 		{
 			if (isRead())
 			{
