@@ -283,7 +283,7 @@ NAMESPACE_SOUP
 	public:
 		[[deprecated]] bool u40(uint64_t& v) noexcept
 		{
-			if (isRead())
+			if constexpr (is_read)
 			{
 				v = 0;
 			}
@@ -307,7 +307,7 @@ NAMESPACE_SOUP
 
 		[[deprecated]] bool u48(uint64_t& v) noexcept
 		{
-			if (isRead())
+			if constexpr (is_read)
 			{
 				v = 0;
 			}
@@ -333,7 +333,7 @@ NAMESPACE_SOUP
 
 		[[deprecated]] bool u56(uint64_t& v) noexcept
 		{
-			if (isRead())
+			if constexpr (is_read)
 			{
 				v = 0;
 			}
