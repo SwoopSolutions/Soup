@@ -361,12 +361,12 @@ NAMESPACE_SOUP
 
 		bool f32(float& v) noexcept
 		{
-			return raw(&v, 4);
+			return u32le(*reinterpret_cast<uint32_t*>(&v));
 		}
 
 		bool f64(double& v) noexcept
 		{
-			return raw(&v, 8);
+			return u64le(*reinterpret_cast<uint64_t*>(&v));
 		}
 	};
 
