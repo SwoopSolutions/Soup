@@ -9,12 +9,17 @@ NAMESPACE_SOUP
 	public:
 		std::string data{};
 
-		StringWriter(Endian endian = ENDIAN_LITTLE)
+		StringWriter()
+			: Writer(ENDIAN_LITTLE)
+		{
+		}
+
+		/* deprecated */ StringWriter(Endian endian)
 			: Writer(endian)
 		{
 		}
 
-		StringWriter(bool little_endian)
+		/* deprecated */ StringWriter(bool little_endian)
 			: Writer(little_endian)
 		{
 		}
