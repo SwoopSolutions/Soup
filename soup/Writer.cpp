@@ -4,6 +4,7 @@ NAMESPACE_SOUP
 {
 	bool Writer::u64_dyn(const uint64_t& v) noexcept
 	{
+		bool ret = true;
 		uint64_t in = v;
 		for (uint8_t i = 0; i != 8; ++i)
 		{
@@ -12,19 +13,20 @@ NAMESPACE_SOUP
 			if (in != 0)
 			{
 				cur |= 0x80;
-				u8(cur);
+				ret &= u8(cur);
 			}
 			else
 			{
-				return u8(cur);
+				ret &= u8(cur);
+				return ret;
 			}
 		}
 		if (in != 0)
 		{
 			auto byte = (uint8_t)in;
-			return u8(byte);
+			ret &= u8(byte);
 		}
-		return true;
+		return ret;
 	}
 
 	bool Writer::i64_dyn(const int64_t& v) noexcept
