@@ -44,7 +44,7 @@ NAMESPACE_SOUP
 		return u64_dyn(((uint64_t)neg << 6) | ((u & ~0x3f) << 1) | (u & 0x3f));
 	}
 
-	bool Writer::u64_dyn_v2(uint64_t& v) noexcept
+	bool Writer::u64_dyn_v2(const uint64_t& v) noexcept
 	{
 		bool ret = true;
 		uint64_t in = v;
