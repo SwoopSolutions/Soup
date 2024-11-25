@@ -69,7 +69,7 @@ std::string signature_base64 = soup::base64::encode(signature_bigint.toMessage()
 Finally, to decode and verify the signature:
 
 ```cpp
-auto signature_bigint = soup::Bigint::fromMessage(soup::base64::decode(signature_base64));
+auto signature_bigint = soup::Bigint::fromBinary(soup::base64::decode(signature_base64));
 
 if (pub.verify<soup::sha1>("It's me, I promise!", signature_bigint))
 {
