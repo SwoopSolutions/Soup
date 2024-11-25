@@ -38,6 +38,9 @@ NAMESPACE_SOUP
 		// A signed 64-bit integer encoded in 1..9 bytes. (Specialisation of u64_dyn.)
 		bool i64_dyn(int64_t& v) noexcept;
 
+		// An unsigned 64-bit integer encoded in 1..9 bytes. This is a slightly more efficient version of u64_dyn, e.g. 0x4000..0x407f are encoded in 2 bytes instead of 3.
+		bool u64_dyn_v2(uint64_t& v) noexcept;
+
 		// An integer where every byte's most significant bit is used to indicate if another byte follows, most significant byte first.
 		template <typename Int>
 		bool om(Int& v) noexcept

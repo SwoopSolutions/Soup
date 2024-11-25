@@ -49,4 +49,28 @@ NAMESPACE_SOUP
 		}
 		return true;
 	}
+
+	bool Reader::u64_dyn_v2(uint64_t& v) noexcept
+	{
+		uint8_t b;
+		SOUP_RETHROW_FALSE(u8(b));
+		v = (b & 0x7f);
+
+		uint8_t bits = 7;
+		bool has_next = (b >> 7);
+		while (has_next)
+		{
+			SOUP_RETHROW_FALSE(u8(b));
+			has_next = false;
+			SOUP_IF_LIKELY (bits < 56)
+			{
+				has_next = (b >> 7);
+				b &= 0x7f;
+			}
+			v |= (((uint64_t)b + 1) << bits);
+			bits += 7;
+		}
+
+		return true;
+	}
 }
