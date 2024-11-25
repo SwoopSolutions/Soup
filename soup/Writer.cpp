@@ -73,6 +73,21 @@ NAMESPACE_SOUP
 		return ret;
 	}
 
+	bool Writer::i64_dyn_v2(const int64_t& v) noexcept
+	{
+		uint64_t u;
+		bool neg = (v < 0);
+		if (neg)
+		{
+			u = (v * -1) - 1;
+		}
+		else
+		{
+			u = v;
+		}
+		return u64_dyn_v2(((uint64_t)neg << 6) | ((u & ~0x3f) << 1) | (u & 0x3f));
+	}
+
 	bool Writer::mysql_lenenc(const uint64_t& v) noexcept
 	{
 		if (v < 0xFB)

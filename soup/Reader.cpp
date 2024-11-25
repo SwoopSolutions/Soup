@@ -73,4 +73,21 @@ NAMESPACE_SOUP
 
 		return true;
 	}
+
+	bool Reader::i64_dyn_v2(int64_t& v) noexcept
+	{
+		uint64_t u;
+		SOUP_RETHROW_FALSE(u64_dyn_v2(u));
+		const bool neg = (u >> 6) & 1; // check bit 6
+		u = ((u >> 1) & ~0x3f) | (u & 0x3f); // remove bit 6
+		if (neg)
+		{
+			v = (u * -1) - 1;
+		}
+		else
+		{
+			v = u;
+		}
+		return true;
+	}
 }
