@@ -1,9 +1,6 @@
 # Soup
 
-The everything library for C++ 17 and beyond with bindings for other languages.
-
-> [!NOTE]
-> If you're looking to use Soup from a language other than C++, have a look at [the bindings](https://github.com/calamity-inc/Soup/tree/senpai/bindings).
+The everything library for C++ 17 and up.
 
 ## Building
 
@@ -30,3 +27,5 @@ For WASM, it can be done via `php wasm.php` (in the root folder) or `sun wasm` (
 ## Getting Started
 
 If you want some ideas as to how start using Soup, check out [the docs](docs).
+
+If you're looking to use Soup from a language other than C++, have a look at [the bindings](https://github.com/calamity-inc/Soup/tree/senpai/bindings).
