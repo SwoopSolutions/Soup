@@ -35,7 +35,7 @@ NAMESPACE_SOUP
 #if SOUP_WINDOWS
 			"-D_CRT_SECURE_NO_WARNINGS",
 #endif
-			"-ffunction-sections", "-fdata-sections", // needed for dead code elimination
+			"-ffunction-sections", "-fdata-sections", // dead code elimination
 			"-std="
 		};
 		args.back().append(lang);
@@ -69,6 +69,7 @@ NAMESPACE_SOUP
 #else
 #if !SOUP_MACOS
 		args.emplace_back("-fuse-ld=lld");
+		args.emplace_back("-Wl,--gc-sections,--icf=safe"); // dead code elimination
 #endif
 		args.emplace_back("-lstdc++");
 		if (!isEmscripten())
