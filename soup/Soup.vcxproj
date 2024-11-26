@@ -1244,7 +1244,6 @@
     <ClCompile Include="bitutil.cpp" />
     <ClCompile Include="BitWriter.cpp" />
     <ClCompile Include="CompactDetourHook.cpp" />
-    <ClCompile Include="CpuInfo_toString.cpp" />
     <ClCompile Include="crc32c.cpp" />
     <ClCompile Include="DetourHookBase.cpp" />
     <ClCompile Include="exceptions.cpp" />

@@ -2489,9 +2489,6 @@
     <ClCompile Include="DetourHookBase.cpp">
       <Filter>util\hooks</Filter>
     </ClCompile>
-    <ClCompile Include="CpuInfo_toString.cpp">
-      <Filter>cpu</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="os">
