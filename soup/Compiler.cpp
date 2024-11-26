@@ -35,6 +35,7 @@ NAMESPACE_SOUP
 #if SOUP_WINDOWS
 			"-D_CRT_SECURE_NO_WARNINGS",
 #endif
+			"-ffunction-sections", "-fdata-sections", // needed for dead code elimination
 			"-std="
 		};
 		args.back().append(lang);
