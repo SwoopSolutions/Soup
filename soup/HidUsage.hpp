@@ -6,18 +6,8 @@
 
 NAMESPACE_SOUP
 {
-	union HidUsage
+	struct HidUsage
 	{
-		struct
-		{
-#ifdef SOUP_LITTLE_ENDIAN
-			uint16_t id;
-			uint16_t page;
-#else
-			uint16_t page;
-			uint16_t id;
-#endif
-		};
 		uint32_t value;
 
 		HidUsage()
@@ -31,9 +21,18 @@ NAMESPACE_SOUP
 		}
 
 		HidUsage(uint16_t page, uint16_t id)
+			: value((static_cast<uint32_t>(page) << 16) | id)
 		{
-			this->page = page;
-			this->id = id;
+		}
+
+		[[nodiscard]] uint16_t getPage() const noexcept
+		{
+			return value >> 16;
+		}
+
+		[[nodiscard]] uint16_t getId() const noexcept
+		{
+			return static_cast<uint16_t>(value);
 		}
 
 		operator uint32_t& () noexcept

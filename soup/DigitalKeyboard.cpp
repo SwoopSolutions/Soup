@@ -189,9 +189,9 @@ NAMESPACE_SOUP
 				memset(keys, 0, sizeof(keys));
 				for (const auto& usage : parsed_report.active_selectors)
 				{
-					if (usage.page == 0x07) // Keyboard
+					if (usage.getPage() == 0x07) // Keyboard
 					{
-						if (const auto sk = hid_scancode_to_soup_key(usage.id); sk != KEY_NONE)
+						if (const auto sk = hid_scancode_to_soup_key(usage.getId()); sk != KEY_NONE)
 						{
 							keys[sk] = true;
 						}

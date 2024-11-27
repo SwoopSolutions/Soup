@@ -15,13 +15,17 @@ NAMESPACE_SOUP
 	{
 		ENDIAN_LITTLE = true,
 		ENDIAN_BIG = false,
-#ifdef SOUP_LITTLE_ENDIAN
+#if 'ABCD' == 0x41424344ul
 		ENDIAN_NATIVE = ENDIAN_LITTLE,
 #else
 		ENDIAN_NATIVE = ENDIAN_BIG,
 #endif
 		ENDIAN_NETWORK = ENDIAN_BIG,
 	};
+
+#if 'ABCD' != 0x41424344ul // Native endian is not little endian?
+	static_assert('ABCD' == 0x44434241ul); // Then it should be big endian.
+#endif
 
 	SOUP_INT_STRUCT(native_u16_t, uint16_t);
 	SOUP_INT_STRUCT(native_u32_t, uint32_t);

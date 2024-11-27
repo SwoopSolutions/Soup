@@ -918,6 +918,8 @@ static void unit_hardware()
 	{
 		HidUsage usage(1, 0);
 		assert(usage.value == (1 << 16));
+		assert(usage.getPage() == 1);
+		assert(usage.getId() == 0);
 	});
 	test("HidReportDescriptor", []
 	{

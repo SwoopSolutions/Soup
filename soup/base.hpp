@@ -107,12 +107,6 @@
 	#define SOUP_ARM false
 #endif
 
-#if 'ABCD' == 0x41424344ul
-	#define SOUP_LITTLE_ENDIAN
-#else
-	static_assert('ABCD' == 0x44434241ul); // If it's not little endian, it has to be big endian.
-#endif
-
 // === Determine if code inspector
 
 #ifdef __INTELLISENSE__
