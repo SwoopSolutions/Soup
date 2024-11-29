@@ -139,13 +139,13 @@ NAMESPACE_SOUP
 				{
 					return "Keychron Q5 HE";
 				}
-				/*if (hid.product_id == 0x0E20 // ANSI
+				if (hid.product_id == 0x0E20 // ANSI
 					|| hid.product_id == 0x0E21 // ISO
 					|| hid.product_id == 0x0E22 // JIS
 					)
 				{
 					return "Keychron K2 HE";
-				}*/
+				}
 			}
 		}
 		// NuPhy
@@ -189,6 +189,16 @@ NAMESPACE_SOUP
 		KEY_LCTRL,     KEY_LMETA, KEY_LALT, KEY_NONE, KEY_NONE, KEY_NONE, KEY_SPACE, KEY_NONE, KEY_NONE, KEY_RMETA, KEY_FN,        KEY_RCTRL,        KEY_ARROW_LEFT,    KEY_ARROW_DOWN, KEY_ARROW_RIGHT, KEY_NONE,      KEY_NUMPAD0,       KEY_NUMPAD_DECIMAL,  KEY_NONE,
 	};
 	static_assert(sizeof(layout_keychron_q5_he) == 2 + 6 * 19);
+
+	static const uint8_t layout_keychron_k2_he[] = { 6, 16,
+		KEY_ESCAPE,    KEY_F1,    KEY_F2,   KEY_F3,   KEY_F4,   KEY_F5,   KEY_F6,    KEY_F7,   KEY_F8,   KEY_F9,    KEY_F10,       KEY_F11,          KEY_F12,           KEY_PRINT_SCREEN, KEY_DEL,         KEY_OEM_2 /* cycle rgb effect */,
+		KEY_BACKQUOTE, KEY_1,     KEY_2,    KEY_3,    KEY_4,    KEY_5,    KEY_6,     KEY_7,    KEY_8,    KEY_9,     KEY_0,         KEY_MINUS,        KEY_EQUALS,        KEY_BACKSPACE,    KEY_PAGE_UP,     KEY_NONE,
+		KEY_TAB,       KEY_Q,     KEY_W,    KEY_E,    KEY_R,    KEY_T,    KEY_Y,     KEY_U,    KEY_I,    KEY_O,     KEY_P,         KEY_BRACKET_LEFT, KEY_BRACKET_RIGHT, KEY_BACKSLASH,    KEY_PAGE_DOWN,   KEY_NONE,
+		KEY_CAPS_LOCK, KEY_A,     KEY_S,    KEY_D,    KEY_F,    KEY_G,    KEY_H,     KEY_J,    KEY_K,    KEY_L,     KEY_SEMICOLON, KEY_QUOTE,        KEY_ENTER,         KEY_HOME,         KEY_NONE,        KEY_NONE,
+		KEY_LSHIFT,    KEY_NONE,  KEY_Z,    KEY_X,    KEY_C,    KEY_V,    KEY_B,     KEY_N,    KEY_M,    KEY_COMMA, KEY_PERIOD,    KEY_SLASH,        KEY_RSHIFT,        KEY_ARROW_UP,     KEY_END,         KEY_NONE,
+		KEY_LCTRL,     KEY_LMETA, KEY_LALT, KEY_NONE, KEY_NONE, KEY_NONE, KEY_SPACE, KEY_NONE, KEY_NONE, KEY_RALT,  KEY_FN,        KEY_RCTRL,        KEY_ARROW_LEFT,    KEY_ARROW_DOWN,   KEY_ARROW_RIGHT, KEY_NONE,
+	};
+	static_assert(sizeof(layout_keychron_k2_he) == 2 + 6 * 16);
 
 	[[nodiscard]] static SOUP_PURE uint8_t layout_get_rows(const uint8_t* layout) noexcept { return layout[0]; }
 	[[nodiscard]] static SOUP_PURE uint8_t layout_get_cols(const uint8_t* layout) noexcept { return layout[1]; }
@@ -267,17 +277,24 @@ NAMESPACE_SOUP
 							kbd.keychron.state = 0xff;
 						}
 
-						if (kbd.hid.product_id == 0x0B50)
+						if (hid.product_id == 0x0B10 // ANSI
+							|| hid.product_id == 0x0B11 // ISO
+							|| hid.product_id == 0x0B12 // JIS
+							)
 						{
-							kbd.keychron.layout = layout_keychron_q5_he;
+							kbd.keychron.layout = layout_keychron_q1_he;
 						}
 						else if (kbd.hid.product_id == 0x0B30)
 						{
 							kbd.keychron.layout = layout_keychron_q3_he;
 						}
+						else if (kbd.hid.product_id == 0x0B50)
+						{
+							kbd.keychron.layout = layout_keychron_q5_he;
+						}
 						else
 						{
-							kbd.keychron.layout = layout_keychron_q1_he;
+							kbd.keychron.layout = layout_keychron_k2_he;
 						}
 					}
 				}
@@ -588,6 +605,10 @@ NAMESPACE_SOUP
 					combined.append(b3.data() + 2, b3.size() - 2);
 					for (uint8_t i = 0; i != layout_get_size(keychron.layout); ++i)
 					{
+						/*if (combined[i] >= 5)
+						{
+							std::cout << "Key pressed: " << (int)layout_index_to_row(keychron.layout, i) << ", " << (int)layout_index_to_col(keychron.layout, i) << std::endl;
+						}*/
 						const auto sk = layout_get_item(keychron.layout, i);
 						if (sk != KEY_NONE)
 						{
