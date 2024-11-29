@@ -60,6 +60,29 @@ jobs:
           name: "Debian 10 and above"
           path: CLI/soup
 
+  arm64:
+    runs-on: [ARM64]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Soup
+        run: php build_lib.php
+
+      - name: Build CLI
+        run: php build_cli.php
+
+      - name: Run ./soup test
+        run: ./CLI/soup test
+
+      - name: Run ./soup bench
+        run: ./CLI/soup bench
+
+      - name: Upload soup
+        uses: actions/upload-artifact@v4
+        with:
+          name: "Debian 12 (ARM64)"
+          path: CLI/soup
+
   macos-13:
     runs-on: macos-13
     steps:
