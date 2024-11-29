@@ -54,7 +54,7 @@ NAMESPACE_SOUP
 		return (8 - 5 - (5 * block) % 8);
 	}
 
-	static unsigned char shift_left(unsigned char byte, char offset)
+	static unsigned char shift_left(unsigned char byte, signed char offset)
 	{
 		if (offset < 0)
 		{
