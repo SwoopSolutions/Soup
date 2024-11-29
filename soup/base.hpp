@@ -103,6 +103,9 @@
 
 #if defined(__arm__) || defined(__aarch64__) || defined(_M_ARM) || defined(_M_ARM64)
 	#define SOUP_ARM true
+	#if defined(__clang_major__) && __clang_major__ <= 14 && !defined(__ARM_FEATURE_CRYPTO)
+		#error Your version of Clang predates some important fixes for ARM codegen. Provide -march=armv8+crypto+crc to compile Soup. Note that the resulting binary may be incorrect.
+	#endif
 #else
 	#define SOUP_ARM false
 #endif
