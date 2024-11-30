@@ -256,10 +256,11 @@ NAMESPACE_SOUP
 				// Check if this is a supported device and the right interface for it
 				if (auto name = checkDeviceName(hid); !name.empty())
 				{
+					const bool has_ctx_key = (hid.vendor_id == 0x1532);
 					AnalogueKeyboard& kbd = res.emplace_back(AnalogueKeyboard{
 						std::move(name),
 						std::move(hid),
-						hid.vendor_id == 0x1532 // Has context key? Only true for Razer.
+						has_ctx_key
 					});
 					if (kbd.hid.vendor_id == 0x3434 // Keychron
 						&& kbd.hid.havePermission()
@@ -277,9 +278,9 @@ NAMESPACE_SOUP
 							kbd.keychron.state = 0xff;
 						}
 
-						if (hid.product_id == 0x0B10 // ANSI
-							|| hid.product_id == 0x0B11 // ISO
-							|| hid.product_id == 0x0B12 // JIS
+						if (kbd.hid.product_id == 0x0B10 // ANSI
+							|| kbd.hid.product_id == 0x0B11 // ISO
+							|| kbd.hid.product_id == 0x0B12 // JIS
 							)
 						{
 							kbd.keychron.layout = layout_keychron_q1_he;
