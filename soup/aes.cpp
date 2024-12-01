@@ -950,7 +950,7 @@ NAMESPACE_SOUP
 		aes::encryptBlock(h, h, roundKeys, Nr);
 	}
 
-	void aes::calcJ0(uint8_t j0[16], const uint8_t h[16], const uint8_t* iv, size_t iv_len) SOUP_EXCAL
+	void aes::calcJ0(uint8_t j0[16], const uint8_t h[16], const uint8_t* iv, size_t iv_len) noexcept
 	{
 		if (iv_len == 12)
 		{
@@ -962,15 +962,21 @@ NAMESPACE_SOUP
 		}
 		else
 		{
-			const auto len_iv = iv_len * 8;
-			const auto s = 128 * plusaes::detail::gcm::ceil(len_iv / 128.0) - len_iv;
-			std::vector<uint8_t> ghash_in;
-			ghash_in.reserve(32);
-			plusaes::detail::gcm::push_back(ghash_in, iv, iv_len);
-			plusaes::detail::gcm::push_back_zero_bits(ghash_in, s + 64);
-			plusaes::detail::gcm::push_back(ghash_in, std::bitset<64>(len_iv));
+			GhashState state(j0, h);
+			state.append(iv, iv_len);
 
-			return ghash(j0, h, ghash_in.data(), ghash_in.size());
+			const uint64_t iv_bits = iv_len * 8;
+			auto padding = (128 * static_cast<unsigned long>(std::ceil(iv_bits / 128.0) + 0.5) - iv_bits) / 8;
+			while (padding--)
+			{
+				state.appendByte(0);
+			}
+
+			memset(state.buffer, 0, 16);
+			reinterpret_cast<uint64_t*>(state.buffer)[1] = Endianness::invert(iv_bits); static_assert(ENDIAN_NATIVE == ENDIAN_LITTLE);
+			state.transform();
+
+			SOUP_DEBUG_ASSERT(state.buffer_counter == 0);
 		}
 	}
 
@@ -1028,5 +1034,20 @@ NAMESPACE_SOUP
 		plusaes::detail::gcm::push_back(ghash_in, std::bitset<64>(lenC));
 		ghash(tag, h, ghash_in.data(), ghash_in.size());
 		gctr(tag, 16, roundKeys, Nr, j0);
+	}
+
+	aes::GhashState::GhashState(uint8_t res[16], const uint8_t h[16]) noexcept
+		: res(res), h(h), buffer_counter(0)
+	{
+		memset(res, 0, 16);
+	}
+
+	void aes::GhashState::transform() noexcept
+	{
+		xorBlocks(res, buffer);
+
+		uint8_t tmp[16];
+		memcpy(tmp, res, 16);
+		mulBlocks(res, tmp, h);
 	}
 }

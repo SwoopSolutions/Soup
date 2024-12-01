@@ -193,6 +193,25 @@ static void unit_crypto()
 			aes::ecbDecrypt(reinterpret_cast<uint8_t*>(data.data()), data.size(), reinterpret_cast<const uint8_t*>(key), 32);
 			assert(data == "The quick brown fox jumps over the lazy dog.");
 		});
+		test("calcJ0", []
+		{
+			const uint8_t bytes[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 };
+			{
+				uint8_t res[16];
+				aes::calcJ0(res, bytes, bytes, 15);
+				assert(string::bin2hex((const char*)res, 16) == "C53CC6D5A2EEBC3F3FF12D420285FC8C");
+			}
+			{
+				uint8_t res[16];
+				aes::calcJ0(res, bytes, bytes, 16);
+				assert(string::bin2hex((const char*)res, 16) == "67144FBCDC0E6262B92502D7DA99CE72");
+			}
+			{
+				uint8_t res[16];
+				aes::calcJ0(res, bytes, bytes, 17);
+				assert(string::bin2hex((const char*)res, 16) == "B85388BE5704F782153B4FDCC1F16FF7");
+			}
+		});
 	}
 
 	test("SegWitAddress", []
