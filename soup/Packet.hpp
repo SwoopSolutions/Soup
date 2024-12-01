@@ -6,9 +6,7 @@
 #define SOUP_ELSEIF_ISWRITE else
 
 #include "BufferWriter.hpp"
-#include "IstreamReader.hpp"
 #include "MemoryRefReader.hpp"
-#include "OstreamWriter.hpp"
 #include "StringReader.hpp"
 #include "StringWriter.hpp"
 #include "utility.hpp" // SOUP_MOVE_RETURN
@@ -69,17 +67,6 @@ NAMESPACE_SOUP
 			return read(r);
 		}
 
-		[[deprecated]] bool read(std::istream& is, Endian endian = ENDIAN_BIG)
-		{
-			IstreamReader r(is, endian);
-			return read(r);
-		}
-
-		[[deprecated]] bool readLE(std::istream& is)
-		{
-			return read(is, ENDIAN_LITTLE);
-		}
-
 		template <typename Reader = Reader>
 		bool read(Reader& r)
 		{
@@ -117,17 +104,6 @@ NAMESPACE_SOUP
 		[[deprecated]] std::string toBinaryStringLE()
 		{
 			return toBinaryString(ENDIAN_LITTLE);
-		}
-
-		[[deprecated]] bool write(std::ostream& os, Endian endian = ENDIAN_BIG)
-		{
-			OstreamWriter w(os, endian);
-			return write(w);
-		}
-
-		[[deprecated]] bool writeLE(std::ostream& os)
-		{
-			return write(os, ENDIAN_LITTLE);
 		}
 
 		template <typename Writer = Writer>
