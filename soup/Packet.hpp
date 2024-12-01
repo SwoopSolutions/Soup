@@ -37,33 +37,9 @@ NAMESPACE_SOUP
 			return read(r);
 		}
 
-		[[deprecated]] bool fromBinary(std::string&& bin, Endian endian) noexcept
-		{
-			StringReader r(std::move(bin), endian);
-			return read(r);
-		}
-
 		bool fromBinary(const std::string& bin) noexcept
 		{
 			MemoryRefReader r(bin, ENDIAN_BIG);
-			return read(r);
-		}
-
-		[[deprecated]] bool fromBinary(const std::string& bin, Endian endian) noexcept
-		{
-			MemoryRefReader r(bin, endian);
-			return read(r);
-		}
-
-		[[deprecated]] bool fromBinaryLE(std::string&& bin) noexcept
-		{
-			StringReader r(std::move(bin), ENDIAN_LITTLE);
-			return read(r);
-		}
-
-		[[deprecated]] bool fromBinaryLE(const std::string& bin) noexcept
-		{
-			MemoryRefReader r(bin, ENDIAN_LITTLE);
 			return read(r);
 		}
 
@@ -80,30 +56,11 @@ NAMESPACE_SOUP
 			SOUP_MOVE_RETURN(w.buf);
 		}
 
-		[[deprecated]] Buffer toBinary(Endian endian) SOUP_EXCAL
-		{
-			BufferWriter w(endian);
-			write(w);
-			SOUP_MOVE_RETURN(w.buf);
-		}
-
 		[[nodiscard]] std::string toBinaryString() SOUP_EXCAL
 		{
 			StringWriter w(ENDIAN_BIG);
 			write(w);
 			SOUP_MOVE_RETURN(w.data);
-		}
-
-		[[deprecated]] std::string toBinaryString(Endian endian) SOUP_EXCAL
-		{
-			StringWriter w(endian);
-			write(w);
-			SOUP_MOVE_RETURN(w.data);
-		}
-
-		[[deprecated]] std::string toBinaryStringLE()
-		{
-			return toBinaryString(ENDIAN_LITTLE);
 		}
 
 		template <typename Writer = Writer>
