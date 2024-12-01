@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <string>
-#include <vector>
 
 #include "base.hpp" // SOUP_EXCAL
 
@@ -53,7 +52,9 @@ NAMESPACE_SOUP
 		static SOUP_FORCEINLINE void xorBlocks(uint8_t a[16], const uint8_t b[16]) noexcept;
 		static void xorBlocks(uint8_t a[], const uint8_t b[], unsigned int len) noexcept;
 
-		static void ghash(uint8_t res[16], const uint8_t h[16], const std::vector<uint8_t>& x) noexcept;
+		static SOUP_FORCEINLINE void rshiftBlock(uint8_t block[16]) noexcept;
+		static void mulBlocks(uint8_t res[16], const uint8_t x[16], const uint8_t y[16]) noexcept;
+		static void ghash(uint8_t res[16], const uint8_t h[16], const uint8_t x[], size_t x_bytes) noexcept;
 		static void calcH(uint8_t h[16], uint8_t roundKeys[240], const int Nr) noexcept;
 		static void calcJ0(uint8_t j0[16], const uint8_t h[16], const uint8_t* iv, size_t iv_len) SOUP_EXCAL;
 		static void inc32(uint8_t block[16]) noexcept;

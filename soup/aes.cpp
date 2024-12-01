@@ -1,6 +1,7 @@
 #include "aes.hpp"
 
 #include <cstring> // memcpy
+#include <vector>
 
 #include "base.hpp"
 
@@ -900,11 +901,47 @@ NAMESPACE_SOUP
 		}
 	}
 
-	void aes::ghash(uint8_t res[16], const uint8_t h[16], const std::vector<uint8_t>& x) noexcept
+	void aes::rshiftBlock(uint8_t block[16]) noexcept
 	{
-		plusaes::detail::gcm::Block bH(h, 16);
-		auto bRes = plusaes::detail::gcm::ghash(bH, x);
-		memcpy(res, bRes.data(), 16);
+		for (int i = 15; i > 0; --i)
+		{
+			block[i] = (block[i] >> 1) | (block[i - 1] << 7);
+		}
+		block[0] >>= 1;
+	}
+
+	void aes::mulBlocks(uint8_t res[16], const uint8_t x[16], const uint8_t y[16]) noexcept
+	{
+		memset(res, 0, 16);
+		uint8_t v[16];
+		memcpy(v, y, 16);
+		for (uint8_t i = 0; i != 128; ++i)
+		{
+			if ((x[i / 8] >> (7 - (i % 8))) & 1)
+			{
+				xorBlocks(res, v);
+			}
+
+			const bool lsb_set = v[15] & 1;
+			rshiftBlock(v);
+			if (lsb_set)
+			{
+				v[0] ^= 0xe1;
+			}
+		}
+	}
+
+	void aes::ghash(uint8_t res[16], const uint8_t h[16], const uint8_t x[], size_t x_bytes) noexcept
+	{
+		memset(res, 0, 16);
+		const auto x_blocks = (x_bytes / 16);
+		uint8_t tmp[16];
+		for (size_t i = 0; i != x_blocks; ++i)
+		{
+			xorBlocks(res, &x[i * 16]);
+			memcpy(tmp, res, 16);
+			mulBlocks(res, tmp, h);
+		}
 	}
 
 	void aes::calcH(uint8_t h[16], uint8_t roundKeys[240], const int Nr) noexcept
@@ -933,7 +970,7 @@ NAMESPACE_SOUP
 			plusaes::detail::gcm::push_back_zero_bits(ghash_in, s + 64);
 			plusaes::detail::gcm::push_back(ghash_in, std::bitset<64>(len_iv));
 
-			return ghash(j0, h, ghash_in);
+			return ghash(j0, h, ghash_in.data(), ghash_in.size());
 		}
 	}
 
@@ -989,7 +1026,7 @@ NAMESPACE_SOUP
 		plusaes::detail::gcm::push_back_zero_bits(ghash_in, u);
 		plusaes::detail::gcm::push_back(ghash_in, std::bitset<64>(lenA));
 		plusaes::detail::gcm::push_back(ghash_in, std::bitset<64>(lenC));
-		ghash(tag, h, ghash_in);
+		ghash(tag, h, ghash_in.data(), ghash_in.size());
 		gctr(tag, 16, roundKeys, Nr, j0);
 	}
 }
