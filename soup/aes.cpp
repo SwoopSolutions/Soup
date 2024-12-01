@@ -932,19 +932,6 @@ NAMESPACE_SOUP
 		}
 	}
 
-	void aes::ghash(uint8_t res[16], const uint8_t h[16], const uint8_t x[], size_t x_bytes) noexcept
-	{
-		memset(res, 0, 16);
-		const auto x_blocks = (x_bytes / 16);
-		uint8_t tmp[16];
-		for (size_t i = 0; i != x_blocks; ++i)
-		{
-			xorBlocks(res, &x[i * 16]);
-			memcpy(tmp, res, 16);
-			mulBlocks(res, tmp, h);
-		}
-	}
-
 	void aes::calcH(uint8_t h[16], uint8_t roundKeys[240], const int Nr) noexcept
 	{
 		memset(h, 0, 16);
