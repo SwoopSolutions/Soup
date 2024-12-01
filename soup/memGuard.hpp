@@ -14,9 +14,9 @@ NAMESPACE_SOUP
 	{
 		enum AllowedAccessFlags : int
 		{
-			ACC_READ = 0x01, // equals PROT_READ on Linux
-			ACC_WRITE = 0x02, // equals PROT_WRITE on Linux
-			ACC_EXEC = 0x04, // equals PROT_EXEC on Linux
+			ACC_READ = 0x01,
+			ACC_WRITE = 0x02,
+			ACC_EXEC = 0x04,
 
 			ACC_RWX = ACC_READ | ACC_WRITE | ACC_EXEC
 		};

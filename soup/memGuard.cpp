@@ -45,6 +45,10 @@ NAMESPACE_SOUP
 		}
 		return 0;
 	}
+#else
+	static_assert(PROT_READ == memGuard::ACC_READ);
+	static_assert(PROT_WRITE == memGuard::ACC_WRITE);
+	static_assert(PROT_EXEC == memGuard::ACC_EXEC);
 #endif
 
 	void* memGuard::alloc(size_t len, int allowed_access)
