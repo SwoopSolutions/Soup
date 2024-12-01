@@ -13,9 +13,9 @@ NAMESPACE_SOUP
 		void* target = nullptr;
 		void* original = nullptr;
 
-		static uint8_t jmp_trampoline[5];
-		static uint8_t longjump_trampoline_r10[13];
-		static uint8_t longjump_trampoline_noreg[14];
+		static const uint8_t jmp_trampoline[5];
+		static const uint8_t longjump_trampoline_r10[13];
+		static const uint8_t longjump_trampoline_noreg[14];
 
 		[[nodiscard]] void* getEffectiveTarget() const;
 		void createOriginal(size_t trampoline_bytes);

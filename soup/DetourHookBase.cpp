@@ -19,16 +19,16 @@
 
 NAMESPACE_SOUP
 {
-	uint8_t DetourHookBase::jmp_trampoline[] = {
+	const uint8_t DetourHookBase::jmp_trampoline[] = {
 		0xE9, 0x00, 0x00, 0x00, 0x00, // jmp (4 bytes)
 	};
 
-	uint8_t DetourHookBase::longjump_trampoline_r10[] = {
+	const uint8_t DetourHookBase::longjump_trampoline_r10[] = {
 		0x49, 0xBA, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // movabs r10, (8 bytes)
 		0x41, 0xff, 0xe2, // jmp r10
 	};
 
-	uint8_t DetourHookBase::longjump_trampoline_noreg[] = {
+	const uint8_t DetourHookBase::longjump_trampoline_noreg[] = {
 		0xff, 0x25, 0x00, 0x00, 0x00, 0x00, // jmp qword ptr [rip]
 		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 // (8 bytes)
 	};
@@ -90,19 +90,26 @@ NAMESPACE_SOUP
 		{
 			SOUP_THROW(Exception(ObfusString("Delta too big for jmp instruction").str()));
 		}
-		*(int32_t*)(jmp_trampoline + 1) = static_cast<int32_t>(rip_delta);
-		memcpy(addr, jmp_trampoline, sizeof(jmp_trampoline));
+
+		uint8_t trampoline[sizeof(jmp_trampoline)];
+		memcpy(trampoline, jmp_trampoline, sizeof(trampoline));
+		*reinterpret_cast<int32_t*>(trampoline + 1) = static_cast<int32_t>(rip_delta);
+		memcpy(addr, trampoline, sizeof(trampoline));
 	}
 
 	void DetourHookBase::writeLongjumpTrampolineR10(void* addr, void* target) noexcept
 	{
-		*(void**)(longjump_trampoline_r10 + 2) = target;
-		memcpy(addr, longjump_trampoline_r10, sizeof(longjump_trampoline_r10));
+		uint8_t trampoline[sizeof(longjump_trampoline_r10)];
+		memcpy(trampoline, longjump_trampoline_r10, sizeof(trampoline));
+		*reinterpret_cast<void**>(trampoline + 2) = target;
+		memcpy(addr, trampoline, sizeof(trampoline));
 	}
 
 	void DetourHookBase::writeLongjumpTrampolineNoreg(void* addr, void* target) noexcept
 	{
-		*(void**)(longjump_trampoline_noreg + 6) = target;
-		memcpy(addr, longjump_trampoline_noreg, sizeof(longjump_trampoline_noreg));
+		uint8_t trampoline[sizeof(longjump_trampoline_noreg)];
+		memcpy(trampoline, longjump_trampoline_noreg, sizeof(trampoline));
+		*reinterpret_cast<void**>(trampoline + 6) = target;
+		memcpy(addr, trampoline, sizeof(trampoline));
 	}
 }
