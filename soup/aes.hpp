@@ -23,8 +23,8 @@ NAMESPACE_SOUP
 		static void cfbDecrypt(uint8_t* data, size_t data_len, const uint8_t* key, size_t key_len, const uint8_t iv[16]) noexcept;
 		static void ecbEncrypt(uint8_t* data, size_t data_len, const uint8_t* key, size_t key_len) noexcept;
 		static void ecbDecrypt(uint8_t* data, size_t data_len, const uint8_t* key, size_t key_len) noexcept;
-		static void gcmEncrypt(uint8_t* data, size_t data_len, const uint8_t* aadata, size_t aadata_len, const uint8_t* key, size_t key_len, const uint8_t* iv, size_t iv_len, uint8_t tag[16]) SOUP_EXCAL;
-		static bool gcmDecrypt(uint8_t* data, size_t data_len, const uint8_t* aadata, size_t aadata_len, const uint8_t* key, size_t key_len, const uint8_t* iv, size_t iv_len, const uint8_t tag[16]) SOUP_EXCAL;
+		static void gcmEncrypt(uint8_t* data, size_t data_len, const uint8_t* aadata, size_t aadata_len, const uint8_t* key, size_t key_len, const uint8_t* iv, size_t iv_len, uint8_t tag[16]) noexcept;
+		static bool gcmDecrypt(uint8_t* data, size_t data_len, const uint8_t* aadata, size_t aadata_len, const uint8_t* key, size_t key_len, const uint8_t* iv, size_t iv_len, const uint8_t tag[16]) noexcept;
 
 
 		static void expandKey(uint8_t w[240], const uint8_t* key, size_t key_len) noexcept;
@@ -58,7 +58,7 @@ NAMESPACE_SOUP
 		static void calcJ0(uint8_t j0[16], const uint8_t h[16], const uint8_t* iv, size_t iv_len) noexcept;
 		static void inc32(uint8_t block[16]) noexcept;
 		static void gctr(uint8_t* data, size_t data_len, const uint8_t roundKeys[240], const int Nr, const uint8_t icb[8]) noexcept;
-		static void calcGcmTag(uint8_t tag[16], uint8_t* data, size_t data_len, const uint8_t* aadata, size_t aadata_len, const uint8_t roundKeys[16], const int Nr, const uint8_t h[16], const uint8_t j0[16]) SOUP_EXCAL;
+		static void calcGcmTag(uint8_t tag[16], uint8_t* data, size_t data_len, const uint8_t* aadata, size_t aadata_len, const uint8_t roundKeys[16], const int Nr, const uint8_t h[16], const uint8_t j0[16]) noexcept;
 
 		struct GhashState
 		{

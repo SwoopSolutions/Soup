@@ -1,7 +1,7 @@
 #include "aes.hpp"
 
+#include <cmath> // ceil
 #include <cstring> // memcpy
-#include <vector>
 
 #include "base.hpp"
 
@@ -17,7 +17,6 @@
 #endif
 
 #include "Endian.hpp"
-#include "plusaes.hpp"
 
 /*
 Original source: https://github.com/SergeyBel/AES
@@ -43,6 +42,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+
+// https://github.com/kkAyataka/plusaes was also used a reference for AES-GCM
 
 #if SOUP_X86
 	#define IS_AES_INTRIN_AVAILBLE CpuInfo::get().supportsAESNI()
@@ -435,7 +436,7 @@ NAMESPACE_SOUP
 		}
 	}
 
-	void aes::gcmEncrypt(uint8_t* data, size_t data_len, const uint8_t* aadata, size_t aadata_len, const uint8_t* key, size_t key_len, const uint8_t* iv, size_t iv_len, uint8_t tag[16]) SOUP_EXCAL
+	void aes::gcmEncrypt(uint8_t* data, size_t data_len, const uint8_t* aadata, size_t aadata_len, const uint8_t* key, size_t key_len, const uint8_t* iv, size_t iv_len, uint8_t tag[16]) noexcept
 	{
 		const auto Nr = getNrFromKeyLen(key_len);
 		alignas(16) uint8_t roundKeys[240];
@@ -459,7 +460,7 @@ NAMESPACE_SOUP
 		calcGcmTag(tag, data, data_len, aadata, aadata_len, roundKeys, Nr, h, j0);
 	}
 
-	bool aes::gcmDecrypt(uint8_t* data, size_t data_len, const uint8_t* aadata, size_t aadata_len, const uint8_t* key, size_t key_len, const uint8_t* iv, size_t iv_len, const uint8_t tag[16]) SOUP_EXCAL
+	bool aes::gcmDecrypt(uint8_t* data, size_t data_len, const uint8_t* aadata, size_t aadata_len, const uint8_t* key, size_t key_len, const uint8_t* iv, size_t iv_len, const uint8_t tag[16]) noexcept
 	{
 		const auto Nr = getNrFromKeyLen(key_len);
 		alignas(16) uint8_t roundKeys[240];
@@ -1017,22 +1018,23 @@ NAMESPACE_SOUP
 		}
 	}
 
-	void aes::calcGcmTag(uint8_t tag[16], uint8_t* data, size_t data_len, const uint8_t* aadata, size_t aadata_len, const uint8_t roundKeys[16], const int Nr, const uint8_t h[16], const uint8_t j0[16]) SOUP_EXCAL
+	void aes::calcGcmTag(uint8_t tag[16], uint8_t* data, size_t data_len, const uint8_t* aadata, size_t aadata_len, const uint8_t roundKeys[16], const int Nr, const uint8_t h[16], const uint8_t j0[16]) noexcept
 	{
-		const auto lenC = data_len * 8;
-		const auto lenA = aadata_len * 8;
-		const std::size_t u = 128 * plusaes::detail::gcm::ceil(lenC / 128.0) - lenC;
-		const std::size_t v = 128 * plusaes::detail::gcm::ceil(lenA / 128.0) - lenA;
+		const uint64_t lenC = data_len * 8;
+		const uint64_t lenA = aadata_len * 8;
+		auto u = (128 * static_cast<unsigned long>(std::ceil(lenC / 128.0) + 0.5) - lenC) / 8;
+		auto v = (128 * static_cast<unsigned long>(std::ceil(lenA / 128.0) + 0.5) - lenA) / 8;
+		uint8_t z[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
-		std::vector<unsigned char> ghash_in;
-		ghash_in.reserve((aadata_len + v / 8) + (data_len + u / 8) + 8 + 8);
-		plusaes::detail::gcm::push_back(ghash_in, aadata, aadata_len);
-		plusaes::detail::gcm::push_back_zero_bits(ghash_in, v);
-		plusaes::detail::gcm::push_back(ghash_in, data, data_len);
-		plusaes::detail::gcm::push_back_zero_bits(ghash_in, u);
-		plusaes::detail::gcm::push_back(ghash_in, std::bitset<64>(lenA));
-		plusaes::detail::gcm::push_back(ghash_in, std::bitset<64>(lenC));
-		ghash(tag, h, ghash_in.data(), ghash_in.size());
+		GhashState state(tag, h);
+		state.append(aadata, aadata_len);
+		while (v--) { state.appendByte(0); }
+		state.append(data, data_len);
+		while (u--) { state.appendByte(0); }
+		*reinterpret_cast<uint64_t*>(z) = Endianness::invert(lenA); state.append(z, 8); static_assert(ENDIAN_NATIVE == ENDIAN_LITTLE);
+		*reinterpret_cast<uint64_t*>(z) = Endianness::invert(lenC); state.append(z, 8); static_assert(ENDIAN_NATIVE == ENDIAN_LITTLE);
+		SOUP_DEBUG_ASSERT(state.buffer_counter == 0);
+
 		gctr(tag, 16, roundKeys, Nr, j0);
 	}
 
