@@ -14,13 +14,15 @@ NAMESPACE_SOUP
 		void* original = nullptr;
 
 		static uint8_t jmp_trampoline[5];
-		static uint8_t longjump_trampoline[13];
+		static uint8_t longjump_trampoline_r10[13];
+		static uint8_t longjump_trampoline_noreg[14];
 
 		[[nodiscard]] void* getEffectiveTarget() const;
 		void createOriginal(size_t trampoline_bytes);
 		void destroyOriginal() noexcept;
 
 		static void writeJmpTrampoline(void* addr, void* target);
-		static void writeLongjumpTrampoline(void* addr, void* target) noexcept;
+		static void writeLongjumpTrampolineR10(void* addr, void* target) noexcept;
+		static void writeLongjumpTrampolineNoreg(void* addr, void* target) noexcept;
 	};
 }

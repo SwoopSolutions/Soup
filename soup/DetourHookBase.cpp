@@ -23,9 +23,14 @@ NAMESPACE_SOUP
 		0xE9, 0x00, 0x00, 0x00, 0x00, // jmp (4 bytes)
 	};
 
-	uint8_t DetourHookBase::longjump_trampoline[] = {
+	uint8_t DetourHookBase::longjump_trampoline_r10[] = {
 		0x49, 0xBA, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // movabs r10, (8 bytes)
 		0x41, 0xff, 0xe2, // jmp r10
+	};
+
+	uint8_t DetourHookBase::longjump_trampoline_noreg[] = {
+		0xff, 0x25, 0x00, 0x00, 0x00, 0x00, // jmp qword ptr [rip]
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 // (8 bytes)
 	};
 
 	void* DetourHookBase::getEffectiveTarget() const
@@ -58,13 +63,13 @@ NAMESPACE_SOUP
 			}
 		} while (og_bytes < trampoline_bytes);
 
-		original = soup::malloc(og_bytes + sizeof(longjump_trampoline));
-		memGuard::setAllowedAccess(original, og_bytes + sizeof(longjump_trampoline), memGuard::ACC_RWX);
+		original = soup::malloc(og_bytes + sizeof(longjump_trampoline_noreg));
+		memGuard::setAllowedAccess(original, og_bytes + sizeof(longjump_trampoline_noreg), memGuard::ACC_RWX);
 		memcpy(original, effective_target, og_bytes);
-		writeLongjumpTrampoline((uint8_t*)original + og_bytes, (uint8_t*)effective_target + og_bytes);
+		writeLongjumpTrampolineNoreg((uint8_t*)original + og_bytes, (uint8_t*)effective_target + og_bytes);
 
 #if DH_DEBUG
-		std::cout << "original proc: " << string::bin2hex(std::string((const char*)original, og_bytes + sizeof(longjump_trampoline))) << std::endl;
+		std::cout << "original proc: " << string::bin2hex(std::string((const char*)original, og_bytes + sizeof(longjump_trampoline_noreg))) << std::endl;
 #endif
 	}
 
@@ -89,9 +94,15 @@ NAMESPACE_SOUP
 		memcpy(addr, jmp_trampoline, sizeof(jmp_trampoline));
 	}
 
-	void DetourHookBase::writeLongjumpTrampoline(void* addr, void* target) noexcept
+	void DetourHookBase::writeLongjumpTrampolineR10(void* addr, void* target) noexcept
 	{
-		*(void**)(longjump_trampoline + 2) = target;
-		memcpy(addr, longjump_trampoline, sizeof(longjump_trampoline));
+		*(void**)(longjump_trampoline_r10 + 2) = target;
+		memcpy(addr, longjump_trampoline_r10, sizeof(longjump_trampoline_r10));
+	}
+
+	void DetourHookBase::writeLongjumpTrampolineNoreg(void* addr, void* target) noexcept
+	{
+		*(void**)(longjump_trampoline_noreg + 6) = target;
+		memcpy(addr, longjump_trampoline_noreg, sizeof(longjump_trampoline_noreg));
 	}
 }
