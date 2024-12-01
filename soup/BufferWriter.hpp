@@ -16,7 +16,7 @@ NAMESPACE_SOUP
 		{
 		}
 
-		/* deprecated */ BufferWriter(Endian endian)
+		[[deprecated]] BufferWriter(Endian endian)
 			: Writer(endian)
 		{
 		}

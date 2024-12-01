@@ -14,12 +14,12 @@ NAMESPACE_SOUP
 		{
 		}
 
-		/* deprecated */ StringWriter(Endian endian)
+		[[deprecated]] StringWriter(Endian endian)
 			: Writer(endian)
 		{
 		}
 
-		/* deprecated */ StringWriter(bool little_endian)
+		[[deprecated]] StringWriter(bool little_endian)
 			: Writer(little_endian)
 		{
 		}

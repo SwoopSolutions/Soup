@@ -33,13 +33,13 @@ NAMESPACE_SOUP
 	public:
 		bool fromBinary(std::string&& bin) noexcept
 		{
-			StringReader r(std::move(bin), ENDIAN_BIG);
+			StringReader r(std::move(bin));
 			return read(r);
 		}
 
 		bool fromBinary(const std::string& bin) noexcept
 		{
-			MemoryRefReader r(bin, ENDIAN_BIG);
+			MemoryRefReader r(bin);
 			return read(r);
 		}
 
@@ -51,14 +51,14 @@ NAMESPACE_SOUP
 
 		[[nodiscard]] Buffer toBinary() SOUP_EXCAL
 		{
-			BufferWriter w(ENDIAN_BIG);
+			BufferWriter w;
 			write(w);
 			SOUP_MOVE_RETURN(w.buf);
 		}
 
 		[[nodiscard]] std::string toBinaryString() SOUP_EXCAL
 		{
-			StringWriter w(ENDIAN_BIG);
+			StringWriter w;
 			write(w);
 			SOUP_MOVE_RETURN(w.data);
 		}

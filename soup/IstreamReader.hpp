@@ -16,7 +16,7 @@ NAMESPACE_SOUP
 		{
 		}
 
-		/* deprecated */ IstreamReader(std::istream& is, Endian endian)
+		[[deprecated]] IstreamReader(std::istream& is, Endian endian)
 			: Reader(endian), is(is)
 		{
 		}

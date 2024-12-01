@@ -184,7 +184,7 @@ NAMESPACE_SOUP
 				{
 					auto& cap = _cap.get<CaptureQueryRecvResponse>();
 
-					StringReader r(std::move(data), true);
+					StringReader r(std::move(data));
 					for (uint8_t i = 0; i != cap.num_results; ++i)
 					{
 						r.str_lp_mysql(cap.result.at(i).second);
@@ -332,7 +332,7 @@ NAMESPACE_SOUP
 
 	void MysqlConnection::stmtExecute(uint32_t stmt_id, const std::vector<Mixed>& args, stmt_execute_success_callback_t on_success, error_callback_t on_error, Capture&& success_cap)
 	{
-		StringWriter w(true);
+		StringWriter w;
 		uint8_t header = 0x17;
 		w.u8(header);
 
@@ -419,7 +419,7 @@ NAMESPACE_SOUP
 				{
 					auto& cap = _cap.get<CaptureStmtExecuteRecvResponse>();
 
-					StringReader r(std::move(data), true);
+					StringReader r(std::move(data));
 					
 					uint8_t header;
 					r.u8(header); // should be 0
@@ -520,7 +520,7 @@ NAMESPACE_SOUP
 
 	void MysqlConnection::stmtClose(uint32_t stmt_id)
 	{
-		StringWriter w(true);
+		StringWriter w;
 		uint8_t header = 0x19;
 		w.u8(header);
 

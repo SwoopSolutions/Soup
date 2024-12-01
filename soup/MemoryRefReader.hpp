@@ -20,20 +20,20 @@ NAMESPACE_SOUP
 		{
 		}
 
-		/* deprecated */ MemoryRefReader(const void* _data, size_t size, bool little_endian)
+		[[deprecated]] MemoryRefReader(const void* _data, size_t size, bool little_endian)
 			: Reader(little_endian), data(reinterpret_cast<const uint8_t*>(_data)), size(size)
 		{
 		}
 
 		template <typename T, SOUP_RESTRICT(!std::is_pointer_v<T>)>
 		MemoryRefReader(const T& t)
-			: MemoryRefReader(t.data(), t.size(), true)
+			: MemoryRefReader(t.data(), t.size())
 		{
 		}
 
 		template <typename T, SOUP_RESTRICT(!std::is_pointer_v<T>)>
-		/* deprecated */ MemoryRefReader(const T& t, bool little_endian)
-			: MemoryRefReader(t.data(), t.size(), little_endian)
+		[[deprecated]] MemoryRefReader(const T& t, bool little_endian)
+			: Reader(little_endian), data(reinterpret_cast<const uint8_t*>(t.data())), size(t.size())
 		{
 		}
 

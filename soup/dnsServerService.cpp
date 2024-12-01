@@ -20,7 +20,7 @@ NAMESPACE_SOUP
 
 	void dnsServerService::handle(Socket& s, SocketAddr&& addr, std::string&& data)
 	{
-		StringReader sr(std::move(data), false);
+		StringReader sr(std::move(data));
 
 		dnsHeader dh;
 		dh.read(sr);
@@ -74,7 +74,7 @@ NAMESPACE_SOUP
 		// Reset num. additionals in case query had some
 		dh.arcount = 0;
 
-		StringWriter sw(ENDIAN_BIG);
+		StringWriter sw;
 		dh.write(sw);
 		dq.write(sw);
 

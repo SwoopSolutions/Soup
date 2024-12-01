@@ -37,7 +37,7 @@ NAMESPACE_SOUP
 
 	std::string dnsRawResolver::getQuery(dnsType qtype, const std::string& name, uint16_t id) SOUP_EXCAL
 	{
-		StringWriter sw(false);
+		StringWriter sw;
 
 		dnsHeader dh{};
 		dh.id = id;
@@ -55,7 +55,7 @@ NAMESPACE_SOUP
 
 	std::vector<UniquePtr<dnsRecord>> dnsRawResolver::parseResponse(const std::string& data) SOUP_EXCAL
 	{
-		MemoryRefReader sr(data, false);
+		MemoryRefReader sr(data);
 
 		dnsHeader dh;
 		dh.read(sr);
@@ -89,7 +89,7 @@ NAMESPACE_SOUP
 			}
 			else if (dr.rtype == DNS_CNAME)
 			{
-				MemoryRefReader rdata_sr(dr.rdata, false);
+				MemoryRefReader rdata_sr(dr.rdata);
 
 				dnsName cname;
 				cname.read(rdata_sr);
@@ -98,7 +98,7 @@ NAMESPACE_SOUP
 			}
 			else if (dr.rtype == DNS_PTR)
 			{
-				MemoryRefReader rdata_sr(dr.rdata, false);
+				MemoryRefReader rdata_sr(dr.rdata);
 
 				dnsName cname;
 				cname.read(rdata_sr);
@@ -121,7 +121,7 @@ NAMESPACE_SOUP
 				uint16_t priority;
 				dnsName target;
 
-				MemoryRefReader rdata_sr(dr.rdata, false);
+				MemoryRefReader rdata_sr(dr.rdata);
 				rdata_sr.u16be(priority);
 				target.read(rdata_sr);
 
@@ -132,7 +132,7 @@ NAMESPACE_SOUP
 				uint16_t priority, weight, port;
 				dnsName target;
 
-				MemoryRefReader rdata_sr(dr.rdata, false);
+				MemoryRefReader rdata_sr(dr.rdata);
 				rdata_sr.u16be(priority);
 				rdata_sr.u16be(weight);
 				rdata_sr.u16be(port);
@@ -142,7 +142,7 @@ NAMESPACE_SOUP
 			}
 			else if (dr.rtype == DNS_NS)
 			{
-				MemoryRefReader rdata_sr(dr.rdata, false);
+				MemoryRefReader rdata_sr(dr.rdata);
 
 				dnsName cname;
 				cname.read(rdata_sr);

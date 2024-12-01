@@ -14,7 +14,7 @@ NAMESPACE_SOUP
 		{
 		}
 
-		/* deprecated */ OstreamWriter(std::ostream& os, Endian endian)
+		[[deprecated]] OstreamWriter(std::ostream& os, Endian endian)
 			: Writer(endian), os(os)
 		{
 		}

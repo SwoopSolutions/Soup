@@ -57,7 +57,7 @@ NAMESPACE_SOUP
 
 	void WebSocketConnection::wsSend(uint8_t opcode, std::string payload) SOUP_EXCAL
 	{
-		StringWriter w{ false };
+		StringWriter w;
 		opcode |= 0x80; // fin
 		if (w.u8(opcode))
 		{
