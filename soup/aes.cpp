@@ -875,9 +875,15 @@ NAMESPACE_SOUP
 
 	void aes::xorBlocks(uint8_t a[16], const uint8_t b[16]) noexcept
 	{
-#if SOUP_BITS == 64
+#if SOUP_BITS >= 64
+		// Could use _mm_xor_si128 if target supports SSE2
 		reinterpret_cast<uint64_t*>(a)[0] ^= reinterpret_cast<const uint64_t*>(b)[0];
 		reinterpret_cast<uint64_t*>(a)[1] ^= reinterpret_cast<const uint64_t*>(b)[1];
+#elif SOUP_BITS >= 32
+		reinterpret_cast<uint32_t*>(a)[0] ^= reinterpret_cast<const uint32_t*>(b)[0];
+		reinterpret_cast<uint32_t*>(a)[1] ^= reinterpret_cast<const uint32_t*>(b)[1];
+		reinterpret_cast<uint32_t*>(a)[2] ^= reinterpret_cast<const uint32_t*>(b)[2];
+		reinterpret_cast<uint32_t*>(a)[3] ^= reinterpret_cast<const uint32_t*>(b)[3];
 #else
 		for (unsigned int i = 0; i != 16; ++i)
 		{
