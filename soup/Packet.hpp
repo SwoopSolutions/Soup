@@ -5,8 +5,6 @@
 #define SOUP_IF_ISREAD if constexpr (T::isRead())
 #define SOUP_ELSEIF_ISWRITE else
 
-#include <sstream>
-
 #include "BufferWriter.hpp"
 #include "IstreamReader.hpp"
 #include "MemoryRefReader.hpp"
