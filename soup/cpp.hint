@@ -5,4 +5,4 @@
 #define SOUP_TRY try
 #define SOUP_CATCH(T, name) catch (const T& name)
 #define SOUP_CATCH_ANY catch (...)
-#define SOUP_EXCAL throw()
+#define SOUP_EXCAL

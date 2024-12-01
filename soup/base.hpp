@@ -189,13 +189,10 @@
 #endif
 
 #ifndef SOUP_EXCAL
-	// An 'excal' function is 'noexcept' except it may throw std::bad_alloc.
+	// An 'excal' function may not throw any exception other than std::bad_alloc (in case of an allocation failure).
 	//
-	// We generally don't attempt to handle allocation failures, not least because it's basically impossible on modern systems.
-	// Because of this, we declare that 'excal' functions are 'noexcept' to avoid superfluous unwind information.
-	//
-	// For visual distinction with IDE hover features, we use `throw()`, but it's functionally identical to `noexcept`.
-	#define SOUP_EXCAL throw()
+	// If you don't handle allocate failures, you can slightly reduce your binary size by setting this macro to `noexcept` or `throw()`.
+	#define SOUP_EXCAL
 #endif
 
 // === Development helpers
