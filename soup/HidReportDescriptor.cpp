@@ -276,7 +276,6 @@ NAMESPACE_SOUP
 							++pUsageId;
 						}
 					}
-					br.finishByte(); // It seems like in the case of a "Hat Switch", the high nibble is unused.
 					continue;
 				}
 				else if (f.size == 16 && f.logical_max != 0)

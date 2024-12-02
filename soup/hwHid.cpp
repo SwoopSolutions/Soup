@@ -755,6 +755,7 @@ NAMESPACE_SOUP
 				return a.bit_index < b.bit_index;
 			});
 
+			uint32_t bit_index = 8;
 			for (uint32_t i = 0; i != pp_data->header.input_item_count; ++i)
 			{
 				//std::cout << "report_id: " << (int)pp_data->items[i].report_id << std::endl;
@@ -763,6 +764,22 @@ NAMESPACE_SOUP
 				if (pp_data->items[i].report_id != 0)
 				{
 					result.report_ids.emplace(pp_data->items[i].report_id);
+				}
+
+				const uint32_t this_item_bit_index = (pp_data->items[i].byte_index * 8) + pp_data->items[i].bit_index;
+				if (this_item_bit_index > bit_index)
+				{
+					const auto pad_bits = this_item_bit_index - bit_index;
+					//std::cout << "inserting " << pad_bits << " bits of padding" << std::endl;
+					result.input_report_fields.emplace_back(HidReportDescriptor::ReportField{
+						1,
+						pad_bits,
+						0,
+						false,
+						0,
+						{}
+					});
+					bit_index = this_item_bit_index;
 				}
 
 				std::vector<uint16_t> usage_ids{};
@@ -778,6 +795,8 @@ NAMESPACE_SOUP
 					pp_data->items[i].usage_page,
 					std::move(usage_ids)
 				});
+
+				bit_index += pp_data->items[i].bit_size * pp_data->items[i].report_count;
 			}
 
 			HidD_FreePreparsedData(_pp_data);
