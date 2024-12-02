@@ -457,29 +457,49 @@ NAMESPACE_SOUP
 				const auto report_desc = hid.getReportDescriptor();
 				const auto report = report_desc.parseInputReport(report_data.data(), report_data.size());
 
-				/*for (const auto& sel : report.active_selectors)
+				/*std::cout << std::endl;
+				for (const auto& sel : report.active_selectors)
 				{
 					std::cout << std::hex << sel.value << std::endl;
 				}
 				for (const auto& val : report.dynamic_values)
 				{
 					std::cout << std::hex << val.first.value << ": " << val.second << std::endl;
-				}*/
+				}
+				return status;*/
 
 				status.left_stick_x = report.dynamic_values.get_or_default({ 1, 0x30 }, 0.5f);
 				status.left_stick_y = report.dynamic_values.get_or_default({ 1, 0x31 }, 0.5f);
 
-				const float Z = report.dynamic_values.get_or_default({ 1, 0x32 }, 0.5f);
-				if (fabsf(Z - 0.5f) > 0.00001f)
+				if (auto lt = report.dynamic_values.find({ 2, 0xc5 }); lt != report.dynamic_values.end())
 				{
-					if (Z < 0.5f)
+					// Format used by Stadia Controller
+
+					status.left_trigger = lt->second;
+					status.right_trigger = report.dynamic_values.get_or_default({ 2, 0xc4 }, 0.0f);
+
+					status.right_stick_x = report.dynamic_values.get_or_default({ 1, 0x32 }, 0.5f);
+					status.right_stick_y = report.dynamic_values.get_or_default({ 1, 0x35 }, 0.5f);
+				}
+				else
+				{
+					// Format used by Wooting
+
+					const float Z = report.dynamic_values.get_or_default({ 1, 0x32 }, 0.5f);
+					if (fabsf(Z - 0.5f) > 0.00001f)
 					{
-						status.right_trigger = 1.0f - (Z * 2.0f);
+						if (Z < 0.5f)
+						{
+							status.right_trigger = 1.0f - (Z * 2.0f);
+						}
+						else
+						{
+							status.left_trigger = (Z - 0.5f) * 2.0f;
+						}
 					}
-					else
-					{
-						status.left_trigger = (Z - 0.5f) * 2.0f;
-					}
+
+					status.right_stick_x = report.dynamic_values.get_or_default({ 1, 0x33 }, 0.5f);
+					status.right_stick_y = report.dynamic_values.get_or_default({ 1, 0x34 }, 0.5f);
 				}
 
 				status.setDpad(static_cast<uint8_t>(report.dynamic_values.get_or_default({ 1, 0x39 }, 1.0f) * 8.0f));
@@ -489,6 +509,13 @@ NAMESPACE_SOUP
 				status.buttons[BTN_ACT_RIGHT] = report.active_selectors.count({ 9, 2 }) != 0;
 				status.buttons[BTN_ACT_LEFT] = report.active_selectors.count({ 9, 4 }) != 0;
 				status.buttons[BTN_ACT_UP] = report.active_selectors.count({ 9, 5 }) != 0;
+				status.buttons[BTN_LBUMPER] = report.active_selectors.count({ 9, 7 }) != 0;
+				status.buttons[BTN_RBUMPER] = report.active_selectors.count({ 9, 8 }) != 0;
+				status.buttons[BTN_META] = report.active_selectors.count({ 9, 0xd }) != 0;
+				status.buttons[BTN_LSTICK] = report.active_selectors.count({ 9, 0xe }) != 0;
+				status.buttons[BTN_RSTICK] = report.active_selectors.count({ 9, 0xf }) != 0;
+				status.buttons[BTN_RTRIGGER] = report.active_selectors.count({ 9, 0x13 }) != 0;
+				status.buttons[BTN_LTRIGGER] = report.active_selectors.count({ 9, 0x14 }) != 0;
 			}
 #endif
 		}
