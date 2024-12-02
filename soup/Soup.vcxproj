@@ -854,6 +854,7 @@
     <ClInclude Include="UniqueList.hpp" />
     <ClInclude Include="hwHid.hpp" />
     <ClInclude Include="UniqueListLink.hpp" />
+    <ClInclude Include="UnorderedMap.hpp" />
     <ClInclude Include="utility.hpp" />
     <ClInclude Include="Uuid.hpp" />
     <ClInclude Include="VirtualFilesystem.hpp" />

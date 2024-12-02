@@ -4,18 +4,18 @@
 
 #include <cstdint>
 #include <cstddef>
-#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
 #include "HidUsage.hpp"
+#include "UnorderedMap.hpp"
 
 NAMESPACE_SOUP
 {
 	struct HidParsedReport
 	{
 		std::unordered_set<HidUsage> active_selectors{};
-		std::unordered_map<HidUsage, float> dynamic_values{};
+		UnorderedMap<HidUsage, float> dynamic_values{};
 	};
 
 	struct HidReportDescriptor

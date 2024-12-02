@@ -1665,6 +1665,9 @@
     <ClInclude Include="sha256_intrin.hpp">
       <Filter>data\hash</Filter>
     </ClInclude>
+    <ClInclude Include="UnorderedMap.hpp">
+      <Filter>util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bytepatch.cpp">
