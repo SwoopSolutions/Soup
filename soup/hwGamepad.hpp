@@ -34,7 +34,7 @@ NAMESPACE_SOUP
 			void setDpad(uint8_t dpad);
 		};
 
-		const char* name;
+		const char* name; // can be nullptr for generic devices
 		hwHid hid;
 		bool disconnected = false;
 		union

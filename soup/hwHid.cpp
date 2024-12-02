@@ -757,6 +757,9 @@ NAMESPACE_SOUP
 
 			for (uint32_t i = 0; i != pp_data->header.input_item_count; ++i)
 			{
+				//std::cout << "report_id: " << (int)pp_data->items[i].report_id << std::endl;
+				//std::cout << (int)pp_data->items[i].byte_index << ", " << (int)pp_data->items[i].bit_index << std::endl;
+
 				if (pp_data->items[i].report_id != 0)
 				{
 					result.report_ids.emplace(pp_data->items[i].report_id);
@@ -770,7 +773,7 @@ NAMESPACE_SOUP
 				result.input_report_fields.emplace_back(HidReportDescriptor::ReportField{
 					pp_data->items[i].bit_size,
 					pp_data->items[i].report_count,
-					static_cast<uint32_t>(pp_data->items[i].logical_maximum),
+					static_cast<uint32_t>(pp_data->items[i].logical_maximum) + (((pp_data->items[i].bit_field >> 6) & 1) != 0),
 					((pp_data->items[i].bit_field >> 1) & 1) != 0,
 					pp_data->items[i].usage_page,
 					std::move(usage_ids)

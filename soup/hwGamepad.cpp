@@ -41,7 +41,7 @@ NAMESPACE_SOUP
 		std::vector<hwGamepad> res{};
 		for (auto& hid : hwHid::getAll())
 		{
-			if (hid.usage == 0x05)
+			if (hid.usage_page == 1 && hid.usage == 5) // Gamepad
 			{
 				if (hid.vendor_id == 0x54c) // Sony
 				{
@@ -72,6 +72,12 @@ NAMESPACE_SOUP
 					bool is_bluetooth = !hid.sendReport(std::move(buf));
 					res.emplace_back("Stadia Controller", std::move(hid)).stadia.is_bluetooth = is_bluetooth;
 				}
+#if false // Generic HID Gamepad support is pretty bad right now.
+				else
+				{
+					res.emplace_back(nullptr, std::move(hid));
+				}
+#endif
 			}
 		}
 		return res;
@@ -218,6 +224,14 @@ NAMESPACE_SOUP
 		}
 
 		const Buffer& report_data = hid.receiveReport();
+
+		// Ensure 'report_data' is the latest the device has to offer.
+		// This works because the buffer ref returned is always the same.
+		while (hid.hasReport())
+		{
+			SOUP_UNUSED(hid.receiveReport());
+		}
+
 		SOUP_IF_UNLIKELY (report_data.empty())
 		{
 			if (hid.vendor_id == 0x54c && hid.isBluetooth() && isDs4StillAlive(hid))
@@ -232,6 +246,7 @@ NAMESPACE_SOUP
 
 			//std::cout << string::bin2hex(report_data.toString(), true) << std::endl;
 
+#if true
 			if (hid.vendor_id == 0x54c) // Sony, Y Down
 			{
 				MemoryRefReader r(report_data);
@@ -322,7 +337,7 @@ NAMESPACE_SOUP
 					status.num_fingers_on_touchpad++;
 				}
 			}
-			else if (hid.vendor_id == 0x57e) // Nintendo Switch Pro Controller, Y Up
+			else if (hid.vendor_id == 0x57e && hid.product_id == 0x2009) // Nintendo Switch Pro Controller, Y Up
 			{
 				SOUP_IF_UNLIKELY (!switch_pro.has_calibration_data)
 				{
@@ -395,7 +410,7 @@ NAMESPACE_SOUP
 				status.left_trigger = status.buttons[BTN_LTRIGGER] ? 1.0f : 0.0f;
 				status.right_trigger = status.buttons[BTN_RTRIGGER] ? 1.0f : 0.0f;
 			}
-			else // Stadia Controller, Y Down
+			else if (hid.vendor_id == 0x18d1 && hid.product_id == 0x9400) // Stadia Controller, Y Down
 			{
 				MemoryRefReader r(report_data);
 
@@ -432,6 +447,50 @@ NAMESPACE_SOUP
 				status.buttons[BTN_ACT_RIGHT] = (report.buttons_2 & 0x20);
 				status.buttons[BTN_ACT_DOWN] = (report.buttons_2 & 0x40);
 			}
+#else
+			if (false) { }
+#endif
+#if false
+			else
+			{
+				//std::cout << string::bin2hex(report_data.toString()) << std::endl;
+				const auto report_desc = hid.getReportDescriptor();
+				const auto report = report_desc.parseInputReport(report_data.data(), report_data.size());
+
+				/*for (const auto& sel : report.active_selectors)
+				{
+					std::cout << std::hex << sel.value << std::endl;
+				}
+				for (const auto& val : report.dynamic_values)
+				{
+					std::cout << std::hex << val.first.value << ": " << val.second << std::endl;
+				}*/
+
+				status.left_stick_x = report.dynamic_values.get_or_default({ 1, 0x30 }, 0.5f);
+				status.left_stick_y = report.dynamic_values.get_or_default({ 1, 0x31 }, 0.5f);
+
+				const float Z = report.dynamic_values.get_or_default({ 1, 0x32 }, 0.5f);
+				if (fabsf(Z - 0.5f) > 0.00001f)
+				{
+					if (Z < 0.5f)
+					{
+						status.right_trigger = 1.0f - (Z * 2.0f);
+					}
+					else
+					{
+						status.left_trigger = (Z - 0.5f) * 2.0f;
+					}
+				}
+
+				status.setDpad(static_cast<uint8_t>(report.dynamic_values.get_or_default({ 1, 0x39 }, 1.0f) * 8.0f));
+
+				// Captured from Stadia Controller. Mappings are slightly different on the DS4.
+				status.buttons[BTN_ACT_DOWN] = report.active_selectors.count({ 9, 1 }) != 0;
+				status.buttons[BTN_ACT_RIGHT] = report.active_selectors.count({ 9, 2 }) != 0;
+				status.buttons[BTN_ACT_LEFT] = report.active_selectors.count({ 9, 4 }) != 0;
+				status.buttons[BTN_ACT_UP] = report.active_selectors.count({ 9, 5 }) != 0;
+			}
+#endif
 		}
 
 		return status;
@@ -445,7 +504,7 @@ NAMESPACE_SOUP
 
 	bool hwGamepad::hasInvertedActionButtons() const noexcept
 	{
-		return hid.vendor_id == 0x57e; // Nintendo Switch Pro Controller
+		return hid.vendor_id == 0x57e; // Nintendo
 	}
 
 	bool hwGamepad::hasTouchpad() const noexcept
@@ -484,19 +543,20 @@ NAMESPACE_SOUP
 
 	bool hwGamepad::canRumble() const noexcept
 	{
-		if (hid.vendor_id == 0x54c && hid.product_id == 0xce6) // DualSense 5
+		if (hid.vendor_id == 0x54c) // Sony
 		{
-			return false; // TODO: Look into this.
+			if (hid.product_id == 0xce6) // DualSense 5
+			{
+				return false; // TODO: Look into this.
+			}
+			return true;
 		}
-		if (hid.vendor_id == 0x57e) // Nintendo Switch Pro Controller
-		{
-			return false; // This thing *can* rumble, but I just can't be arsed with their format right now -- let's say it's a TODO. :)
-		}
-		if (hid.vendor_id == 0x18d1) // Stadia Controller; rumble only works via USB
+		// TODO: Look into Nintendo Switch Pro Controller's rumble format.
+		if (hid.vendor_id == 0x18d1 && hid.product_id == 0x9400) // Stadia Controller; rumble only works via USB
 		{
 			return !stadia.is_bluetooth;
 		}
-		return true;
+		return false;
 	}
 
 	void hwGamepad::rumbleWeak(uint8_t intensity, time_t ms)
@@ -559,7 +619,7 @@ NAMESPACE_SOUP
 			buf.push_back(0x00);
 			sendReportDs4(std::move(buf));
 		}
-		else // Stadia Controller
+		else if (hid.vendor_id == 0x18d1 && hid.product_id == 0x9400) // Stadia Controller
 		{
 			Buffer buf(5);
 			buf.push_back(0x05);

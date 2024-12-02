@@ -168,6 +168,7 @@ NAMESPACE_SOUP
 
 					const auto flags = get_hid_report_bytes(rawdesc, size, data_len, pos);
 					const bool is_variable = ((flags >> 1) & 1) != 0;
+					const bool has_null = ((flags >> 6) & 1) != 0;
 					if (!is_variable)
 					{
 						usage_ids.clear();
@@ -175,7 +176,7 @@ NAMESPACE_SOUP
 					parsed.input_report_fields.emplace_back(ReportField{
 						report_size,
 						report_count,
-						logical_max,
+						logical_max + has_null,
 						is_variable,
 						usage_page,
 						std::move(usage_ids)
@@ -235,6 +236,10 @@ NAMESPACE_SOUP
 		HidParsedReport parsed;
 
 		MemoryRefReader mr(report, size);
+		if (!report_ids.empty())
+		{
+			mr.skip(1); // Ignore report id
+		}
 		BitReader br(&mr);
 		for (const auto& f : input_report_fields)
 		{
@@ -258,16 +263,35 @@ NAMESPACE_SOUP
 					}
 					continue;
 				}
-				else if (f.size == 8 && f.logical_max != 0)
+				else if (f.size <= 8 && f.logical_max != 0)
 				{
 					auto pUsageId = f.usage_ids.cbegin();
 					for (uint32_t i = 0; i != f.count; ++i)
 					{
 						uint8_t value = 0;
-						SOUP_UNUSED(br.u8(8, value));
+						SOUP_UNUSED(br.u8(f.size, value));
 						if (pUsageId != f.usage_ids.end())
 						{
-							parsed.dynamic_values.emplace(HidUsage(f.usage_page, *pUsageId), static_cast<float>(value) / f.logical_max);
+							parsed.dynamic_values.emplace(HidUsage(f.usage_page, *pUsageId), static_cast<float>(value) / static_cast<uint8_t>(f.logical_max));
+							++pUsageId;
+						}
+					}
+					br.finishByte(); // It seems like in the case of a "Hat Switch", the high nibble is unused.
+					continue;
+				}
+				else if (f.size == 16 && f.logical_max != 0)
+				{
+					auto pUsageId = f.usage_ids.cbegin();
+					for (uint32_t i = 0; i != f.count; ++i)
+					{
+						uint8_t hi = 0;
+						uint8_t lo = 0;
+						SOUP_UNUSED(br.u8(8, lo));
+						SOUP_UNUSED(br.u8(8, hi));
+						uint16_t value = ((static_cast<uint16_t>(hi) << 8) | lo);
+						if (pUsageId != f.usage_ids.end())
+						{
+							parsed.dynamic_values.emplace(HidUsage(f.usage_page, *pUsageId), static_cast<float>(value) / static_cast<uint16_t>(f.logical_max));
 							++pUsageId;
 						}
 					}

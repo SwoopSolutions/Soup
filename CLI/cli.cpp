@@ -174,14 +174,15 @@ int main(int argc, const char** argv)
 			for (auto& gp : hwGamepad::getAll())
 			{
 				console.init(false);
-				std::cout << gp.name << " detected, awaiting input.\n";
+				const std::string name = gp.name ? gp.name : gp.hid.getProductName();
+				std::cout << name << " detected, awaiting input.\n";
 				hwGamepad::Status prev_status{};
 				while (true)
 				{
 					auto status = gp.receiveStatus();
 					if (gp.disconnected)
 					{
-						std::cout << gp.name << " disconnected.\n";
+						std::cout << name << " disconnected.\n";
 						return 0;
 					}
 					if (memcmp(&status, &prev_status, sizeof(hwGamepad::Status)) != 0)
@@ -189,7 +190,7 @@ int main(int argc, const char** argv)
 						prev_status = status;
 						console.clearScreen();
 						console.setCursorPos(0, 0);
-						std::cout << gp.name << "\n";
+						std::cout << name << "\n";
 						std::cout << "Left Stick: " << status.left_stick_x << ", " << status.left_stick_y << "\n";
 						std::cout << "Right Stick: " << status.right_stick_x << ", " << status.right_stick_y << "\n";
 						if (gp.hasAnalogueTriggers())
