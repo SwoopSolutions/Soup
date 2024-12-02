@@ -360,7 +360,14 @@ NAMESPACE_SOUP
 			HidD_FreePreparsedData(pp_data);
 		}
 #elif SOUP_LINUX
-		ret = report_ids.count(report_id) != 0;
+		if (report_id == 0)
+		{
+			ret = report_ids.empty();
+		}
+		else
+		{
+			ret = report_ids.count(report_id) != 0;
+		}
 #endif
 		return ret;
 	}
@@ -722,7 +729,7 @@ NAMESPACE_SOUP
 		result.input_report_byte_length = this->input_report_byte_length;
 		result.output_report_byte_length = this->output_report_byte_length;
 		result.feature_report_byte_length = this->feature_report_byte_length;
-		/*for (unsigned int i = 0; i != 0x100; ++i)
+		/*for (unsigned int i = 1; i != 0x100; ++i)
 		{
 			if (hasReportId(i))
 			{
@@ -750,7 +757,10 @@ NAMESPACE_SOUP
 
 			for (uint32_t i = 0; i != pp_data->header.input_item_count; ++i)
 			{
-				result.report_ids.emplace(pp_data->items[i].report_id);
+				if (pp_data->items[i].report_id != 0)
+				{
+					result.report_ids.emplace(pp_data->items[i].report_id);
+				}
 
 				std::vector<uint16_t> usage_ids{};
 				for (uint32_t usage = pp_data->items[i].usage_minimum; usage != (pp_data->items[i].usage_maximum + 1); ++usage)
