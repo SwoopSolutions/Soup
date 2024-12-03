@@ -15,36 +15,20 @@ NAMESPACE_SOUP
 		std::ifstream s;
 
 		FileReader(const std::string& path)
-			: Reader(true), s(path, std::ios::binary)
-		{
-		}
-
-		[[deprecated]] FileReader(const std::string& path, bool little_endian)
-			: Reader(little_endian), s(path, std::ios::binary)
+			: Reader(), s(path, std::ios::binary)
 		{
 		}
 
 #if SOUP_WINDOWS && !SOUP_CROSS_COMPILE
 		FileReader(const std::wstring& path)
-			: Reader(true), s(path, std::ios::binary)
-		{
-		}
-
-		[[deprecated]] FileReader(const std::wstring& path, bool little_endian)
-			: Reader(little_endian), s(path, std::ios::binary)
+			: Reader(), s(path, std::ios::binary)
 		{
 		}
 #endif
 
 		template <class T, SOUP_RESTRICT(std::is_same_v<T, std::filesystem::path>)>
 		FileReader(const T& path)
-			: Reader(true), s(path, std::ios::binary)
-		{
-		}
-
-		template <class T, SOUP_RESTRICT(std::is_same_v<T, std::filesystem::path>)>
-		[[deprecated]] FileReader(const T& path, bool little_endian)
-			: Reader(little_endian), s(path, std::ios::binary)
+			: Reader(), s(path, std::ios::binary)
 		{
 		}
 

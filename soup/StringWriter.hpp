@@ -10,17 +10,7 @@ NAMESPACE_SOUP
 		std::string data{};
 
 		StringWriter()
-			: Writer(ENDIAN_LITTLE)
-		{
-		}
-
-		[[deprecated]] StringWriter(Endian endian)
-			: Writer(endian)
-		{
-		}
-
-		[[deprecated]] StringWriter(bool little_endian)
-			: Writer(little_endian)
+			: Writer()
 		{
 		}
 

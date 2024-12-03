@@ -10,7 +10,7 @@ NAMESPACE_SOUP
 		size_t size = 0;
 
 		ioSizeMeasurer()
-			: Writer(ENDIAN_NATIVE)
+			: Writer()
 		{
 		}
 

@@ -12,12 +12,7 @@ NAMESPACE_SOUP
 		Buffer& buf;
 
 		BufferRefWriter(Buffer& buf)
-			: Writer(ENDIAN_LITTLE), buf(buf)
-		{
-		}
-
-		[[deprecated]] BufferRefWriter(Buffer& buf, Endian endian)
-			: Writer(endian), buf(buf)
+			: Writer(), buf(buf)
 		{
 		}
 

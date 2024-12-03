@@ -15,36 +15,20 @@ NAMESPACE_SOUP
 		std::ofstream s;
 
 		FileWriter(const std::string& path)
-			: Writer(true), s(path, std::ios::binary)
-		{
-		}
-
-		[[deprecated]] FileWriter(const std::string& path, bool little_endian)
-			: Writer(little_endian), s(path, std::ios::binary)
+			: Writer(), s(path, std::ios::binary)
 		{
 		}
 
 #if SOUP_WINDOWS && !SOUP_CROSS_COMPILE
 		FileWriter(const std::wstring& path)
-			: Writer(true), s(path, std::ios::binary)
-		{
-		}
-
-		[[deprecated]] FileWriter(const std::wstring& path, bool little_endian)
-			: Writer(little_endian), s(path, std::ios::binary)
+			: Writer(), s(path, std::ios::binary)
 		{
 		}
 #endif
 
 		template <class T, SOUP_RESTRICT(std::is_same_v<T, std::filesystem::path>)>
 		FileWriter(const T& path)
-			: Writer(true), s(path, std::ios::binary)
-		{
-		}
-
-		template <class T, SOUP_RESTRICT(std::is_same_v<T, std::filesystem::path>)>
-		[[deprecated]] FileWriter(const T& path, bool little_endian)
-			: Writer(little_endian), s(path, std::ios::binary)
+			: Writer(), s(path, std::ios::binary)
 		{
 		}
 

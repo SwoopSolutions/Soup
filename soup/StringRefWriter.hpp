@@ -10,12 +10,7 @@ NAMESPACE_SOUP
 		std::string& str;
 
 		StringRefWriter(std::string& str)
-			: Writer(true), str(str)
-		{
-		}
-
-		[[deprecated]] StringRefWriter(std::string& str, bool little_endian)
-			: Writer(little_endian), str(str)
+			: Writer(), str(str)
 		{
 		}
 

@@ -30,29 +30,11 @@ NAMESPACE_SOUP
 	class ioVirtualBase
 	{
 	protected:
-		const bool native_endianness;
-
-		ioVirtualBase(Endian endian) noexcept
-			: native_endianness(ENDIAN_NATIVE == endian)
-		{
-		}
-
-		ioVirtualBase(bool little_endian) noexcept
-			: ioVirtualBase(little_endian ? ENDIAN_LITTLE : ENDIAN_BIG)
+		ioVirtualBase() noexcept
 		{
 		}
 
 	public:
-		[[deprecated]] bool isBigEndian() const noexcept
-		{
-			return (ENDIAN_BIG == ENDIAN_NATIVE) == native_endianness;
-		}
-
-		[[deprecated]] bool isLittleEndian() const noexcept
-		{
-			return (ENDIAN_LITTLE == ENDIAN_NATIVE) == native_endianness;
-		}
-
 		virtual ~ioVirtualBase() = default;
 
 		virtual bool raw(void* data, size_t len) noexcept = 0;
@@ -94,11 +76,6 @@ NAMESPACE_SOUP
 		template <typename T>
 		bool ser(T& v) noexcept;
 
-		[[deprecated]] bool u16(uint16_t& v) noexcept
-		{
-			return native_endianness ? u16<true>(v) : u16<false>(v);
-		}
-
 		[[deprecated("Renamed to u16be")]] bool u16_be(uint16_t& v) noexcept { return u16be(v); }
 		[[deprecated("Renamed to u16le")]] bool u16_le(uint16_t& v) noexcept { return u16le(v); }
 
@@ -137,11 +114,6 @@ NAMESPACE_SOUP
 		}
 
 	public:
-		[[deprecated]] bool u32(uint32_t& v) noexcept
-		{
-			return native_endianness ? u32<true>(v) : u32<false>(v);
-		}
-
 		[[deprecated("Renamed to u32be")]] bool u32_be(uint32_t& v) noexcept { return u32be(v); }
 		[[deprecated("Renamed to u32le")]] bool u32_le(uint32_t& v) noexcept { return u32le(v); }
 
@@ -180,11 +152,6 @@ NAMESPACE_SOUP
 		}
 
 	public:
-		[[deprecated]] bool u64(uint64_t& v) noexcept
-		{
-			return native_endianness ? u64<true>(v) : u64<false>(v);
-		}
-
 		[[deprecated("Renamed to u64be")]] bool u64_be(uint64_t& v) noexcept { return u64be(v); }
 		[[deprecated("Renamed to u64le")]] bool u64_le(uint64_t& v) noexcept { return u64le(v); }
 
@@ -240,11 +207,6 @@ NAMESPACE_SOUP
 		bool i64le(int64_t& v) noexcept { return u64le(*(uint64_t*)&v); }
 		bool i64be(int64_t& v) noexcept { return u64be(*(uint64_t*)&v); }
 
-		bool u24(uint32_t& v) noexcept
-		{
-			return native_endianness ? u24<true>(v) : u24<false>(v);
-		}
-
 		[[deprecated("Renamed to u24be")]] bool u24_be(uint32_t& v) noexcept { return u24be(v); }
 		[[deprecated("Renamed to u24le")]] bool u24_le(uint32_t& v) noexcept { return u24le(v); }
 
@@ -281,84 +243,6 @@ NAMESPACE_SOUP
 		}
 
 	public:
-		[[deprecated]] bool u40(uint64_t& v) noexcept
-		{
-			if constexpr (is_read)
-			{
-				v = 0;
-			}
-			if (native_endianness)
-			{
-				return u8(((uint8_t*)&v)[0])
-					&& u8(((uint8_t*)&v)[1])
-					&& u8(((uint8_t*)&v)[2])
-					&& u8(((uint8_t*)&v)[3])
-					&& u8(((uint8_t*)&v)[4]);
-			}
-			else
-			{
-				return u8(((uint8_t*)&v)[4])
-					&& u8(((uint8_t*)&v)[3])
-					&& u8(((uint8_t*)&v)[2])
-					&& u8(((uint8_t*)&v)[1])
-					&& u8(((uint8_t*)&v)[0]);
-			}
-		}
-
-		[[deprecated]] bool u48(uint64_t& v) noexcept
-		{
-			if constexpr (is_read)
-			{
-				v = 0;
-			}
-			if (native_endianness)
-			{
-				return u8(((uint8_t*)&v)[0])
-					&& u8(((uint8_t*)&v)[1])
-					&& u8(((uint8_t*)&v)[2])
-					&& u8(((uint8_t*)&v)[3])
-					&& u8(((uint8_t*)&v)[4])
-					&& u8(((uint8_t*)&v)[5]);
-			}
-			else
-			{
-				return u8(((uint8_t*)&v)[5])
-					&& u8(((uint8_t*)&v)[4])
-					&& u8(((uint8_t*)&v)[3])
-					&& u8(((uint8_t*)&v)[2])
-					&& u8(((uint8_t*)&v)[1])
-					&& u8(((uint8_t*)&v)[0]);
-			}
-		}
-
-		[[deprecated]] bool u56(uint64_t& v) noexcept
-		{
-			if constexpr (is_read)
-			{
-				v = 0;
-			}
-			if (native_endianness)
-			{
-				return u8(((uint8_t*)&v)[0])
-					&& u8(((uint8_t*)&v)[1])
-					&& u8(((uint8_t*)&v)[2])
-					&& u8(((uint8_t*)&v)[3])
-					&& u8(((uint8_t*)&v)[4])
-					&& u8(((uint8_t*)&v)[5])
-					&& u8(((uint8_t*)&v)[6]);
-			}
-			else
-			{
-				return u8(((uint8_t*)&v)[6])
-					&& u8(((uint8_t*)&v)[5])
-					&& u8(((uint8_t*)&v)[4])
-					&& u8(((uint8_t*)&v)[3])
-					&& u8(((uint8_t*)&v)[2])
-					&& u8(((uint8_t*)&v)[1])
-					&& u8(((uint8_t*)&v)[0]);
-			}
-		}
-
 		bool f32(float& v) noexcept
 		{
 			return u32le(*reinterpret_cast<uint32_t*>(&v));

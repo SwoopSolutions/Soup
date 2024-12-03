@@ -10,12 +10,7 @@ NAMESPACE_SOUP
 		std::ostream& os;
 
 		OstreamWriter(std::ostream& os)
-			: Writer(ENDIAN_LITTLE), os(os)
-		{
-		}
-
-		[[deprecated]] OstreamWriter(std::ostream& os, Endian endian)
-			: Writer(endian), os(os)
+			: Writer(), os(os)
 		{
 		}
 
