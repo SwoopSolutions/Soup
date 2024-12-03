@@ -167,7 +167,7 @@ NAMESPACE_SOUP
 		size_t out_len = size / 4 * 3;
 		if (auto remainder = (size % 4))
 		{
-			out_len += (remainder - 1);
+			out_len += (remainder - 1) + (remainder == 1);
 		}
 		return out_len;
 	}
@@ -243,7 +243,7 @@ NAMESPACE_SOUP
 
 		if (auto remainder = (size % 4))
 		{
-			auto extra = (remainder - 1);
+			auto extra = (remainder - 1) + (remainder == 1);
 
 			uint32_t a = i != size ? table[static_cast<uint8_t>(data[i++])] : 0;
 			uint32_t b = i != size ? table[static_cast<uint8_t>(data[i++])] : 0;

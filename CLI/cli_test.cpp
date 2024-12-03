@@ -363,6 +363,11 @@ static void unit_data()
 			assert(base64::decode("YQ==") == "a");
 			assert(base64::decode("SGVsbG8=") == "Hello");
 			assert(base64::decode("8J+YgA==") == "😀");
+
+			assert(base64::decode("YWFh") == "aaa");
+			assert(base64::decode("YWF") == "aa");
+			assert(base64::decode("YW") == "a");
+			assert(base64::decode("a") == "h");
 		});
 		test("urlDecode", []
 		{
