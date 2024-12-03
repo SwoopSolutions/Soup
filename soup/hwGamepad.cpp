@@ -36,7 +36,7 @@ NAMESPACE_SOUP
 		return false;
 	}
 
-	std::vector<hwGamepad> hwGamepad::getAll()
+	std::vector<hwGamepad> hwGamepad::getAll(bool include_generics)
 	{
 		std::vector<hwGamepad> res{};
 		for (auto& hid : hwHid::getAll())
@@ -72,12 +72,10 @@ NAMESPACE_SOUP
 					bool is_bluetooth = !hid.sendReport(std::move(buf));
 					res.emplace_back("Stadia Controller", std::move(hid)).stadia.is_bluetooth = is_bluetooth;
 				}
-#if false // Generic HID Gamepad support is pretty bad right now.
-				else
+				else if (include_generics)
 				{
 					res.emplace_back(nullptr, std::move(hid));
 				}
-#endif
 			}
 		}
 		return res;
@@ -450,7 +448,6 @@ NAMESPACE_SOUP
 #else
 			if (false) { }
 #endif
-#if false
 			else
 			{
 				//std::cout << string::bin2hex(report_data.toString()) << std::endl;
@@ -517,7 +514,6 @@ NAMESPACE_SOUP
 				status.buttons[BTN_RTRIGGER] = report.active_selectors.count({ 9, 0x13 }) != 0;
 				status.buttons[BTN_LTRIGGER] = report.active_selectors.count({ 9, 0x14 }) != 0;
 			}
-#endif
 		}
 
 		return status;

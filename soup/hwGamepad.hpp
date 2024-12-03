@@ -65,7 +65,7 @@ NAMESPACE_SOUP
 		}
 
 	public:
-		[[nodiscard]] static std::vector<hwGamepad> getAll();
+		[[nodiscard]] static std::vector<hwGamepad> getAll(bool include_generics = false);
 
 		// Some gamepads pretty much always have something to report,
 		// but the assumption should be that receiveStatus will block until the user causes a status update.
