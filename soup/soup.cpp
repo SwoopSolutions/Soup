@@ -497,7 +497,7 @@ public:
 	void setRequestHandled()
 	{
 		pending_request = nullptr;
-		notifyable.notify_all();
+		notifyable.wakeAll();
 	}
 };
 #endif

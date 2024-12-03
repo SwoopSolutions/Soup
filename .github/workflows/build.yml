@@ -1,4 +1,4 @@
-name: Build CLI
+name: Build
 
 on: push
 
@@ -57,8 +57,11 @@ jobs:
       - name: Upload soup
         uses: actions/upload-artifact@v4
         with:
-          name: "Debian 10 and above"
-          path: CLI/soup
+          name: "Debian 10 and above (X64)"
+          path: |
+            CLI/soup
+            libsoup.a
+            libsoupbindings.so
 
   arm64:
     runs-on: [ARM64]
@@ -81,7 +84,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: "Debian 12 (ARM64)"
-          path: CLI/soup
+          path: |
+            CLI/soup
+            libsoup.a
+            libsoupbindings.so
 
   macos-13:
     runs-on: macos-13
@@ -103,8 +109,11 @@ jobs:
       - name: Upload soup
         uses: actions/upload-artifact@v4
         with:
-          name: "MacOS (X86)"
-          path: CLI/soup
+          name: "MacOS (X64)"
+          path: |
+            CLI/soup
+            libsoup.a
+            libsoupbindings.so
 
   windows-latest:
     runs-on: windows-latest
@@ -129,5 +138,32 @@ jobs:
       - name: Upload soup
         uses: actions/upload-artifact@v4
         with:
-          name: "Windows"
-          path: CLI/soup.exe
+          name: "Windows (X64)"
+          path: |
+            CLI/soup.exe
+            soup.lib
+            soupbindings.dll
+
+  emscripten:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: mymindstorm/setup-emsdk@v13
+
+      - uses: actions/checkout@v4
+
+      - name: Build Soup
+        run: php wasm.php
+
+      - name: Ensure files exist
+        uses: andstor/file-existence-action@v3
+        with:
+          files: "bindings/libsoup.js, bindings/libsoup.wasm"
+          fail: true
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: "WASM"
+          path: |
+            bindings/libsoup.js
+            bindings/libsoup.wasm
