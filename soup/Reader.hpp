@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstring> // memset
+
 #include "ioBase.hpp"
 
 #include "fwd.hpp"
@@ -191,6 +193,13 @@ NAMESPACE_SOUP
 		{
 			v = std::string(len, '\0');
 			return raw(v.data(), len);
+		}
+
+		// String with known length.
+		bool str(size_t len, char* v) SOUP_EXCAL
+		{
+			memset(v, 0, len);
+			return raw(v, len);
 		}
 
 		// std::vector<uint8_t> with u8 size prefix.

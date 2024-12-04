@@ -1668,6 +1668,12 @@
     <ClInclude Include="UnorderedMap.hpp">
       <Filter>util</Filter>
     </ClInclude>
+    <ClInclude Include="TarReader.hpp">
+      <Filter>io\tar</Filter>
+    </ClInclude>
+    <ClInclude Include="TarIndexedFile.hpp">
+      <Filter>io\tar</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bytepatch.cpp">
@@ -2489,6 +2495,9 @@
     <ClCompile Include="DetourHookBase.cpp">
       <Filter>util\hooks</Filter>
     </ClCompile>
+    <ClCompile Include="TarReader.cpp">
+      <Filter>io\tar</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="os">
@@ -2748,6 +2757,9 @@
     </Filter>
     <Filter Include="util\hooks">
       <UniqueIdentifier>{a7f4aeee-77a2-4381-a5cb-7d9492511b79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="io\tar">
+      <UniqueIdentifier>{362041cb-1458-4b94-a12e-e5369f3ce84e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

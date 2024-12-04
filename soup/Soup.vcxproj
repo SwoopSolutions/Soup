@@ -848,6 +848,8 @@
     <ClInclude Include="StringPool.hpp" />
     <ClInclude Include="Sudoku.hpp" />
     <ClInclude Include="T128.hpp" />
+    <ClInclude Include="TarIndexedFile.hpp" />
+    <ClInclude Include="TarReader.hpp" />
     <ClInclude Include="textmate_grammar.hpp" />
     <ClInclude Include="TlsSignatureScheme.hpp" />
     <ClInclude Include="TransientToken.hpp" />
@@ -1367,6 +1369,7 @@
     <ClCompile Include="spaceship.cpp" />
     <ClCompile Include="Sudoku.cpp" />
     <ClCompile Include="Svg.cpp" />
+    <ClCompile Include="TarReader.cpp" />
     <ClCompile Include="Task.cpp" />
     <ClCompile Include="textmate_grammar.cpp" />
     <ClCompile Include="time.cpp" />
