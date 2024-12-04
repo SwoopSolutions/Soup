@@ -141,11 +141,11 @@
 #endif
 
 #if SOUP_CPP20
-	#define SOUP_IF_LIKELY(cond) if (cond) [[likely]]
-	#define SOUP_IF_UNLIKELY(cond) if (cond) [[unlikely]]
+	#define SOUP_IF_LIKELY(...) if (__VA_ARGS__) [[likely]]
+	#define SOUP_IF_UNLIKELY(...) if (__VA_ARGS__) [[unlikely]]
 #else
-	#define SOUP_IF_LIKELY(cond) if (cond)
-	#define SOUP_IF_UNLIKELY(cond) if (cond)
+	#define SOUP_IF_LIKELY(...) if (__VA_ARGS__)
+	#define SOUP_IF_UNLIKELY(...) if (__VA_ARGS__)
 #endif
 
 #if SOUP_CPP_VERSION < 2023'00L
@@ -155,14 +155,14 @@
 #endif
 
 #if SOUP_CPP23
-	#define SOUP_ASSUME(x) [[assume(x)]];
+	#define SOUP_ASSUME(...) [[assume(__VA_ARGS__)]];
 	#define SOUP_UNREACHABLE std::unreachable();
 #else
 	#if defined(_MSC_VER) && !defined(__clang__)
-		#define SOUP_ASSUME(x) __assume(x);
+		#define SOUP_ASSUME(...) __assume(__VA_ARGS__);
 		#define SOUP_UNREACHABLE SOUP_ASSUME(false);
 	#else
-		#define SOUP_ASSUME(x) ;
+		#define SOUP_ASSUME(...) ;
 		#define SOUP_UNREACHABLE __builtin_unreachable();
 	#endif
 #endif
