@@ -42,8 +42,8 @@ NAMESPACE_SOUP
 					continue;
 				}
 			}*/
-			auto start = string::hexToInt<uintptr_t>(m.findGroupByName("start")->toString()).value();
-			auto end = string::hexToInt<uintptr_t>(m.findGroupByName("end")->toString()).value();
+			auto start = string::hexToIntOpt<uintptr_t>(m.findGroupByName("start")->toString()).value();
+			auto end = string::hexToIntOpt<uintptr_t>(m.findGroupByName("end")->toString()).value();
 			int allowed_access = 0;
 			{
 				const auto prots = m.findGroupByName("prots")->begin;

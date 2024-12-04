@@ -96,7 +96,7 @@ NAMESPACE_SOUP
 				continue;
 			}
 			netAs as;
-			as.number = string::toInt<uint32_t>(line.substr(0, asn_sep)).value();
+			as.number = string::toIntOpt<uint32_t>(line.substr(0, asn_sep)).value();
 			++asn_sep;
 			auto handle_sep = line.find(',', asn_sep);
 			as.handle = as_pool.emplace(line.substr(asn_sep, handle_sep - asn_sep));
@@ -149,13 +149,13 @@ NAMESPACE_SOUP
 			{
 				continue;
 			}
-			uint32_t asn = string::toInt<uint32_t>(arr.at(2)).value();
+			uint32_t asn = string::toIntOpt<uint32_t>(arr.at(2)).value();
 			if (asn == 0)
 			{
 				continue;
 			}
-			auto begin = string::toInt<uint32_t>(arr.at(0)).value();
-			auto end = string::toInt<uint32_t>(arr.at(1)).value();
+			auto begin = string::toIntOpt<uint32_t>(arr.at(0)).value();
+			auto end = string::toIntOpt<uint32_t>(arr.at(1)).value();
 			const netAs* as = getAsByNumber(asn);
 			if (as == nullptr)
 			{
@@ -180,7 +180,7 @@ NAMESPACE_SOUP
 			{
 				continue;
 			}
-			uint32_t asn = string::toInt<uint32_t>(arr.at(2)).value();
+			uint32_t asn = string::toIntOpt<uint32_t>(arr.at(2)).value();
 			if (asn == 0)
 			{
 				continue;
@@ -214,8 +214,8 @@ NAMESPACE_SOUP
 				continue;
 			}
 			ipv4tolocation.emplace(
-				string::toInt<uint32_t>(arr.at(0)).value(),
-				string::toInt<uint32_t>(arr.at(1)).value(),
+				string::toIntOpt<uint32_t>(arr.at(0)).value(),
+				string::toIntOpt<uint32_t>(arr.at(1)).value(),
 				netIntelLocationData{
 					std::move(arr.at(2)),
 					location_pool.emplace(std::move(arr.at(3))),

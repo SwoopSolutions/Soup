@@ -12,7 +12,7 @@ NAMESPACE_SOUP
 		auto sep = str.find('/');
 		IpAddr addr;
 		SOUP_ASSERT(addr.fromString(str.substr(0, sep)));
-		auto size = string::toInt<uint8_t, string::TI_FULL>(str.substr(sep + 1));
+		auto size = string::toIntOpt<uint8_t>(str.substr(sep + 1), string::TI_FULL);
 		return construct(addr, size.value());
 	}
 

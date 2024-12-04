@@ -1736,20 +1736,20 @@ static void unit_util_string()
 	{
 		assert(string::toInt<int>("1337", 0) == 1337);
 		assert(string::toInt<int>("1337.", 0) == 1337);
-		assert(string::toInt<int, string::TI_FULL>("1337", 0) == 1337);
-		assert(string::toInt<int, string::TI_FULL>("1337.", 0) == 0);
+		assert(string::toInt<int>("1337", 0, string::TI_FULL) == 1337);
+		assert(string::toInt<int>("1337.", 0, string::TI_FULL) == 0);
 		assert(string::hexToInt<int>("1337", 0) == 0x1337);
 		assert(string::hexToInt<int>("1337.", 0) == 0x1337);
-		assert(string::hexToInt<int, string::TI_FULL>("1337", 0) == 0x1337);
-		assert(string::hexToInt<int, string::TI_FULL>("1337.", 0) == 0);
+		assert(string::hexToInt<int>("1337", 0, string::TI_FULL) == 0x1337);
+		assert(string::hexToInt<int>("1337.", 0, string::TI_FULL) == 0);
 		assert(string::toInt<int>(L"1337", 0) == 1337);
 		assert(string::toInt<int>(L"1337.", 0) == 1337);
-		assert(string::toInt<int, string::TI_FULL>(L"1337", 0) == 1337);
-		assert(string::toInt<int, string::TI_FULL>(L"1337.", 0) == 0);
+		assert(string::toInt<int>(L"1337", 0, string::TI_FULL) == 1337);
+		assert(string::toInt<int>(L"1337.", 0, string::TI_FULL) == 0);
 		assert(string::hexToInt<int>(L"1337", 0) == 0x1337);
 		assert(string::hexToInt<int>(L"1337.", 0) == 0x1337);
-		assert(string::hexToInt<int, string::TI_FULL>(L"1337", 0) == 0x1337);
-		assert(string::hexToInt<int, string::TI_FULL>(L"1337.", 0) == 0);
+		assert(string::hexToInt<int>(L"1337", 0, string::TI_FULL) == 0x1337);
+		assert(string::hexToInt<int>(L"1337.", 0, string::TI_FULL) == 0);
 	});
 	test("truncateWithEllipsis", []
 	{

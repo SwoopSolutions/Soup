@@ -12,7 +12,7 @@ NAMESPACE_SOUP
 		{
 			ip.reset();
 		}
-		const auto opt = string::toInt<uint16_t, string::TI_FULL>(str.substr(sep + 1));
+		const auto opt = string::toIntOpt<uint16_t>(str.substr(sep + 1), string::TI_FULL);
 		SOUP_RETHROW_FALSE(opt.has_value());
 		port = Endianness::toNetwork(*opt);
 		return true;

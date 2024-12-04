@@ -87,7 +87,7 @@ NAMESPACE_SOUP
 		{
 			if (is_int)
 			{
-				auto opt = string::toInt<int64_t>(buf);
+				auto opt = string::toIntOpt<int64_t>(buf);
 				if (opt.has_value())
 				{
 					return soup::make_unique<JsonInt>(opt.value());

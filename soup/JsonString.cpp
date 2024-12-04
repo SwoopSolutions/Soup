@@ -46,7 +46,7 @@ NAMESPACE_SOUP
 					++c;
 					if (c[0] && c[1] && c[2] && c[3])
 					{
-						if (char32_t w1; string::hexToInt<char32_t>(std::string(c, 4)).consume(w1))
+						if (char32_t w1; string::hexToIntOpt<char32_t>(std::string(c, 4)).consume(w1))
 						{
 							c += 4;
 							if ((w1 >> 10) == 0x36) // Surrogate pair?
@@ -54,7 +54,7 @@ NAMESPACE_SOUP
 								if (c[0] == '\\' && c[1] == 'u' && c[2] && c[3] && c[4] && c[5])
 								{
 									c += 2;
-									if (char32_t w2; string::hexToInt<char32_t>(std::string(c, 4)).consume(w2))
+									if (char32_t w2; string::hexToIntOpt<char32_t>(std::string(c, 4)).consume(w2))
 									{
 										c += 4;
 										value.append(unicode::utf32_to_utf8(unicode::utf16_to_utf32(w1, w2)));
