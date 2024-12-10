@@ -22,6 +22,7 @@ NAMESPACE_SOUP
 		Pattern(const CompiletimePatternWithOptBytesBase& sig);
 		Pattern(const std::string& str);
 		Pattern(const char* str, size_t len);
+		Pattern(const char* bin, const char* mask);
 	private:
 		void computeMostUniqueByteIndex();
 

@@ -91,6 +91,25 @@ NAMESPACE_SOUP
 		computeMostUniqueByteIndex();
 	}
 
+	Pattern::Pattern(const char* bin, const char* mask)
+	{
+		const size_t len = strlen(mask);
+		bytes.reserve(len);
+		for (size_t i = 0; i != len; ++i)
+		{
+			if (mask[i] == '?')
+			{
+				bytes.emplace_back(std::nullopt);
+			}
+			else // if (mask[i] == 'x')
+			{
+				bytes.emplace_back(reinterpret_cast<const uint8_t*>(bin)[i]);
+			}
+		}
+
+		computeMostUniqueByteIndex();
+	}
+
 #if SOUP_X86 && SOUP_BITS == 64
 	// Stolen from https://github.com/0x1F9F1/mem/blob/master/include/mem/simd_scanner.h
 	static const uint8_t frequencies[256]
