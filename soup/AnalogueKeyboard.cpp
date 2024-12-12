@@ -117,6 +117,10 @@ NAMESPACE_SOUP
 				{
 					return "DrunkDeer G75"; // untested
 				}
+				else
+				{
+					return hid.getProductName();
+				}
 			}
 		}
 		// Keychron
