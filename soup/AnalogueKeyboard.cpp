@@ -169,11 +169,11 @@ NAMESPACE_SOUP
 				{
 					return "Madlions MAD60HE";
 				}
-				// If I wanted to be stupid, I could buy their MAD68HE, FIRE68 Ultra, & NANO68 Pro just to map in the layouts for the shitty polling interface.
-				/*else if (hid.product_id == 0x1059 || hid.product_id == 0x105A || hid.product_id == 0x105C)
+				else if (hid.product_id == 0x1059 || hid.product_id == 0x105A || hid.product_id == 0x105C)
 				{
-					return "Madlions MAD68HE";
-				}*/
+					return "Madlions MAD68HE"; // Thanks to CaelTheColher for providing the layout
+				}
+				// If I wanted to be stupid, I could buy their FIRE68 Ultra & NANO68 Pro just to map in the layouts for the shitty polling interface.
 			}
 		}
 
@@ -228,6 +228,22 @@ NAMESPACE_SOUP
 	[[nodiscard]] static SOUP_PURE uint8_t layout_index_to_row(const uint8_t* layout, uint8_t index) noexcept { return index / layout_get_cols(layout); }
 	[[nodiscard]] static SOUP_PURE uint8_t layout_index_to_col(const uint8_t* layout, uint8_t index) noexcept { return index % layout_get_cols(layout); }
 
+	static const Key layout_madlions_mad60he[] = {
+		KEY_ESCAPE,    KEY_1,     KEY_2,    KEY_3,    KEY_4,    KEY_5,    KEY_6,     KEY_7,    KEY_8,    KEY_9,     KEY_0,         KEY_MINUS,        KEY_EQUALS,        KEY_BACKSPACE,
+		KEY_TAB,       KEY_Q,     KEY_W,    KEY_E,    KEY_R,    KEY_T,    KEY_Y,     KEY_U,    KEY_I,    KEY_O,     KEY_P,         KEY_BRACKET_LEFT, KEY_BRACKET_RIGHT, KEY_BACKSLASH,
+		KEY_CAPS_LOCK, KEY_A,     KEY_S,    KEY_D,    KEY_F,    KEY_G,    KEY_H,     KEY_J,    KEY_K,    KEY_L,     KEY_SEMICOLON, KEY_QUOTE,        KEY_NONE,          KEY_ENTER,
+		KEY_LSHIFT,    KEY_NONE,  KEY_Z,    KEY_X,    KEY_C,    KEY_V,    KEY_B,     KEY_N,    KEY_M,    KEY_COMMA, KEY_PERIOD,    KEY_SLASH,        KEY_NONE,          KEY_RSHIFT,
+		KEY_LCTRL,     KEY_LMETA, KEY_LALT, KEY_NONE, KEY_NONE, KEY_NONE, KEY_SPACE, KEY_NONE, KEY_NONE, KEY_RMETA, KEY_RALT,      KEY_CTX,          KEY_RCTRL,         KEY_FN,
+	};
+
+	static const Key layout_madlions_mad68he[]  = {
+		KEY_ESCAPE,    KEY_1,     KEY_2,    KEY_3,    KEY_4,    KEY_5,    KEY_6,     KEY_7,    KEY_8,    KEY_9,     KEY_0,         KEY_MINUS,        KEY_EQUALS,        KEY_BACKSPACE,  KEY_INSERT,
+		KEY_TAB,       KEY_Q,     KEY_W,    KEY_E,    KEY_R,    KEY_T,    KEY_Y,     KEY_U,    KEY_I,    KEY_O,     KEY_P,         KEY_BRACKET_LEFT, KEY_BRACKET_RIGHT, KEY_BACKSLASH,  KEY_DEL,
+		KEY_CAPS_LOCK, KEY_A,     KEY_S,    KEY_D,    KEY_F,    KEY_G,    KEY_H,     KEY_J,    KEY_K,    KEY_L,     KEY_SEMICOLON, KEY_QUOTE,        KEY_NONE,          KEY_ENTER,      KEY_PAGE_UP,
+		KEY_LSHIFT,    KEY_NONE,  KEY_Z,    KEY_X,    KEY_C,    KEY_V,    KEY_B,     KEY_N,    KEY_M,    KEY_COMMA, KEY_PERIOD,    KEY_SLASH,        KEY_RSHIFT,        KEY_ARROW_UP,   KEY_PAGE_DOWN,
+		KEY_LCTRL,     KEY_LMETA, KEY_LALT, KEY_NONE, KEY_NONE, KEY_NONE, KEY_SPACE, KEY_NONE, KEY_NONE, KEY_RALT,  KEY_FN,        KEY_RCTRL,        KEY_ARROW_LEFT,    KEY_ARROW_DOWN, KEY_ARROW_RIGHT,
+	};
+
 	AnalogueKeyboard::AnalogueKeyboard(std::string&& name, hwHid&& hid, bool has_ctx_key)
 		: name(std::move(name)), hid(std::move(hid)), has_ctx_key(has_ctx_key)
 	{
@@ -278,20 +294,21 @@ NAMESPACE_SOUP
 				{
 					const bool has_ctx_key = (hid.vendor_id == 0x1532 || hid.vendor_id == 0x373b);
 					AnalogueKeyboard& kbd = res.emplace_back(std::move(name), std::move(hid), has_ctx_key);
-					if (kbd.hid.vendor_id == 0x3434 // Keychron
-						&& kbd.hid.havePermission()
-						)
+					if (kbd.hid.vendor_id == 0x3434) // Keychron
 					{
-						uint8_t data[33];
-						memset(data, 0, sizeof(data));
-						data[1] = 0xa9; // KC_HE
-						data[2] = 0x01; // AMC_GET_VERSION
-						kbd.hid.sendReport(data, sizeof(data));
-						const auto& report = kbd.hid.receiveReport();
-						kbd.keychron.am_version = report.at(2);
-						if (report.back() == 0x45) // https://github.com/AnalogSense/qmk_firmware/commit/73dc606a8d29e1c32c343563c571c6da092f96dd
+						if (kbd.hid.havePermission())
 						{
-							kbd.keychron.state = 0xff;
+							uint8_t data[33];
+							memset(data, 0, sizeof(data));
+							data[1] = 0xa9; // KC_HE
+							data[2] = 0x01; // AMC_GET_VERSION
+							kbd.hid.sendReport(data, sizeof(data));
+							const auto& report = kbd.hid.receiveReport();
+							kbd.keychron.am_version = report.at(2);
+							if (report.back() == 0x45) // https://github.com/AnalogSense/qmk_firmware/commit/73dc606a8d29e1c32c343563c571c6da092f96dd
+							{
+								kbd.keychron.state = 0xff;
+							}
 						}
 
 						if (kbd.hid.product_id == 0x0B10 // ANSI
@@ -312,6 +329,19 @@ NAMESPACE_SOUP
 						else
 						{
 							kbd.keychron.layout = layout_keychron_k2_he;
+						}
+					}
+					else if (kbd.hid.vendor_id == 0x373b) // Madlions
+					{
+						if (hid.product_id == 0x1055 || hid.product_id == 0x1056 || hid.product_id == 0x105D)
+						{
+							kbd.madlions.layout_size = sizeof(layout_madlions_mad60he);
+							kbd.madlions.layout = layout_madlions_mad60he;
+						}
+						else
+						{
+							kbd.madlions.layout_size = sizeof(layout_madlions_mad68he);
+							kbd.madlions.layout = layout_madlions_mad68he;
 						}
 					}
 				}
@@ -892,14 +922,6 @@ NAMESPACE_SOUP
 		return keys;
 	}
 
-	static Key madlions_layout[] = {
-		/*  0 */ KEY_ESCAPE,    KEY_1,     KEY_2,    KEY_3,    KEY_4,    KEY_5,    KEY_6,     KEY_7,    KEY_8,    KEY_9,     KEY_0,         KEY_MINUS,        KEY_EQUALS,        KEY_BACKSPACE,
-		/* 14 */ KEY_TAB,       KEY_Q,     KEY_W,    KEY_E,    KEY_R,    KEY_T,    KEY_Y,     KEY_U,    KEY_I,    KEY_O,     KEY_P,         KEY_BRACKET_LEFT, KEY_BRACKET_RIGHT, KEY_BACKSLASH,
-		/* 28 */ KEY_CAPS_LOCK, KEY_A,     KEY_S,    KEY_D,    KEY_F,    KEY_G,    KEY_H,     KEY_J,    KEY_K,    KEY_L,     KEY_SEMICOLON, KEY_QUOTE,        KEY_NONE,          KEY_ENTER,
-		/* 42 */ KEY_LSHIFT,    KEY_NONE,  KEY_Z,    KEY_X,    KEY_C,    KEY_V,    KEY_B,     KEY_N,    KEY_M,    KEY_COMMA, KEY_PERIOD,    KEY_SLASH,        KEY_NONE,          KEY_RSHIFT,
-		/* 56 */ KEY_LCTRL,     KEY_LMETA, KEY_LALT, KEY_NONE, KEY_NONE, KEY_NONE, KEY_SPACE, KEY_NONE, KEY_NONE, KEY_RMETA, KEY_RALT,      KEY_CTX,          KEY_RCTRL,         KEY_FN,
-	};
-
 	std::vector<ActiveKey> AnalogueKeyboard::getActiveKeysMadlions()
 	{
 		std::vector<ActiveKey> keys{};
@@ -923,12 +945,12 @@ NAMESPACE_SOUP
 		report[2] = 0x96;
 		report[3] = 0x1C;
 		report[8] = 4; // Num keys (max. 4, even tho response could fit 5...)
-		for (uint8_t offset = 0; offset < sizeof(madlions_layout); offset += 4)
+		for (uint8_t offset = 0; offset < madlions.layout_size; offset += 4)
 		{
 			bool should_request_this_chunk = false;
 			for (uint8_t i = 0; i != 4; ++i)
 			{
-				const auto sk = madlions_layout[offset + i];
+				const auto sk = madlions.layout[offset + i];
 				if (sk != KEY_NONE)
 				{
 					if (
@@ -946,7 +968,7 @@ NAMESPACE_SOUP
 			{
 				for (uint8_t i = 0; i != 4; ++i)
 				{
-					const auto sk = madlions_layout[offset + i];
+					const auto sk = madlions.layout[offset + i];
 					if (sk != KEY_NONE)
 					{
 						if (madlions.buffer[sk] != 0)
@@ -968,7 +990,7 @@ NAMESPACE_SOUP
 
 			for (uint8_t i = 0; i != 4; ++i)
 			{
-				SOUP_IF_UNLIKELY (offset + i >= sizeof(madlions_layout))
+				SOUP_IF_UNLIKELY (offset + i >= madlions.layout_size)
 				{
 					break;
 				}
@@ -977,7 +999,7 @@ NAMESPACE_SOUP
 				uint16_t travel;
 				r.u16be(travel);
 				
-				const auto sk = madlions_layout[offset + i];
+				const auto sk = madlions.layout[offset + i];
 				if (sk != KEY_NONE)
 				{
 					const auto fvalue = static_cast<float>(travel) / 350.0f;
@@ -989,7 +1011,7 @@ NAMESPACE_SOUP
 #if SOUP_WINDOWS
 						if (!dkbd_okay && travel == 350)
 						{
-							if (dkbd.keys[madlions_layout[offset + i]])
+							if (dkbd.keys[madlions.layout[offset + i]])
 							{
 								dkbd_okay = true;
 							}
@@ -1003,7 +1025,7 @@ NAMESPACE_SOUP
 				}
 			}
 		}
-		if (madlions.state++ == (sizeof(madlions_layout) >> 4))
+		if (madlions.state++ == (madlions.layout_size >> 4))
 		{
 			madlions.state = 0;
 		}

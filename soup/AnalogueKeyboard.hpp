@@ -35,6 +35,8 @@ NAMESPACE_SOUP
 			struct
 			{
 				uint8_t state;
+				uint8_t layout_size;
+				const Key* layout;
 				uint8_t buffer[NUM_KEYS];
 			} madlions;
 		};
