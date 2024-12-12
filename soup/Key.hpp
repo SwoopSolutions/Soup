@@ -87,7 +87,7 @@ NAMESPACE_SOUP
 		KEY_RALT,
 		KEY_RMETA, // Physical arrangement: [RMETA] [FN] [RCTRL]
 		KEY_FN,
-		KEY_CTX, // Physical arrangement: [FN] [CTX] [RCTRL]
+		KEY_CTX, // Physical arrangement - Razer: [FN] [CTX] [RCTRL], Madlions: [CTX] [RCTRL] [FN]
 		KEY_RCTRL,
 
 		KEY_PRINT_SCREEN,

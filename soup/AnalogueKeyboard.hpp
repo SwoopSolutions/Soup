@@ -32,6 +32,11 @@ NAMESPACE_SOUP
 			{
 				uint8_t buffer[NUM_KEYS];
 			} nuphy;
+			struct
+			{
+				uint8_t state;
+				uint8_t buffer[NUM_KEYS];
+			} madlions;
 		};
 
 		AnalogueKeyboard() = default;
@@ -84,8 +89,9 @@ NAMESPACE_SOUP
 
 		[[nodiscard]] bool isPoll() const noexcept;
 
-		// Receives the latest report from the device and parses it.
 		// This will block unless `isPoll()` or `hid.hasReport()` is true.
 		[[nodiscard]] std::vector<ActiveKey> getActiveKeys();
+	protected:
+		[[nodiscard]] std::vector<ActiveKey> getActiveKeysMadlions();
 	};
 }

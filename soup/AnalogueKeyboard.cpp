@@ -122,7 +122,7 @@ NAMESPACE_SOUP
 		// Keychron
 		else if (hid.vendor_id == 0x3434)
 		{
-			if (hid.usage == 0x61 && hid.usage_page == 0xFF60)
+			if (hid.usage_page == 0xFF60 && hid.usage == 0x61)
 			{
 				if (hid.product_id == 0x0B10 // ANSI
 					|| hid.product_id == 0x0B11 // ISO
@@ -154,6 +154,22 @@ NAMESPACE_SOUP
 			if (hid.usage_page == 1 && hid.usage == 0)
 			{
 				return hid.getProductName();
+			}
+		}
+		// Madlions
+		else if (hid.vendor_id == 0x373b)
+		{
+			if (hid.usage_page == 0xff60 && hid.usage == 0x61)
+			{
+				if (hid.product_id == 0x1055 || hid.product_id == 0x1056 || hid.product_id == 0x105D) // Mine says 0x105d but their web driver includes these 3
+				{
+					return "Madlions MAD60HE";
+				}
+				// If I wanted to be stupid, I could buy their MAD68HE, FIRE68 Ultra, & NANO68 Pro just to map in the layouts for the shitty polling interface.
+				/*else if (hid.product_id == 0x1059 || hid.product_id == 0x105A || hid.product_id == 0x105C)
+				{
+					return "Madlions MAD68HE";
+				}*/
 			}
 		}
 
@@ -256,12 +272,8 @@ NAMESPACE_SOUP
 				// Check if this is a supported device and the right interface for it
 				if (auto name = checkDeviceName(hid); !name.empty())
 				{
-					const bool has_ctx_key = (hid.vendor_id == 0x1532);
-					AnalogueKeyboard& kbd = res.emplace_back(AnalogueKeyboard{
-						std::move(name),
-						std::move(hid),
-						has_ctx_key
-					});
+					const bool has_ctx_key = (hid.vendor_id == 0x1532 || hid.vendor_id == 0x373b);
+					AnalogueKeyboard& kbd = res.emplace_back(std::move(name), std::move(hid), has_ctx_key);
 					if (kbd.hid.vendor_id == 0x3434 // Keychron
 						&& kbd.hid.havePermission()
 						)
@@ -425,7 +437,7 @@ NAMESPACE_SOUP
 	bool AnalogueKeyboard::isPoll() const noexcept
 	{
 		return hid.vendor_id == 0x352d // DrunkDeer
-			|| hid.usage_page == 0xFF60 // Keychron
+			|| hid.usage_page == 0xFF60 // Keychron, Madlions
 			;
 	}
 
@@ -568,6 +580,11 @@ NAMESPACE_SOUP
 #endif
 
 			return keys;
+		}
+
+		if (hid.vendor_id == 0x373b)
+		{
+			return getActiveKeysMadlions();
 		}
 
 		if (hid.usage_page == 0xFF60) // Keychron
@@ -867,6 +884,129 @@ NAMESPACE_SOUP
 				}
 			}
 		}
+
+		return keys;
+	}
+
+	static Key madlions_layout[] = {
+		/*  0 */ KEY_ESCAPE,    KEY_1,     KEY_2,    KEY_3,    KEY_4,    KEY_5,    KEY_6,     KEY_7,    KEY_8,    KEY_9,     KEY_0,         KEY_MINUS,        KEY_EQUALS,        KEY_BACKSPACE,
+		/* 14 */ KEY_TAB,       KEY_Q,     KEY_W,    KEY_E,    KEY_R,    KEY_T,    KEY_Y,     KEY_U,    KEY_I,    KEY_O,     KEY_P,         KEY_BRACKET_LEFT, KEY_BRACKET_RIGHT, KEY_BACKSLASH,
+		/* 28 */ KEY_CAPS_LOCK, KEY_A,     KEY_S,    KEY_D,    KEY_F,    KEY_G,    KEY_H,     KEY_J,    KEY_K,    KEY_L,     KEY_SEMICOLON, KEY_QUOTE,        KEY_NONE,          KEY_ENTER,
+		/* 42 */ KEY_LSHIFT,    KEY_NONE,  KEY_Z,    KEY_X,    KEY_C,    KEY_V,    KEY_B,     KEY_N,    KEY_M,    KEY_COMMA, KEY_PERIOD,    KEY_SLASH,        KEY_NONE,          KEY_RSHIFT,
+		/* 56 */ KEY_LCTRL,     KEY_LMETA, KEY_LALT, KEY_NONE, KEY_NONE, KEY_NONE, KEY_SPACE, KEY_NONE, KEY_NONE, KEY_RMETA, KEY_RALT,      KEY_CTX,          KEY_RCTRL,         KEY_FN,
+	};
+
+	std::vector<ActiveKey> AnalogueKeyboard::getActiveKeysMadlions()
+	{
+		std::vector<ActiveKey> keys{};
+
+#if SOUP_WINDOWS
+		NamedMutex mtx("MadlionsMtx");
+		mtx.lock();
+#endif
+
+#if (SOUP_WINDOWS || SOUP_LINUX) && !SOUP_CROSS_COMPILE
+		static DigitalKeyboard dkbd;
+#if SOUP_WINDOWS
+		static bool dkbd_okay = false;
+#endif
+		dkbd.update();
+#endif
+
+		uint8_t report[33];
+		memset(report, 0, sizeof(report));
+		report[1] = 0x02;
+		report[2] = 0x96;
+		report[3] = 0x1C;
+		report[8] = 4; // Num keys (max. 4, even tho response could fit 5...)
+		for (uint8_t offset = 0; offset < sizeof(madlions_layout); offset += 4)
+		{
+			bool should_request_this_chunk = false;
+			for (uint8_t i = 0; i != 4; ++i)
+			{
+				const auto sk = madlions_layout[offset + i];
+				if (sk != KEY_NONE)
+				{
+					if (
+#if (SOUP_WINDOWS || SOUP_LINUX) && !SOUP_CROSS_COMPILE
+						dkbd.keys[sk] ||
+#endif
+						madlions.buffer[sk] || (offset >> 4) == madlions.state
+						)
+					{
+						should_request_this_chunk = true;
+					}
+				}
+			}
+			if (!should_request_this_chunk)
+			{
+				for (uint8_t i = 0; i != 4; ++i)
+				{
+					const auto sk = madlions_layout[offset + i];
+					if (sk != KEY_NONE)
+					{
+						if (madlions.buffer[sk] != 0)
+						{
+							keys.emplace_back(ActiveKey{ sk, static_cast<float>(madlions.buffer[sk]) / 255.0f });
+						}
+					}
+				}
+				continue;
+			}
+
+			report[7] = offset;
+			hid.discardStaleReports();
+			hid.sendReport(report, sizeof(report));
+			
+			const Buffer& resp =  hid.receiveReport();
+			MemoryRefReader r(resp);
+			r.skip(7);
+
+			for (uint8_t i = 0; i != 4; ++i)
+			{
+				SOUP_IF_UNLIKELY (offset + i >= sizeof(madlions_layout))
+				{
+					break;
+				}
+
+				r.skip(3);
+				uint16_t travel;
+				r.u16be(travel);
+				
+				const auto sk = madlions_layout[offset + i];
+				if (sk != KEY_NONE)
+				{
+					const auto fvalue = static_cast<float>(travel) / 350.0f;
+					madlions.buffer[sk] = static_cast<uint8_t>(fvalue * 255.0f);
+					if (travel != 0)
+					{
+						keys.emplace_back(ActiveKey{ sk, fvalue });
+
+#if SOUP_WINDOWS
+						if (!dkbd_okay && travel == 350)
+						{
+							if (dkbd.keys[madlions_layout[offset + i]])
+							{
+								dkbd_okay = true;
+							}
+							else
+							{
+								dkbd.deinit();
+							}
+						}
+#endif
+					}
+				}
+			}
+		}
+		if (madlions.state++ == (sizeof(madlions_layout) >> 4))
+		{
+			madlions.state = 0;
+		}
+
+#if SOUP_WINDOWS
+		mtx.unlock();
+#endif
 
 		return keys;
 	}
