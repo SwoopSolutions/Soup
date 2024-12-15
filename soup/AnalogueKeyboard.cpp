@@ -479,442 +479,493 @@ NAMESPACE_SOUP
 
 	std::vector<ActiveKey> AnalogueKeyboard::getActiveKeys()
 	{
-		std::vector<ActiveKey> keys{};
-
-		if (hid.vendor_id == 0x352d)
+		if (hid.vendor_id == 0x31E3 || hid.vendor_id == 0x03EB)
 		{
-#if SOUP_WINDOWS
-			NamedMutex mtx("DrunkDeerMtx");
-			mtx.lock();
-#endif
-
-			Buffer buf;
-			buf.append(
-				"\x04\xb6\x03\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" \
-				"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" \
-				"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" \
-				"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
-				, 64);
-			hid.discardStaleReports();
-			hid.sendReport(std::move(buf));
-
-			Buffer b0 = hid.receiveReport();
-			Buffer b1 = hid.receiveReport();
-			Buffer b2 = hid.receiveReport();
-			SOUP_IF_UNLIKELY (b0.empty() || b1.empty() || b2.empty())
-			{
-				disconnected = true;
-			}
-			else
-			{
-				Buffer combined((64 - 5) * 3);
-				combined.append(b0.data() + 5, b0.size() - 5);
-				combined.append(b1.data() + 5, b1.size() - 5);
-				combined.append(b2.data() + 5, b2.size() - 5);
-
-#define DRUNKDEER_KEY(key, row, column) { \
-	constexpr auto i = (row * 21) + column; \
-	if (combined[i]) \
-	{ \
-		keys.emplace_back(ActiveKey{ key, static_cast<float>(combined[i]) / 40.0f }); \
-	} \
-}
-
-				DRUNKDEER_KEY(KEY_ESCAPE, 0, 0);
-				DRUNKDEER_KEY(KEY_F1, 0, 2);
-				DRUNKDEER_KEY(KEY_F2, 0, 3);
-				DRUNKDEER_KEY(KEY_F3, 0, 4);
-				DRUNKDEER_KEY(KEY_F4, 0, 5);
-				DRUNKDEER_KEY(KEY_F5, 0, 6);
-				DRUNKDEER_KEY(KEY_F6, 0, 7);
-				DRUNKDEER_KEY(KEY_F7, 0, 8);
-				DRUNKDEER_KEY(KEY_F8, 0, 9);
-				DRUNKDEER_KEY(KEY_F9, 0, 10);
-				DRUNKDEER_KEY(KEY_F10, 0, 11);
-				DRUNKDEER_KEY(KEY_F11, 0, 12);
-				DRUNKDEER_KEY(KEY_F12, 0, 13);
-				DRUNKDEER_KEY(KEY_DEL, 0, 14);
-
-				DRUNKDEER_KEY(KEY_BACKQUOTE, 1, 0);
-				DRUNKDEER_KEY(KEY_1, 1, 1);
-				DRUNKDEER_KEY(KEY_2, 1, 2);
-				DRUNKDEER_KEY(KEY_3, 1, 3);
-				DRUNKDEER_KEY(KEY_4, 1, 4);
-				DRUNKDEER_KEY(KEY_5, 1, 5);
-				DRUNKDEER_KEY(KEY_6, 1, 6);
-				DRUNKDEER_KEY(KEY_7, 1, 7);
-				DRUNKDEER_KEY(KEY_8, 1, 8);
-				DRUNKDEER_KEY(KEY_9, 1, 9);
-				DRUNKDEER_KEY(KEY_0, 1, 10);
-				DRUNKDEER_KEY(KEY_MINUS, 1, 11);
-				DRUNKDEER_KEY(KEY_EQUALS, 1, 12);
-				DRUNKDEER_KEY(KEY_BACKSPACE, 1, 13);
-				DRUNKDEER_KEY(KEY_HOME, 1, 15);
-
-				DRUNKDEER_KEY(KEY_TAB, 2, 0);
-				DRUNKDEER_KEY(KEY_Q, 2, 1);
-				DRUNKDEER_KEY(KEY_W, 2, 2);
-				DRUNKDEER_KEY(KEY_E, 2, 3);
-				DRUNKDEER_KEY(KEY_R, 2, 4);
-				DRUNKDEER_KEY(KEY_T, 2, 5);
-				DRUNKDEER_KEY(KEY_Y, 2, 6);
-				DRUNKDEER_KEY(KEY_U, 2, 7);
-				DRUNKDEER_KEY(KEY_I, 2, 8);
-				DRUNKDEER_KEY(KEY_O, 2, 9);
-				DRUNKDEER_KEY(KEY_P, 2, 10);
-				DRUNKDEER_KEY(KEY_BRACKET_LEFT, 2, 11);
-				DRUNKDEER_KEY(KEY_BRACKET_RIGHT, 2, 12);
-				DRUNKDEER_KEY(KEY_BACKSLASH, 2, 13);
-				DRUNKDEER_KEY(KEY_PAGE_UP, 2, 15);
-
-				DRUNKDEER_KEY(KEY_CAPS_LOCK, 3, 0);
-				DRUNKDEER_KEY(KEY_A, 3, 1);
-				DRUNKDEER_KEY(KEY_S, 3, 2);
-				DRUNKDEER_KEY(KEY_D, 3, 3);
-				DRUNKDEER_KEY(KEY_F, 3, 4);
-				DRUNKDEER_KEY(KEY_G, 3, 5);
-				DRUNKDEER_KEY(KEY_H, 3, 6);
-				DRUNKDEER_KEY(KEY_J, 3, 7);
-				DRUNKDEER_KEY(KEY_K, 3, 8);
-				DRUNKDEER_KEY(KEY_L, 3, 9);
-				DRUNKDEER_KEY(KEY_SEMICOLON, 3, 10);
-				DRUNKDEER_KEY(KEY_QUOTE, 3, 11);
-				DRUNKDEER_KEY(KEY_ENTER, 3, 13);
-				DRUNKDEER_KEY(KEY_PAGE_DOWN, 3, 15);
-
-				DRUNKDEER_KEY(KEY_LSHIFT, 4, 0);
-				DRUNKDEER_KEY(KEY_Z, 4, 2);
-				DRUNKDEER_KEY(KEY_X, 4, 3);
-				DRUNKDEER_KEY(KEY_C, 4, 4);
-				DRUNKDEER_KEY(KEY_V, 4, 5);
-				DRUNKDEER_KEY(KEY_B, 4, 6);
-				DRUNKDEER_KEY(KEY_N, 4, 7);
-				DRUNKDEER_KEY(KEY_M, 4, 8);
-				DRUNKDEER_KEY(KEY_COMMA, 4, 9);
-				DRUNKDEER_KEY(KEY_PERIOD, 4, 10);
-				DRUNKDEER_KEY(KEY_SLASH, 4, 11);
-				DRUNKDEER_KEY(KEY_RSHIFT, 4, 13);
-				DRUNKDEER_KEY(KEY_ARROW_UP, 4, 14);
-				DRUNKDEER_KEY(KEY_END, 4, 15);
-
-				DRUNKDEER_KEY(KEY_LCTRL, 5, 0);
-				DRUNKDEER_KEY(KEY_LMETA, 5, 1);
-				DRUNKDEER_KEY(KEY_LALT, 5, 2);
-				DRUNKDEER_KEY(KEY_SPACE, 5, 6);
-				DRUNKDEER_KEY(KEY_RALT, 5, 10);
-				DRUNKDEER_KEY(KEY_FN, 5, 11);
-				DRUNKDEER_KEY(KEY_OEM_1, 5, 12); // Key says "Menu" on it, doesn't seem to do anything.
-				DRUNKDEER_KEY(KEY_ARROW_LEFT, 5, 14);
-				DRUNKDEER_KEY(KEY_ARROW_DOWN, 5, 15);
-				DRUNKDEER_KEY(KEY_ARROW_RIGHT, 5, 16);
-			}
-
-#if SOUP_WINDOWS
-			mtx.unlock();
-#endif
-
-			return keys;
+			return getActiveKeysWooting();
 		}
-
-		if (hid.vendor_id == 0x373b)
+		else if (hid.vendor_id == 0x1532)
+		{
+			return getActiveKeysRazer();
+		}
+		else if (hid.vendor_id == 0x352d)
+		{
+			return getActiveKeysDrunkdeer();
+		}
+		else if (hid.vendor_id == 0x3434)
+		{
+			return getActiveKeysKeychron();
+		}
+		else if (hid.vendor_id == 0x19f5)
+		{
+			return getActiveKeysNuphy();
+		}
+		else if (hid.vendor_id == 0x373b)
 		{
 			return getActiveKeysMadlions();
 		}
-
-		if (hid.usage_page == 0xFF60) // Keychron
+		else
 		{
-#if SOUP_WINDOWS
-			NamedMutex mtx("KeychronMtx");
-			mtx.lock();
-#endif
-			if (keychron.state == 0xff)
+			SOUP_UNREACHABLE;
+		}
+	}
+
+	std::vector<ActiveKey> AnalogueKeyboard::getActiveKeysWooting()
+	{
+		std::vector<ActiveKey> keys{};
+		const Buffer& report = hid.receiveReport();
+		SOUP_IF_UNLIKELY (report.empty())
+		{
+			disconnected = true;
+		}
+		else
+		{
+			MemoryRefReader r(report);
+			uint16_t scancode;
+			uint8_t value;
+			while (r.hasMore() // Wooting's report can fit up to 16 keys
+				&& r.u16be(scancode)
+				&& scancode != 0
+				&& r.u8(value)
+				)
 			{
-				uint8_t data[33];
-				memset(data, 0, sizeof(data));
-				data[1] = 0xa9; // KC_HE
-				data[2] = 0x31; // AMC_GET_REALTIME_TRAVEL_ALL
-				hid.discardStaleReports();
-				hid.sendReport(data, sizeof(data));
-				Buffer b0 = hid.receiveReport();
-				Buffer b1 = hid.receiveReport();
-				Buffer b2 = hid.receiveReport();
-				Buffer b3 = hid.receiveReport();
-				/*std::cout << string::bin2hex(b0.toString(), true) << std::endl;
-				std::cout << string::bin2hex(b1.toString(), true) << std::endl;
-				std::cout << string::bin2hex(b2.toString(), true) << std::endl;
-				std::cout << string::bin2hex(b3.toString(), true) << std::endl;
-				std::cout << std::endl;*/
-				SOUP_IF_UNLIKELY (b0.empty() || b1.empty() || b2.empty() || b3.empty())
+				Key sk;
+				SOUP_IF_UNLIKELY ((scancode >> 8) != 0)
 				{
-					disconnected = true;
+					switch (scancode)
+					{
+					default: sk = KEY_NONE; break;
+						// Usage Page 0x0C
+					case 0x3B5: sk = KEY_NEXT_TRACK; break;
+					case 0x3B6: sk = KEY_PREV_TRACK; break;
+					case 0x3B7: sk = KEY_STOP_MEDIA; break;
+					case 0x3CD: sk = KEY_PLAY_PAUSE; break;
+						// OEM-specific
+					case 0x401: sk = KEY_OEM_5; break; // Brightness Up
+					case 0x402: sk = KEY_OEM_6; break; // Brightness Down
+					case 0x403: sk = KEY_OEM_1; break; // Profile 1
+					case 0x404: sk = KEY_OEM_2; break; // Profile 2
+					case 0x405: sk = KEY_OEM_3; break; // Profile 3
+					case 0x408: sk = KEY_OEM_4; break; // Profile Switch
+					case 0x409: sk = KEY_FN; break;
+					}
 				}
 				else
 				{
-					Buffer combined((32 - 2) * 4);
-					combined.append(b0.data() + 2, b0.size() - 2);
-					combined.append(b1.data() + 2, b1.size() - 2);
-					combined.append(b2.data() + 2, b2.size() - 2);
-					combined.append(b3.data() + 2, b3.size() - 2);
-					for (uint8_t i = 0; i != layout_get_size(keychron.layout); ++i)
+					// Usage Page 0x07
+					sk = hid_scancode_to_soup_key(static_cast<uint8_t>(scancode));
+				}
+				SOUP_IF_LIKELY (sk != KEY_NONE)
+				{
+					// some keys seem to be getting reported multiple times on older firmware, so just use last reported value
+					for (auto& key : keys)
 					{
-						/*if (combined[i] >= 5)
+						if (key.getSoupKey() == sk)
 						{
-							std::cout << "Key pressed: " << (int)layout_index_to_row(keychron.layout, i) << ", " << (int)layout_index_to_col(keychron.layout, i) << std::endl;
-						}*/
-						const auto sk = layout_get_item(keychron.layout, i);
-						if (sk != KEY_NONE)
-						{
-							const auto travel = combined[i];
-							if (travel >= 5)
-							{
-								keys.emplace_back(ActiveKey{
-									sk,
-									std::min(static_cast<float>(travel) / 235.0f, 1.0f)
-								});
-							}
+							key.fvalue = static_cast<float>(value) / 255.0f;
+							goto _no_emplace;
 						}
 					}
+					keys.emplace_back(ActiveKey{
+						sk,
+						static_cast<float>(value) / 255.0f
+					});
+				_no_emplace:;
 				}
 			}
-			else
-			{
-#if (SOUP_WINDOWS || SOUP_LINUX) && !SOUP_CROSS_COMPILE
-				static DigitalKeyboard dkbd;
-#if SOUP_WINDOWS
-				static bool dkbd_okay = false;
-#endif
-				dkbd.update();
-#endif
-				uint8_t data[33];
-				memset(data, 0, sizeof(data));
-				data[1] = 0xa9; // KC_HE
-				data[2] = 0x30; // AMC_GET_REALTIME_TRAVEL
-				for (uint8_t i = 0; i != layout_get_size(keychron.layout); ++i)
-				{
-					const auto sk = layout_get_item(keychron.layout, i);
-					if (sk == KEY_NONE)
-					{
-						continue;
-					}
-					if (
-#if (SOUP_WINDOWS || SOUP_LINUX) && !SOUP_CROSS_COMPILE
-						dkbd.keys[sk] ||
-#endif
-						keychron.buffer[sk] || keychron.state == (i >> 2)
-						)
-					{
-						data[3] = layout_index_to_row(keychron.layout, i);
-						data[4] = layout_index_to_col(keychron.layout, i);
-						hid.discardStaleReports();
-						hid.sendReport(data, sizeof(data));
-						const auto& report = hid.receiveReport();
-						SOUP_IF_UNLIKELY (report.empty())
-						{
-							disconnected = true;
-							break;
-						}
-						keychron.buffer[sk] = report.at(keychron.am_version >= 4 ? 6 : 3);
-
-#if SOUP_WINDOWS && !SOUP_CROSS_COMPILE
-						if (!dkbd_okay && keychron.buffer[sk] >= 235)
-						{
-							if (dkbd.keys[sk])
-							{
-								dkbd_okay = true;
-							}
-							else
-							{
-								dkbd.deinit();
-							}
-						}
-#endif
-					}
-					if (keychron.buffer[sk] >= 5)
-					{
-						keys.emplace_back(ActiveKey{
-							sk,
-							std::min(static_cast<float>(keychron.buffer[sk]) / 235.0f, 1.0f)
-						});
-					}
-				}
-				if (keychron.state++ == (layout_get_size(keychron.layout) >> 2))
-				{
-					keychron.state = 0;
-				}
-			}
-#if SOUP_WINDOWS
-			mtx.unlock();
-#endif
-			return keys;
 		}
+		return keys;
+	}
+
+	std::vector<ActiveKey> AnalogueKeyboard::getActiveKeysRazer()
+	{
+		std::vector<ActiveKey> keys{};
 
 		const Buffer& report = hid.receiveReport();
 		SOUP_IF_UNLIKELY (report.empty())
 		{
 			//std::cout << "empty report" << std::endl;
-			if (hid.vendor_id != 0x1532
-				|| ++razer.consecutive_empty_reports == 10
-				)
+			if (++razer.consecutive_empty_reports == 10)
 			{
 				disconnected = true;
 			}
 		}
 		else
 		{
+			razer.consecutive_empty_reports = 0;
+
+			//std::cout << string::bin2hex(report.toString()) << std::endl;
+
 			MemoryRefReader r(report);
-			if (hid.usage_page == 0xFF54) // Wooting, up to 16 keys
+			r.skip(1); // skip report id
+
+			if (hid.product_id >= 0x02a6) // Huntsman V3, up to 15 keys
 			{
-				uint16_t scancode;
+				uint8_t scancode;
 				uint8_t value;
 				while (r.hasMore()
-					&& r.u16be(scancode)
+					&& r.u8(scancode)
 					&& scancode != 0
 					&& r.u8(value)
+					&& r.skip(1) // unclear, might be something like "priority."
 					)
 				{
-					Key sk;
-					SOUP_IF_UNLIKELY ((scancode >> 8) != 0)
-					{
-						switch (scancode)
-						{
-						default: sk = KEY_NONE; break;
-							// Usage Page 0x0C
-						case 0x3B5: sk = KEY_NEXT_TRACK; break;
-						case 0x3B6: sk = KEY_PREV_TRACK; break;
-						case 0x3B7: sk = KEY_STOP_MEDIA; break;
-						case 0x3CD: sk = KEY_PLAY_PAUSE; break;
-							// OEM-specific
-						case 0x401: sk = KEY_OEM_5; break; // Brightness Up
-						case 0x402: sk = KEY_OEM_6; break; // Brightness Down
-						case 0x403: sk = KEY_OEM_1; break; // Profile 1
-						case 0x404: sk = KEY_OEM_2; break; // Profile 2
-						case 0x405: sk = KEY_OEM_3; break; // Profile 3
-						case 0x408: sk = KEY_OEM_4; break; // Profile Switch
-						case 0x409: sk = KEY_FN; break;
-						}
-					}
-					else
-					{
-						// Usage Page 0x07
-						sk = hid_scancode_to_soup_key(static_cast<uint8_t>(scancode));
-					}
+					const auto sk = razer_scancode_to_soup_key(scancode);
 					SOUP_IF_LIKELY (sk != KEY_NONE)
 					{
-						// some keys seem to be getting reported multiple times on older firmware, so just use last reported value
-						for (auto& key : keys)
-						{
-							if (key.getSoupKey() == sk)
-							{
-								key.fvalue = static_cast<float>(value) / 255.0f;
-								goto _no_emplace;
-							}
-						}
 						keys.emplace_back(ActiveKey{
 							sk,
 							static_cast<float>(value) / 255.0f
 						});
-						_no_emplace:;
 					}
 				}
 			}
-			else if (hid.vendor_id == 0x1532) // Razer
+			else // Huntsman V2, up to 11 keys
 			{
-				razer.consecutive_empty_reports = 0;
-
-				//std::cout << string::bin2hex(report.toString()) << std::endl;
-
-				r.skip(1); // skip report id
-
-				if (hid.product_id >= 0x02a6) // Huntsman V3, up to 15 keys
+				uint8_t scancode;
+				uint8_t value;
+				while (r.hasMore()
+					&& r.u8(scancode)
+					&& scancode != 0
+					&& r.u8(value)
+					)
 				{
-					uint8_t scancode;
-					uint8_t value;
-					while (r.hasMore()
-						&& r.u8(scancode)
-						&& scancode != 0
-						&& r.u8(value)
-						&& r.skip(1) // unclear, might be something like "priority."
-						)
-					{
-						const auto sk = razer_scancode_to_soup_key(scancode);
-						SOUP_IF_LIKELY (sk != KEY_NONE)
-						{
-							keys.emplace_back(ActiveKey{
-								sk,
-								static_cast<float>(value) / 255.0f
-							});
-						}
-					}
-				}
-				else // Huntsman V2, up to 11 keys
-				{
-					uint8_t scancode;
-					uint8_t value;
-					while (r.hasMore()
-						&& r.u8(scancode)
-						&& scancode != 0
-						&& r.u8(value)
-						)
-					{
-						const auto sk = razer_scancode_to_soup_key(scancode);
-						SOUP_IF_LIKELY (sk != KEY_NONE)
-						{
-							keys.emplace_back(ActiveKey{
-								sk,
-								static_cast<float>(value) / 255.0f
-							});
-						}
-					}
-				}
-			}
-			else // NuPhy
-			{
-				uint8_t type; r.u8(type);
-				if (type == 0xA0)
-				{
-					r.skip(1); // unknown, seems to be 0x10 in most cases
-					uint16_t scancode; r.u16be(scancode);
-					r.skip(2); // fvalue * 800 (u16_be)
-					r.skip(1); // unknown, seems to always be 0x00
-					uint8_t value; r.u8(value); // fvalue * 200
-
-					Key sk;
-					SOUP_IF_UNLIKELY ((scancode >> 8) != 0)
-					{
-						switch (scancode)
-						{
-						default: sk = KEY_NONE; break;
-						case 0x100: sk = KEY_LCTRL; break;
-						case 0x200: sk = KEY_LSHIFT; break;
-						case 0x400: sk = KEY_LALT; break;
-						case 0x800: sk = KEY_LMETA; break;
-						case 0x1000: sk = KEY_RCTRL; break;
-						case 0x2000: sk = KEY_RSHIFT; break;
-						case 0x4000: sk = KEY_RALT; break;
-						case 0x8000: sk = KEY_RMETA; break; // not observed, but highly likely
-						case 0xff05: sk = KEY_FN; break;
-						}
-					}
-					else
-					{
-						sk = hid_scancode_to_soup_key(static_cast<uint8_t>(scancode));
-					}
-
+					const auto sk = razer_scancode_to_soup_key(scancode);
 					SOUP_IF_LIKELY (sk != KEY_NONE)
 					{
-						nuphy.buffer[sk] = value;
-					}
-				}
-
-				for (uint8_t i = 0; i != NUM_KEYS; ++i)
-				{
-					if (nuphy.buffer[i] != 0)
-					{
 						keys.emplace_back(ActiveKey{
-							static_cast<Key>(i),
-							static_cast<float>(nuphy.buffer[i]) / 200.0f
+							sk,
+							static_cast<float>(value) / 255.0f
 						});
 					}
+				}
+			}
+		}
+
+		return keys;
+	}
+
+	std::vector<ActiveKey> AnalogueKeyboard::getActiveKeysDrunkdeer()
+	{
+		std::vector<ActiveKey> keys{};
+
+#if SOUP_WINDOWS
+		NamedMutex mtx("DrunkDeerMtx");
+		mtx.lock();
+#endif
+
+		Buffer buf;
+		buf.append(
+			"\x04\xb6\x03\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" \
+			"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" \
+			"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" \
+			"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+			, 64);
+		hid.discardStaleReports();
+		hid.sendReport(std::move(buf));
+
+		Buffer b0 = hid.receiveReport();
+		Buffer b1 = hid.receiveReport();
+		Buffer b2 = hid.receiveReport();
+		SOUP_IF_UNLIKELY (b0.empty() || b1.empty() || b2.empty())
+		{
+			disconnected = true;
+		}
+		else
+		{
+			Buffer combined((64 - 5) * 3);
+			combined.append(b0.data() + 5, b0.size() - 5);
+			combined.append(b1.data() + 5, b1.size() - 5);
+			combined.append(b2.data() + 5, b2.size() - 5);
+
+#define DRUNKDEER_KEY(key, row, column) { \
+constexpr auto i = (row * 21) + column; \
+if (combined[i]) \
+{ \
+	keys.emplace_back(ActiveKey{ key, static_cast<float>(combined[i]) / 40.0f }); \
+} \
+}
+
+			DRUNKDEER_KEY(KEY_ESCAPE, 0, 0);
+			DRUNKDEER_KEY(KEY_F1, 0, 2);
+			DRUNKDEER_KEY(KEY_F2, 0, 3);
+			DRUNKDEER_KEY(KEY_F3, 0, 4);
+			DRUNKDEER_KEY(KEY_F4, 0, 5);
+			DRUNKDEER_KEY(KEY_F5, 0, 6);
+			DRUNKDEER_KEY(KEY_F6, 0, 7);
+			DRUNKDEER_KEY(KEY_F7, 0, 8);
+			DRUNKDEER_KEY(KEY_F8, 0, 9);
+			DRUNKDEER_KEY(KEY_F9, 0, 10);
+			DRUNKDEER_KEY(KEY_F10, 0, 11);
+			DRUNKDEER_KEY(KEY_F11, 0, 12);
+			DRUNKDEER_KEY(KEY_F12, 0, 13);
+			DRUNKDEER_KEY(KEY_DEL, 0, 14);
+
+			DRUNKDEER_KEY(KEY_BACKQUOTE, 1, 0);
+			DRUNKDEER_KEY(KEY_1, 1, 1);
+			DRUNKDEER_KEY(KEY_2, 1, 2);
+			DRUNKDEER_KEY(KEY_3, 1, 3);
+			DRUNKDEER_KEY(KEY_4, 1, 4);
+			DRUNKDEER_KEY(KEY_5, 1, 5);
+			DRUNKDEER_KEY(KEY_6, 1, 6);
+			DRUNKDEER_KEY(KEY_7, 1, 7);
+			DRUNKDEER_KEY(KEY_8, 1, 8);
+			DRUNKDEER_KEY(KEY_9, 1, 9);
+			DRUNKDEER_KEY(KEY_0, 1, 10);
+			DRUNKDEER_KEY(KEY_MINUS, 1, 11);
+			DRUNKDEER_KEY(KEY_EQUALS, 1, 12);
+			DRUNKDEER_KEY(KEY_BACKSPACE, 1, 13);
+			DRUNKDEER_KEY(KEY_HOME, 1, 15);
+
+			DRUNKDEER_KEY(KEY_TAB, 2, 0);
+			DRUNKDEER_KEY(KEY_Q, 2, 1);
+			DRUNKDEER_KEY(KEY_W, 2, 2);
+			DRUNKDEER_KEY(KEY_E, 2, 3);
+			DRUNKDEER_KEY(KEY_R, 2, 4);
+			DRUNKDEER_KEY(KEY_T, 2, 5);
+			DRUNKDEER_KEY(KEY_Y, 2, 6);
+			DRUNKDEER_KEY(KEY_U, 2, 7);
+			DRUNKDEER_KEY(KEY_I, 2, 8);
+			DRUNKDEER_KEY(KEY_O, 2, 9);
+			DRUNKDEER_KEY(KEY_P, 2, 10);
+			DRUNKDEER_KEY(KEY_BRACKET_LEFT, 2, 11);
+			DRUNKDEER_KEY(KEY_BRACKET_RIGHT, 2, 12);
+			DRUNKDEER_KEY(KEY_BACKSLASH, 2, 13);
+			DRUNKDEER_KEY(KEY_PAGE_UP, 2, 15);
+
+			DRUNKDEER_KEY(KEY_CAPS_LOCK, 3, 0);
+			DRUNKDEER_KEY(KEY_A, 3, 1);
+			DRUNKDEER_KEY(KEY_S, 3, 2);
+			DRUNKDEER_KEY(KEY_D, 3, 3);
+			DRUNKDEER_KEY(KEY_F, 3, 4);
+			DRUNKDEER_KEY(KEY_G, 3, 5);
+			DRUNKDEER_KEY(KEY_H, 3, 6);
+			DRUNKDEER_KEY(KEY_J, 3, 7);
+			DRUNKDEER_KEY(KEY_K, 3, 8);
+			DRUNKDEER_KEY(KEY_L, 3, 9);
+			DRUNKDEER_KEY(KEY_SEMICOLON, 3, 10);
+			DRUNKDEER_KEY(KEY_QUOTE, 3, 11);
+			DRUNKDEER_KEY(KEY_ENTER, 3, 13);
+			DRUNKDEER_KEY(KEY_PAGE_DOWN, 3, 15);
+
+			DRUNKDEER_KEY(KEY_LSHIFT, 4, 0);
+			DRUNKDEER_KEY(KEY_Z, 4, 2);
+			DRUNKDEER_KEY(KEY_X, 4, 3);
+			DRUNKDEER_KEY(KEY_C, 4, 4);
+			DRUNKDEER_KEY(KEY_V, 4, 5);
+			DRUNKDEER_KEY(KEY_B, 4, 6);
+			DRUNKDEER_KEY(KEY_N, 4, 7);
+			DRUNKDEER_KEY(KEY_M, 4, 8);
+			DRUNKDEER_KEY(KEY_COMMA, 4, 9);
+			DRUNKDEER_KEY(KEY_PERIOD, 4, 10);
+			DRUNKDEER_KEY(KEY_SLASH, 4, 11);
+			DRUNKDEER_KEY(KEY_RSHIFT, 4, 13);
+			DRUNKDEER_KEY(KEY_ARROW_UP, 4, 14);
+			DRUNKDEER_KEY(KEY_END, 4, 15);
+
+			DRUNKDEER_KEY(KEY_LCTRL, 5, 0);
+			DRUNKDEER_KEY(KEY_LMETA, 5, 1);
+			DRUNKDEER_KEY(KEY_LALT, 5, 2);
+			DRUNKDEER_KEY(KEY_SPACE, 5, 6);
+			DRUNKDEER_KEY(KEY_RALT, 5, 10);
+			DRUNKDEER_KEY(KEY_FN, 5, 11);
+			DRUNKDEER_KEY(KEY_OEM_1, 5, 12); // Key says "Menu" on it, doesn't seem to do anything.
+			DRUNKDEER_KEY(KEY_ARROW_LEFT, 5, 14);
+			DRUNKDEER_KEY(KEY_ARROW_DOWN, 5, 15);
+			DRUNKDEER_KEY(KEY_ARROW_RIGHT, 5, 16);
+		}
+
+#if SOUP_WINDOWS
+		mtx.unlock();
+#endif
+
+		return keys;
+	}
+
+	std::vector<ActiveKey> AnalogueKeyboard::getActiveKeysKeychron()
+	{
+		std::vector<ActiveKey> keys{};
+#if SOUP_WINDOWS
+		NamedMutex mtx("KeychronMtx");
+		mtx.lock();
+#endif
+		if (keychron.state == 0xff)
+		{
+			uint8_t data[33];
+			memset(data, 0, sizeof(data));
+			data[1] = 0xa9; // KC_HE
+			data[2] = 0x31; // AMC_GET_REALTIME_TRAVEL_ALL
+			hid.discardStaleReports();
+			hid.sendReport(data, sizeof(data));
+			Buffer b0 = hid.receiveReport();
+			Buffer b1 = hid.receiveReport();
+			Buffer b2 = hid.receiveReport();
+			Buffer b3 = hid.receiveReport();
+			/*std::cout << string::bin2hex(b0.toString(), true) << std::endl;
+			std::cout << string::bin2hex(b1.toString(), true) << std::endl;
+			std::cout << string::bin2hex(b2.toString(), true) << std::endl;
+			std::cout << string::bin2hex(b3.toString(), true) << std::endl;
+			std::cout << std::endl;*/
+			SOUP_IF_UNLIKELY (b0.empty() || b1.empty() || b2.empty() || b3.empty())
+			{
+				disconnected = true;
+			}
+			else
+			{
+				Buffer combined((32 - 2) * 4);
+				combined.append(b0.data() + 2, b0.size() - 2);
+				combined.append(b1.data() + 2, b1.size() - 2);
+				combined.append(b2.data() + 2, b2.size() - 2);
+				combined.append(b3.data() + 2, b3.size() - 2);
+				for (uint8_t i = 0; i != layout_get_size(keychron.layout); ++i)
+				{
+					/*if (combined[i] >= 5)
+					{
+						std::cout << "Key pressed: " << (int)layout_index_to_row(keychron.layout, i) << ", " << (int)layout_index_to_col(keychron.layout, i) << std::endl;
+					}*/
+					const auto sk = layout_get_item(keychron.layout, i);
+					if (sk != KEY_NONE)
+					{
+						const auto travel = combined[i];
+						if (travel >= 5)
+						{
+							keys.emplace_back(ActiveKey{
+								sk,
+								std::min(static_cast<float>(travel) / 235.0f, 1.0f)
+							});
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+#if (SOUP_WINDOWS || SOUP_LINUX) && !SOUP_CROSS_COMPILE
+			static DigitalKeyboard dkbd;
+#if SOUP_WINDOWS
+			static bool dkbd_okay = false;
+#endif
+			dkbd.update();
+#endif
+			uint8_t data[33];
+			memset(data, 0, sizeof(data));
+			data[1] = 0xa9; // KC_HE
+			data[2] = 0x30; // AMC_GET_REALTIME_TRAVEL
+			for (uint8_t i = 0; i != layout_get_size(keychron.layout); ++i)
+			{
+				const auto sk = layout_get_item(keychron.layout, i);
+				if (sk == KEY_NONE)
+				{
+					continue;
+				}
+				if (
+#if (SOUP_WINDOWS || SOUP_LINUX) && !SOUP_CROSS_COMPILE
+					dkbd.keys[sk] ||
+#endif
+					keychron.buffer[sk] || keychron.state == (i >> 2)
+					)
+				{
+					data[3] = layout_index_to_row(keychron.layout, i);
+					data[4] = layout_index_to_col(keychron.layout, i);
+					hid.discardStaleReports();
+					hid.sendReport(data, sizeof(data));
+					const auto& report = hid.receiveReport();
+					SOUP_IF_UNLIKELY (report.empty())
+					{
+						disconnected = true;
+						break;
+					}
+					keychron.buffer[sk] = report.at(keychron.am_version >= 4 ? 6 : 3);
+
+#if SOUP_WINDOWS && !SOUP_CROSS_COMPILE
+					if (!dkbd_okay && keychron.buffer[sk] >= 235)
+					{
+						if (dkbd.keys[sk])
+						{
+							dkbd_okay = true;
+						}
+						else
+						{
+							dkbd.deinit();
+						}
+					}
+#endif
+				}
+				if (keychron.buffer[sk] >= 5)
+				{
+					keys.emplace_back(ActiveKey{
+						sk,
+						std::min(static_cast<float>(keychron.buffer[sk]) / 235.0f, 1.0f)
+					});
+				}
+			}
+			if (keychron.state++ == (layout_get_size(keychron.layout) >> 2))
+			{
+				keychron.state = 0;
+			}
+		}
+#if SOUP_WINDOWS
+		mtx.unlock();
+#endif
+		return keys;
+	}
+
+	std::vector<ActiveKey> AnalogueKeyboard::getActiveKeysNuphy()
+	{
+		std::vector<ActiveKey> keys{};
+
+		const Buffer& report = hid.receiveReport();
+		SOUP_IF_UNLIKELY (report.empty())
+		{
+			disconnected = true;
+		}
+		else
+		{
+			MemoryRefReader r(report);
+			uint8_t type; r.u8(type);
+			if (type == 0xA0)
+			{
+				r.skip(1); // unknown, seems to be 0x10 in most cases
+				uint16_t scancode; r.u16be(scancode);
+				r.skip(2); // fvalue * 800 (u16_be)
+				r.skip(1); // unknown, seems to always be 0x00
+				uint8_t value; r.u8(value); // fvalue * 200
+
+				Key sk;
+				SOUP_IF_UNLIKELY ((scancode >> 8) != 0)
+				{
+					switch (scancode)
+					{
+					default: sk = KEY_NONE; break;
+					case 0x100: sk = KEY_LCTRL; break;
+					case 0x200: sk = KEY_LSHIFT; break;
+					case 0x400: sk = KEY_LALT; break;
+					case 0x800: sk = KEY_LMETA; break;
+					case 0x1000: sk = KEY_RCTRL; break;
+					case 0x2000: sk = KEY_RSHIFT; break;
+					case 0x4000: sk = KEY_RALT; break;
+					case 0x8000: sk = KEY_RMETA; break; // not observed, but highly likely
+					case 0xff05: sk = KEY_FN; break;
+					}
+				}
+				else
+				{
+					sk = hid_scancode_to_soup_key(static_cast<uint8_t>(scancode));
+				}
+
+				SOUP_IF_LIKELY (sk != KEY_NONE)
+				{
+					nuphy.buffer[sk] = value;
+				}
+			}
+
+			for (uint8_t i = 0; i != NUM_KEYS; ++i)
+			{
+				if (nuphy.buffer[i] != 0)
+				{
+					keys.emplace_back(ActiveKey{
+						static_cast<Key>(i),
+						static_cast<float>(nuphy.buffer[i]) / 200.0f
+					});
 				}
 			}
 		}
