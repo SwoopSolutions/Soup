@@ -985,42 +985,49 @@ NAMESPACE_SOUP
 			hid.sendReport(report, sizeof(report));
 			
 			const Buffer& resp =  hid.receiveReport();
-			MemoryRefReader r(resp);
-			r.skip(7);
-
-			for (uint8_t i = 0; i != 4; ++i)
+			SOUP_IF_UNLIKELY (resp.empty())
 			{
-				SOUP_IF_UNLIKELY (offset + i >= madlions.layout_size)
-				{
-					break;
-				}
+				disconnected = true;
+			}
+			else
+			{
+				MemoryRefReader r(resp);
+				r.skip(7);
 
-				r.skip(3);
-				uint16_t travel;
-				r.u16be(travel);
-				
-				const auto sk = madlions.layout[offset + i];
-				if (sk != KEY_NONE)
+				for (uint8_t i = 0; i != 4; ++i)
 				{
-					const auto fvalue = static_cast<float>(travel) / 350.0f;
-					madlions.buffer[sk] = static_cast<uint8_t>(fvalue * 255.0f);
-					if (travel != 0)
+					SOUP_IF_UNLIKELY (offset + i >= madlions.layout_size)
 					{
-						keys.emplace_back(ActiveKey{ sk, fvalue });
+						break;
+					}
+
+					r.skip(3);
+					uint16_t travel;
+					r.u16be(travel);
+				
+					const auto sk = madlions.layout[offset + i];
+					if (sk != KEY_NONE)
+					{
+						const auto fvalue = static_cast<float>(travel) / 350.0f;
+						madlions.buffer[sk] = static_cast<uint8_t>(fvalue * 255.0f);
+						if (travel != 0)
+						{
+							keys.emplace_back(ActiveKey{ sk, fvalue });
 
 #if SOUP_WINDOWS
-						if (!dkbd_okay && travel == 350)
-						{
-							if (dkbd.keys[madlions.layout[offset + i]])
+							if (!dkbd_okay && travel == 350)
 							{
-								dkbd_okay = true;
+								if (dkbd.keys[madlions.layout[offset + i]])
+								{
+									dkbd_okay = true;
+								}
+								else
+								{
+									dkbd.deinit();
+								}
 							}
-							else
-							{
-								dkbd.deinit();
-							}
-						}
 #endif
+						}
 					}
 				}
 			}
