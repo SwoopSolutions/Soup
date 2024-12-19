@@ -150,6 +150,16 @@ NAMESPACE_SOUP
 			os << str.str();
 			return os;
 		}
+
+		[[nodiscard]] constexpr size_t size() const noexcept
+		{
+			return Len;
+		}
+
+		[[nodiscard]] constexpr size_t length() const noexcept
+		{
+			return Len;
+		}
 	};
 	static_assert(sizeof(ObfusString<3>) == 2 + 4);
 #pragma pack(pop)
