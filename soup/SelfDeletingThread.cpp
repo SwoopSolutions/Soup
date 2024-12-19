@@ -24,7 +24,8 @@ NAMESPACE_SOUP
 			msg.append(e.what());
 			logWriteLine(std::move(msg));
 		}
-		t->is_self_deleting = true;
+		t->detach();
+		delete t;
 	}
 }
 
