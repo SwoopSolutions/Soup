@@ -107,6 +107,11 @@ NAMESPACE_SOUP
 		sendResponse(s, "404", "Content-Length: 0\r\n\r\n");
 	}
 
+	void ServerWebService::send500(Socket& s)
+	{
+		sendResponse(s, "500", "Content-Length: 0\r\n\r\n");
+	}
+
 	void ServerWebService::sendResponse(Socket& s, const char* status, const std::string& headers_and_body)
 	{
 		std::string cont = "HTTP/1.0 ";

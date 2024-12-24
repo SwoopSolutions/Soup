@@ -37,6 +37,7 @@ NAMESPACE_SOUP
 		static void send204(Socket& s);
 		static void send400(Socket& s);
 		static void send404(Socket& s);
+		static void send500(Socket& s);
 		static void sendResponse(Socket& s, const char* status, const std::string& headers_and_body);
 
 		// WebSocket
