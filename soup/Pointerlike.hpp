@@ -25,7 +25,7 @@ NAMESPACE_SOUP
 		template <typename T>
 		[[nodiscard]] std::enable_if_t<std::is_pointer_v<T>, T> as() const noexcept
 		{
-			return static_cast<T>(_addr());
+			return reinterpret_cast<T>(_addr());
 		}
 
 		template <typename T>
