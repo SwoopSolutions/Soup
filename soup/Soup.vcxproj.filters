@@ -1674,6 +1674,12 @@
     <ClInclude Include="TarIndexedFile.hpp">
       <Filter>io\tar</Filter>
     </ClInclude>
+    <ClInclude Include="HookBase.hpp">
+      <Filter>util\hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="ReplacementHook.hpp">
+      <Filter>util\hooks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bytepatch.cpp">
@@ -2497,6 +2503,12 @@
     </ClCompile>
     <ClCompile Include="TarReader.cpp">
       <Filter>io\tar</Filter>
+    </ClCompile>
+    <ClCompile Include="HookBase.cpp">
+      <Filter>util\hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="ReplacementHook.cpp">
+      <Filter>util\hooks</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

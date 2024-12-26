@@ -750,6 +750,8 @@
     <ClInclude Include="HidReportDescriptor.hpp" />
     <ClInclude Include="HidScancode.hpp" />
     <ClInclude Include="HidUsage.hpp" />
+    <ClInclude Include="ReplacementHook.hpp" />
+    <ClInclude Include="HookBase.hpp" />
     <ClInclude Include="hwGamepad.hpp" />
     <ClInclude Include="Hwid.hpp" />
     <ClInclude Include="IpcSocket.hpp" />
@@ -1286,6 +1288,8 @@
     <ClCompile Include="HammingCode.cpp" />
     <ClCompile Include="HardwareRng.cpp" />
     <ClCompile Include="HidReportDescriptor.cpp" />
+    <ClCompile Include="ReplacementHook.cpp" />
+    <ClCompile Include="HookBase.cpp" />
     <ClCompile Include="HttpRequestTask.cpp" />
     <ClCompile Include="hwGamepad.cpp" />
     <ClCompile Include="Hwid.cpp" />
