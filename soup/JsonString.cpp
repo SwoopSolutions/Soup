@@ -11,6 +11,11 @@ NAMESPACE_SOUP
 	{
 	}
 
+	JsonString::JsonString(const std::string& value) noexcept
+		: JsonNode(JSON_STRING), value(value)
+	{
+	}
+
 	JsonString::JsonString(std::string&& value) noexcept
 		: JsonNode(JSON_STRING), value(std::move(value))
 	{
