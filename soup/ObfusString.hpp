@@ -22,7 +22,7 @@ NAMESPACE_SOUP
 
 	private:
 		// seed serves as null-terminator as it's set to 0 after deobfuscation
-		char data[Len];
+		char m_data[Len];
 		uint32_t seed;
 
 	public:
@@ -46,19 +46,19 @@ NAMESPACE_SOUP
 			// rot13
 			for (size_t i = 0; i != Len; ++i)
 			{
-				data[i] = string::rot13(in[i]);
+				m_data[i] = string::rot13(in[i]);
 			}
 
 			// flip bits
 			for (size_t i = 0; i != Len; ++i)
 			{
-				data[i] ^= rng.generateByte();
+				m_data[i] ^= rng.generateByte();
 			}
 
 			// mirror
 			for (size_t i = 0, j = Len - 1; i != Len / 2; ++i, --j)
 			{
-				std::swap(data[i], data[j]);
+				std::swap(m_data[i], m_data[j]);
 			}
 		}
 
@@ -74,19 +74,19 @@ NAMESPACE_SOUP
 			// mirror
 			for (size_t i = 0, j = Len - 1; i != Len / 2; ++i, --j)
 			{
-				std::swap(data[i], data[j]);
+				std::swap(m_data[i], m_data[j]);
 			}
 
 			// flip bits
 			for (size_t i = 0; i != Len; ++i)
 			{
-				data[i] ^= rng.generateByte();
+				m_data[i] ^= rng.generateByte();
 			}
 
 			// rot13
 			for (size_t i = 0; i != Len; ++i)
 			{
-				data[i] = string::rot13(data[i]);
+				m_data[i] = string::rot13(m_data[i]);
 			}
 		}
 
@@ -94,7 +94,7 @@ NAMESPACE_SOUP
 		[[nodiscard]] std::string str() SOUP_EXCAL
 		{
 			runtime_access();
-			return std::string(data, Len);
+			return std::string(m_data, Len);
 		}
 
 		[[nodiscard]] operator std::string() SOUP_EXCAL
@@ -105,7 +105,13 @@ NAMESPACE_SOUP
 		[[nodiscard]] const char* c_str() noexcept
 		{
 			runtime_access();
-			return data;
+			return m_data;
+		}
+
+		[[nodiscard]] const char* data() noexcept
+		{
+			runtime_access();
+			return m_data;
 		}
 
 		[[nodiscard]] operator const char* () noexcept
