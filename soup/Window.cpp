@@ -357,7 +357,7 @@ NAMESPACE_SOUP
 		return *this;
 	}
 
-	std::pair<unsigned int, unsigned int> Window::getPos() noexcept
+	std::pair<int, int> Window::getPos() noexcept
 	{
 		RECT r;
 		GetWindowRect(h, &r);
