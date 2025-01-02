@@ -181,6 +181,31 @@ NAMESPACE_SOUP
 		return copy_to_clipboard_utf16(unicode::utf8_to_utf16(text));
 	}
 
+	std::string os::getClipboardTextUtf8()
+	{
+		return unicode::utf16_to_utf8(getClipboardTextUtf16());
+	}
+
+	UTF16_STRING_TYPE os::getClipboardTextUtf16()
+	{
+		std::wstring text;
+		if (OpenClipboard(nullptr))
+		{
+			HANDLE hData = GetClipboardData(CF_UNICODETEXT);
+			if (hData != nullptr)
+			{
+				auto pszText = static_cast<wchar_t*>(GlobalLock(hData));
+				if (pszText != nullptr)
+				{
+					text = pszText;
+					GlobalUnlock(hData);
+				}
+			}
+			CloseClipboard();
+		}
+		return text;
+	}
+
 	#if !SOUP_CROSS_COMPILE
 	size_t os::getMemoryUsage()
 	{
