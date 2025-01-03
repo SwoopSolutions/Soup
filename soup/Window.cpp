@@ -461,7 +461,7 @@ NAMESPACE_SOUP
 		}
 		else
 		{
-			SetWindowLong(h, GWL_EXSTYLE, GetWindowLong(h, GWL_EXSTYLE) & ~(WS_EX_LAYERED | WS_EX_TRANSPARENT));
+			SetWindowLong(h, GWL_EXSTYLE, GetWindowLong(h, GWL_EXSTYLE) & ~WS_EX_TRANSPARENT);
 		}
 		return *this;
 	}
