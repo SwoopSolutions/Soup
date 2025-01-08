@@ -38,6 +38,8 @@ NAMESPACE_SOUP
 		}
 
 	private:
+		static constexpr size_t MirrorLen = Len > 30000 ? 30000 : Len;
+
 		SOUP_CONSTEVAL void initialise(const char* in)
 		{
 			seed = rand.getConstexprSeed(Len);
@@ -56,7 +58,7 @@ NAMESPACE_SOUP
 			}
 
 			// mirror
-			for (size_t i = 0, j = Len - 1; i != Len / 2; ++i, --j)
+			for (size_t i = 0, j = MirrorLen - 1; i != MirrorLen / 2; ++i, --j)
 			{
 				std::swap(m_data[i], m_data[j]);
 			}
@@ -72,7 +74,7 @@ NAMESPACE_SOUP
 			seed = 0;
 
 			// mirror
-			for (size_t i = 0, j = Len - 1; i != Len / 2; ++i, --j)
+			for (size_t i = 0, j = MirrorLen - 1; i != MirrorLen / 2; ++i, --j)
 			{
 				std::swap(m_data[i], m_data[j]);
 			}
