@@ -12,18 +12,20 @@
 
 NAMESPACE_SOUP
 {
-	UniquePtr<JsonNode> json::decode(const std::string& data)
+	UniquePtr<JsonNode> json::decode(const std::string& data, int max_depth)
 	{
 		if (data.empty())
 		{
 			return {};
 		}
 		const char* c = data.c_str();
-		return decode(c);
+		return decode(c, max_depth);
 	}
 
-	UniquePtr<JsonNode> json::decode(const char*& c)
+	UniquePtr<JsonNode> json::decode(const char*& c, int max_depth)
 	{
+		SOUP_ASSERT(max_depth != 0, "Depth limit exceeded");
+
 		handleLeadingSpace(c);
 
 		switch (*c)
@@ -34,11 +36,11 @@ NAMESPACE_SOUP
 
 		case '[':
 			++c;
-			return soup::make_unique<JsonArray>(c);
+			return soup::make_unique<JsonArray>(c, max_depth - 1);
 
 		case '{':
 			++c;
-			return soup::make_unique<JsonObject>(c);
+			return soup::make_unique<JsonObject>(c, max_depth - 1);
 		}
 
 		std::string buf{};
