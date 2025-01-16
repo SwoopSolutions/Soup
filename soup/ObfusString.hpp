@@ -52,16 +52,18 @@ NAMESPACE_SOUP
 			// flip bits
 			for (size_t i = 0; i != Len; ++i)
 			{
-				m_data[i] ^= rng.generateByte();
+				const auto m = i % 8;
+				m_data[i] ^= rng.state >> (m * 8);
+				if (m == 7)
+				{
+					rng.skip();
+				}
 			}
 
 			// mirror
-			if (Len < 30000)
+			for (size_t i = 0, j = Len - 1; i != Len / 2; ++i, --j)
 			{
-				for (size_t i = 0, j = Len - 1; i != Len / 2; ++i, --j)
-				{
-					std::swap(m_data[i], m_data[j]);
-				}
+				std::swap(m_data[i], m_data[j]);
 			}
 		}
 
@@ -75,18 +77,20 @@ NAMESPACE_SOUP
 			seed = 0;
 
 			// mirror
-			if (Len < 30000)
+			for (size_t i = 0, j = Len - 1; i != Len / 2; ++i, --j)
 			{
-				for (size_t i = 0, j = Len - 1; i != Len / 2; ++i, --j)
-				{
-					std::swap(m_data[i], m_data[j]);
-				}
+				std::swap(m_data[i], m_data[j]);
 			}
 
 			// flip bits
 			for (size_t i = 0; i != Len; ++i)
 			{
-				m_data[i] ^= rng.generateByte();
+				const auto m = i % 8;
+				m_data[i] ^= rng.state >> (m * 8);
+				if (m == 7)
+				{
+					rng.skip();
+				}
 			}
 
 			// rot13
