@@ -53,11 +53,11 @@ NAMESPACE_SOUP
 			for (size_t i = 0; i != Len; ++i)
 			{
 				const auto m = i % 8;
-				m_data[i] ^= rng.state >> (m * 8);
-				if (m == 7)
+				if (m == 0)
 				{
 					rng.skip();
 				}
+				m_data[i] ^= rng.state >> (m * 8);
 			}
 
 			// mirror
@@ -86,11 +86,11 @@ NAMESPACE_SOUP
 			for (size_t i = 0; i != Len; ++i)
 			{
 				const auto m = i % 8;
-				m_data[i] ^= rng.state >> (m * 8);
-				if (m == 7)
+				if (m == 0)
 				{
 					rng.skip();
 				}
+				m_data[i] ^= rng.state >> (m * 8);
 			}
 
 			// rot13
