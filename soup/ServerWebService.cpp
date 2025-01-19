@@ -60,15 +60,25 @@ NAMESPACE_SOUP
 		sendData(s, MimeType::TEXT_HTML, body, true);
 	}
 
+	void ServerWebService::sendHtml(Socket& s, const char* data, size_t size)
+	{
+		sendData(s, MimeType::TEXT_HTML, data, size, true);
+	}
+
 	void ServerWebService::sendText(Socket& s, const std::string& body)
 	{
 		sendData(s, MimeType::TEXT_PLAIN, body, false);
 	}
 
-	void ServerWebService::sendData(Socket& s, const char* mime_type, const std::string& body, bool is_private)
+	void ServerWebService::sendText(Socket& s, const char* data, size_t size)
+	{
+		sendData(s, MimeType::TEXT_PLAIN, data, size, false);
+	}
+
+	void ServerWebService::sendData(Socket& s, const char* mime_type, const char* _data, size_t size, bool is_private)
 	{
 		std::string data;
-		data.reserve(body.size() + 120);
+		data.reserve(size + 120);
 		if (is_private)
 		{
 			data.append("Cache-Control: private");
@@ -78,9 +88,9 @@ NAMESPACE_SOUP
 			data.append("Access-Control-Allow-Origin: *");
 		}
 		data.append("\r\nContent-Type: ").append(mime_type);
-		data.append("\r\nContent-Length: ").append(std::to_string(body.size()));
+		data.append("\r\nContent-Length: ").append(std::to_string(size));
 		data.append("\r\n\r\n");
-		data.append(body);
+		data.append(_data, size);
 		sendResponse(s, "200", data);
 	}
 

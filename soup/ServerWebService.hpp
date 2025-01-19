@@ -31,8 +31,11 @@ NAMESPACE_SOUP
 		static void sendContent(Socket& s, HttpResponse&& resp);
 		static void sendContent(Socket& s, const char* status, HttpResponse&& resp);
 		static void sendHtml(Socket& s, const std::string& body);
+		static void sendHtml(Socket& s, const char* data, size_t size);
 		static void sendText(Socket& s, const std::string& body);
-		static void sendData(Socket& s, const char* mime_type, const std::string& body, bool is_private = true);
+		static void sendText(Socket& s, const char* data, size_t size);
+		static void sendData(Socket& s, const char* mime_type, const std::string& body, bool is_private = true) { return sendData(s, mime_type, body.data(), body.size(), is_private); }
+		static void sendData(Socket& s, const char* mime_type, const char* data, size_t size, bool is_private = true);
 		static void sendRedirect(Socket& s, const std::string& location);
 		static void send204(Socket& s);
 		static void send400(Socket& s);
