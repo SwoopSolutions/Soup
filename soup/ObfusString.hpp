@@ -43,10 +43,19 @@ NAMESPACE_SOUP
 			seed = rand.getConstexprSeed(Len);
 			LcgRng rng(seed);
 
-			// rot13
+			// copy input & apply rot13
 			for (size_t i = 0; i != Len; ++i)
 			{
 				m_data[i] = string::rot13(in[i]);
+			}
+
+			if (Len < 40'000)
+			{
+				// mirror
+				for (size_t i = 0, j = Len - 1; i != Len / 2; ++i, --j)
+				{
+					std::swap(m_data[i], m_data[j]);
+				}
 			}
 
 			// flip bits
@@ -58,12 +67,6 @@ NAMESPACE_SOUP
 					rng.skip();
 				}
 				m_data[i] ^= rng.state >> (m * 8);
-			}
-
-			// mirror
-			for (size_t i = 0, j = Len - 1; i != Len / 2; ++i, --j)
-			{
-				std::swap(m_data[i], m_data[j]);
 			}
 		}
 
@@ -76,12 +79,6 @@ NAMESPACE_SOUP
 			LcgRng rng(seed);
 			seed = 0;
 
-			// mirror
-			for (size_t i = 0, j = Len - 1; i != Len / 2; ++i, --j)
-			{
-				std::swap(m_data[i], m_data[j]);
-			}
-
 			// flip bits
 			for (size_t i = 0; i != Len; ++i)
 			{
@@ -91,6 +88,15 @@ NAMESPACE_SOUP
 					rng.skip();
 				}
 				m_data[i] ^= rng.state >> (m * 8);
+			}
+
+			if constexpr (Len < 40'000)
+			{
+				// mirror
+				for (size_t i = 0, j = Len - 1; i != Len / 2; ++i, --j)
+				{
+					std::swap(m_data[i], m_data[j]);
+				}
 			}
 
 			// rot13
