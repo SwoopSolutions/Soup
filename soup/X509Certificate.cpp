@@ -16,6 +16,11 @@ NAMESPACE_SOUP
 		return load(Asn1Sequence::fromDer(str));
 	}
 
+	bool X509Certificate::fromDer(const char* data, size_t size) noexcept
+	{
+		return load(Asn1Sequence::fromDer(data, size));
+	}
+
 	bool X509Certificate::load(const Asn1Sequence& cert) noexcept
 	{
 		SOUP_TRY
