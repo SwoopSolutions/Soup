@@ -1,6 +1,6 @@
 <?php
 // https://curl.se/docs/caextract.html
-$file = file_get_contents("https://curl.se/ca/cacert.pem");
+$file = file_get_contents("cacert.pem"); // https://curl.se/ca/cacert.pem
 $cert = false;
 foreach(explode("\n", $file) as $line)
 {
