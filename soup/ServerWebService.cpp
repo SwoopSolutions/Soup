@@ -227,8 +227,9 @@ NAMESPACE_SOUP
 				{
 					if (auto key_value = req.findHeader("Sec-WebSocket-Key"))
 					{
-						if (srv.should_accept_websocket_connection
-							&& srv.should_accept_websocket_connection(s, req, srv)
+						if (srv.should_accept_websocket_connection != nullptr
+							? srv.should_accept_websocket_connection(s, req, srv)
+							: srv.on_websocket_message != nullptr
 							)
 						{
 							// Firefox throws a SkillIssueException if we say HTTP/1.0
