@@ -33,7 +33,7 @@ NAMESPACE_SOUP
 
 	void ServerWebService::sendContent(Socket& s, std::string body)
 	{
-		sendContent(s, "200", std::move(body));
+		sendContent(s, "200 OK", std::move(body));
 	}
 
 	void ServerWebService::sendContent(Socket& s, const char* status, std::string body)
@@ -45,7 +45,7 @@ NAMESPACE_SOUP
 
 	void ServerWebService::sendContent(Socket& s, HttpResponse&& resp)
 	{
-		sendContent(s, "200", std::move(resp));
+		sendContent(s, "200 OK", std::move(resp));
 	}
 
 	void ServerWebService::sendContent(Socket& s, const char* status, HttpResponse&& resp)
@@ -91,7 +91,7 @@ NAMESPACE_SOUP
 		data.append("\r\nContent-Length: ").append(std::to_string(size));
 		data.append("\r\n\r\n");
 		data.append(_data, size);
-		sendResponse(s, "200", data);
+		sendResponse(s, "200 OK", data);
 	}
 
 	void ServerWebService::sendRedirect(Socket& s, const std::string& location)
@@ -99,27 +99,27 @@ NAMESPACE_SOUP
 		std::string cont = "Location: ";
 		cont.append(location);
 		cont.append("\r\nContent-Length: 0\r\n\r\n");
-		sendResponse(s, "302", cont);
+		sendResponse(s, "302 Found", cont);
 	}
 
 	void ServerWebService::send204(Socket& s)
 	{
-		sendResponse(s, "204", "Content-Length: 0\r\n\r\n");
+		sendResponse(s, "204 No Content", "Content-Length: 0\r\n\r\n");
 	}
 
 	void ServerWebService::send400(Socket& s)
 	{
-		sendResponse(s, "400", "Content-Length: 0\r\n\r\n");
+		sendResponse(s, "400 Bad Request", "Content-Length: 0\r\n\r\n");
 	}
 
 	void ServerWebService::send404(Socket& s)
 	{
-		sendResponse(s, "404", "Content-Length: 0\r\n\r\n");
+		sendResponse(s, "404 Not Found", "Content-Length: 0\r\n\r\n");
 	}
 
 	void ServerWebService::send500(Socket& s)
 	{
-		sendResponse(s, "500", "Content-Length: 0\r\n\r\n");
+		sendResponse(s, "500 Internal Server Error", "Content-Length: 0\r\n\r\n");
 	}
 
 	void ServerWebService::sendResponse(Socket& s, const char* status, const std::string& headers_and_body)
@@ -198,7 +198,7 @@ NAMESPACE_SOUP
 			if (method_end == std::string::npos)
 			{
 			_bad_request:
-				s.send("HTTP/1.0 400\r\n\r\n");
+				s.send("HTTP/1.0 400 Bad Request\r\n\r\n");
 				s.close();
 				return;
 			}
@@ -233,7 +233,7 @@ NAMESPACE_SOUP
 							)
 						{
 							// Firefox throws a SkillIssueException if we say HTTP/1.0
-							std::string cont = "HTTP/1.1 101\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nServer: Soup\r\nSec-WebSocket-Accept: ";
+							std::string cont = "HTTP/1.1 101 Switching Protocols\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nServer: Soup\r\nSec-WebSocket-Accept: ";
 							cont.append(WebSocket::hashKey(*key_value));
 							cont.append("\r\n\r\n");
 							s.send(cont);
