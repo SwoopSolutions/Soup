@@ -1680,6 +1680,9 @@
     <ClInclude Include="ReplacementHook.hpp">
       <Filter>util\hooks</Filter>
     </ClInclude>
+    <ClInclude Include="Spinlock.hpp">
+      <Filter>util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bytepatch.cpp">
