@@ -705,7 +705,7 @@ NAMESPACE_SOUP
 			}
 		}
 
-		static void listAppend(std::string& str, std::string&& add);
+		static void listAppend(std::string& str, std::string add);
 
 		template <typename T>
 		static void trim(T& str)

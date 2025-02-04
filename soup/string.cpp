@@ -103,7 +103,7 @@ NAMESPACE_SOUP
 		return res;
 	}
 
-	void string::listAppend(std::string& str, std::string&& add)
+	void string::listAppend(std::string& str, std::string add)
 	{
 		if (str.empty())
 		{
