@@ -11,7 +11,7 @@ NAMESPACE_SOUP
 		union {
 			Actual a;
 			Desired d;
-		} u{ a = a };
+		} u{.a = a };
 		SOUP_MOVE_RETURN(u.d);
 	}
 
