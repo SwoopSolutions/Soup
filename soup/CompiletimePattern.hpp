@@ -2,6 +2,8 @@
 
 #include "CompiletimePatternBase.hpp"
 
+#include <array>
+
 NAMESPACE_SOUP
 {
 	template <size_t len>
