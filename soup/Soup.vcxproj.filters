@@ -1683,6 +1683,9 @@
     <ClInclude Include="Spinlock.hpp">
       <Filter>util</Filter>
     </ClInclude>
+    <ClInclude Include="CallsiteHook.hpp">
+      <Filter>util\hooks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bytepatch.cpp">
@@ -2511,6 +2514,9 @@
       <Filter>util\hooks</Filter>
     </ClCompile>
     <ClCompile Include="ReplacementHook.cpp">
+      <Filter>util\hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="CallsiteHook.cpp">
       <Filter>util\hooks</Filter>
     </ClCompile>
   </ItemGroup>

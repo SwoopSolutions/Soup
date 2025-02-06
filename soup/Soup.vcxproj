@@ -685,6 +685,7 @@
     <ClInclude Include="BufferWriter.hpp" />
     <ClInclude Include="buttons.hpp" />
     <ClInclude Include="ByteTraits.hpp" />
+    <ClInclude Include="CallsiteHook.hpp" />
     <ClInclude Include="CApiUtil.hpp" />
     <ClInclude Include="cat.hpp" />
     <ClInclude Include="catTreeReader.hpp" />
@@ -1248,6 +1249,7 @@
     <ClCompile Include="BitReader.cpp" />
     <ClCompile Include="bitutil.cpp" />
     <ClCompile Include="BitWriter.cpp" />
+    <ClCompile Include="CallsiteHook.cpp" />
     <ClCompile Include="CompactDetourHook.cpp" />
     <ClCompile Include="crc32c.cpp" />
     <ClCompile Include="DetourHookBase.cpp" />

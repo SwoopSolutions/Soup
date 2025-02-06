@@ -3,16 +3,9 @@
 #include <cstring> // memset, memcpy
 
 #include "memGuard.hpp"
-#include "pattern_macros.hpp"
 
 NAMESPACE_SOUP
 {
-	Pattern CompactDetourHook::getCodeCavePattern()
-	{
-		SIG_INST("CC CC CC CC CC CC CC CC CC CC CC CC CC");
-		return sig_inst;
-	}
-
 	void CompactDetourHook::create()
 	{
 		memGuard::setAllowedAccess(code_cave, sizeof(longjump_trampoline_r10), memGuard::ACC_RWX);
